@@ -1,0 +1,123 @@
+.flex-container {
+  display: -webkit-box;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.child {
+  border: 1px solid #ddd;
+  margin: 5px;
+  padding: 5px;
+  width: 40px;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.4s;
+  border-radius: 0.25rem;
+}
+.child-active {
+  border: 1px solid #ddd;
+  margin: 5px;
+  padding: 5px;
+  width: 40px;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.4s;
+  background-color: blue;
+  color: white;
+  border-radius: 0.25rem;
+}
+.flex-container button {
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  background-color: transparent;
+}
+
+.flex-container button:hover .child {
+  background-color: #506ee4;
+  color: #fff;
+}
+
+.instruction {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.instruction .inst-card {
+  display: flex;
+  padding: 10px;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.instruction .inst-card .box {
+  width: 10px;
+  height: 10px;
+  border-radius: 100px;
+  border: 1px solid #ddd;
+  padding: 5px;
+}
+.instruction .inst-card .box.busy {
+  background-color: blue;
+}
+.instruction .inst-card .box.available {
+  background-color: transparent;
+}
+.instruction .inst-card .box.reserved {
+  background-color: red;
+}
+.instruction .inst-card span {
+  margin-left: 5px;
+}
+
+.card-img-top {
+  height: 100px;
+  object-fit: cover;
+}
+.item-box .card {
+  border: 1px solid #ddd;
+  box-shadow: none;
+}
+.item-box a {
+  cursor: pointer;
+}
+
+.item-box .card .card-body {
+  padding: 10px;
+  text-align: center;
+}
+
+.nav.nav-pills {
+  padding-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tables .accordion a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.order-item-card {
+  transition: "all 0.5s ease";
+}
+.order-item-card:hover {
+  background-color: lightgray;
+}
+.form-text-error {
+  color: red;
+  font-size: 10px;
+  margin-top: 2px;
+}
