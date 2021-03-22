@@ -1,4 +1,4 @@
-// export const RootUrl = "http://192.168.0.111:3000";
+export const RootUrl = "http://192.168.0.111:3000";
 
 export const SMALLLOGO = "images/logo-small.jpg";
 
@@ -9,7 +9,7 @@ export const LOGINBG = "images/logo-bg.jpg";
 // export const RootUrl = "http://127.0.0.1:3000";
 // export const RootUrl = "https://api.mealbill.in/";
 // export const RootUrl = "https://localhost:3000";
-export const RootUrl = "https://mealbill.in/api";
+// export const RootUrl = "https://mealbill.in/api";
 
 export const Curreny = "₹";
 let primary = {

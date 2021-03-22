@@ -88,6 +88,8 @@ const ManageUsers = () => {
 
   const [selectedRes, setSelectedRes] = React.useState(restaurantId || "all");
 
+  const CurrentRestaurant = restaurantId || selectedRes;
+
   const [selectedBranch, setSelectedBranch] = React.useState(branchId || "all");
 
   const restaurants = useSelector((state) => state.restaurant.allRestaurants);

@@ -102,7 +102,11 @@ const SmartTable = ({
       <div class="col-12">
         <div class="card">
           <div class="card-body">
-            <TableTitle title={title} endAction={headAction} />
+            <TableTitle
+              headerComponents={headerComponents}
+              title={title}
+              endAction={headAction}
+            />
 
             <div class="d-flex justify-content-between align-items-center mb-4">
               {paginated && <EntriesComponent />}
