@@ -1,12 +1,11 @@
 export const CONTACTUSURL = "https://mealbill.in/contactus";
 
-// export const RootUrl = "http://192.168.0.111:3000";
-
 export const SMALLLOGO = "./images/logo-small.jpg";
 
 export const LOGINBG = "/images/logo-bg.jpg";
 
 // export const RootUrl = "https://api.mealbill.in/";
+// export const RootUrl = "http://192.168.0.111:4000";
 
 // export const RootUrl = "http://localhost:4000";
 export const RootUrl = "https://mealbill.in/api";

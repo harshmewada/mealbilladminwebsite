@@ -6,12 +6,16 @@ import { RootUrl } from "../../redux/types";
 import BillComponent from "./BillComponent";
 import useDetectPrint from "use-detect-print";
 
-const PrintComponent = ({ headers, footers, containerStyle }) => {
+const PrintComponent = ({
+  headers,
+  footers,
+  printData,
+  restaurant,
+  logo,
+  containerStyle,
+}) => {
   const dispatch = useDispatch();
   const isPrinting = useDetectPrint();
-
-  const logo = useSelector((state) => state.user.restaurantLogo);
-  const { printData, enablePrinting } = useSelector((state) => state.util);
 
   const componentRef = React.useRef();
   const handlePrint = useReactToPrint({
@@ -22,7 +26,7 @@ const PrintComponent = ({ headers, footers, containerStyle }) => {
   });
 
   React.useEffect(() => {
-    if (!isPrinting && printData && enablePrinting) {
+    if (!isPrinting && printData) {
       console.log("isElectron", window.api);
       if (window?.api?.isElectron) {
         console.log("isElectron inside", window.api);
@@ -39,9 +43,8 @@ const PrintComponent = ({ headers, footers, containerStyle }) => {
         <BillComponent
           ref={componentRef}
           orderData={printData}
-          logo={RootUrl + "/" + logo}
-          headers={headers}
-          footers={footers}
+          restaurant={restaurant}
+          logo={logo}
         />
       </div>
     </div>

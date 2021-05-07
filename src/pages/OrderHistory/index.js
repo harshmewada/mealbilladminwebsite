@@ -118,7 +118,11 @@ const OrderHistory = () => {
 
   const headers = [
     { title: "Order Number", key: "branchOrderNumber" },
-    { title: "Items", key: "itemsLength" },
+    {
+      title: "Items",
+      key: "itemsLength",
+      renderRow: (child) => child.orderItems.length,
+    },
     { title: "Amount", key: "grandTotal" },
     { title: "SGST", key: "sgstCharges" },
     { title: "CGST", key: "cgstCharges" },

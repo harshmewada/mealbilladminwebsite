@@ -79,6 +79,10 @@
   },
   "build": {
     "appId": "com.mealbill",
+    "win": {
+      "title": "Mealbill",
+      "icon": "build/logo512.png"
+    },
     "files": [
       "build/**/*",
       "node_modules/**/*",

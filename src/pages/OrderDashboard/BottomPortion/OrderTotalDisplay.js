@@ -108,7 +108,7 @@ const OrderTotalDisplay = () => {
           dispatch(showSnackBar("Order Successfull"));
           setOtherCharges(0);
           setDiscount(0);
-          dispatch(setPrintData(activeOrders[index]));
+
           dispatch(deleteLocalOrder(activeOrderIndex));
         } else {
           dispatch(showSnackBar("Failed To Order", "error"));

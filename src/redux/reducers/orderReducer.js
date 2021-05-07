@@ -302,6 +302,13 @@ const orderReducer = (state = initialstate, action) => {
         lastOrderNumber: getData().data.orderNumber,
       };
 
+    case orderTypes.GET_PREVIOS_ORDERS_SUCCESS:
+      return {
+        ...state,
+
+        previousOrders: getData().data,
+      };
+
     case userTypes.LOGOUT_USER:
       return { ...initialstate };
     default:

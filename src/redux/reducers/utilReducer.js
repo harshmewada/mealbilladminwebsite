@@ -1,4 +1,4 @@
-import { utilTypes } from "../types";
+import { orderTypes, utilTypes } from "../types";
 const initialstate = {
   spinner: false,
   enablePrinting: true,
@@ -26,6 +26,11 @@ const utilReducer = (state = initialstate, action) => {
         enablePrinting: !state.enablePrinting,
       };
 
+    case orderTypes.CONFIRM_ORDER_SUCCESS:
+      return {
+        ...state,
+        printData: action.payload?.data?.data,
+      };
     case utilTypes.SET_PRINT_DATA:
       return {
         ...state,

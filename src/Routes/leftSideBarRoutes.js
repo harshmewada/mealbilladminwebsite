@@ -23,7 +23,7 @@ export const superadmin = [
 
   {
     title: "Setting",
-    icon: "mdi mdi-settings-outline",
+    icon: "mdi mdi-cog-outline",
 
     children: [
       {
@@ -80,7 +80,7 @@ export const restaurantadmin = [
 
   {
     title: "Manage Categories",
-    icon: "mdi mdi-yelp",
+    icon: "mdi mdi-format-list-bulleted",
     link: "/managecategories",
   },
   {
@@ -194,7 +194,7 @@ export const branchadmin = [
   },
   {
     title: "Setting",
-    icon: "mdi mdi-settings-outline",
+    icon: "mdi mdi-cog-outline",
 
     children: [
       {

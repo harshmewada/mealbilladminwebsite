@@ -61,9 +61,6 @@ const TopPortion = () => {
       {children}
     </Col>
   );
-  console.log("unique", [
-    ...new Set(allTables.map((table) => table.tableType)),
-  ]);
 
   const getTableTypes = () => {
     const key = "tableType";

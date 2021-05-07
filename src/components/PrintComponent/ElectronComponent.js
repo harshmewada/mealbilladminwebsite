@@ -2,76 +2,140 @@ import * as React from "react";
 
 import ComponentToPrint from "./BillComponent";
 import ReactToPrint from "react-to-print";
-import reactDom from "react-dom";
+import useDetectPrint from "use-detect-print";
 
 // TODO: Should ideally be declared somewhere else, not
-//  sure what the best practice for this is, though
+const Example = ({ printData, restaurant, logo }) => {
+  const componentRef = React.useRef();
+  const triggerRef = React.useRef();
 
-class ElectronPrint extends React.PureComponent {
-  componentRef = null;
+  const isPrinting = useDetectPrint();
 
-  constructor(props) {
-    super(props);
-  }
+  const [count, setCounter] = React.useState(0);
 
-  setComponentRef = (ref) => {
-    this.componentRef = ref;
-  };
-
-  reactToPrintContent = () => {
-    return this.componentRef;
-  };
-
-  reactToPrintTrigger = () => {
+  const reactToPrintTrigger = () => {
     return (
-      <a href="#">
+      <button ref={triggerRef} style={{ display: "none" }}>
         Print silently if running Electron (WILL PRINT WITH DEFAULT PRINTER
         WITHOUT DIALOG)
-      </a>
+      </button>
     );
   };
 
-  printWithElectron = (target) => {
-    // console.log("printWithElectron", reactDom.findDOMNode(this.componentRef));
-
-    const content = reactDom.findDOMNode(this.componentRef);
+  const printWithElectron = (target) => {
     // Create a new Electron window (opening the current url in the new window to allow relative sources to work)
-    // let printWindow = window.open(window.location.href, "silent-print-content");
+    let printWindow = window.open(window.location.href, "silent-print-content");
 
-    // // alert("printWithElectron");
-    // // // Write the iframe contents into its body
-    // printWindow.document.body.innerHTML = `<h1>hello</h1>`;
-    // console.log("printWindow", printWindow.document.body);
+    // Write the iframe contents into its body
+    printWindow.document.body = target.contentWindow.document.body;
 
-    // // Call the Electron print function from the electron preloader, from
-    // // the new window and close that window after the printing is done
-    return window.api.printSilently(content);
+    // Call the Electron print function from the electron preloader, from
+    // the new window and close that window after the printing is done
+    return printWindow.api.printSilently();
   };
 
-  printErrorHandler = (_errorLocation, error) => {
+  const printErrorHandler = (_errorLocation, error) => {
     // TODO: Handle errors in the print callback here, instead of inside that callback
     alert("Something went wrong while printing: " + error.message);
   };
 
-  render() {
-    return (
-      <div>
-        <ReactToPrint
-          content={this.reactToPrintContent}
-          // Only pass print callback if window electron api is available
-          print={window?.api?.isElectron ? this.printWithElectron : undefined}
-          onPrintError={this.printErrorHandler}
-          removeAfterPrint
-          trigger={this.reactToPrintTrigger}
+  React.useEffect(() => {
+    if (!isPrinting && printData) {
+      handleAnotherTriger();
+    }
+  }, [printData, isPrinting]);
+
+  const handleAnotherTriger = () => {
+    setCounter(count + 1);
+    setTimeout(() => {
+      triggerRef.current.click();
+    }, 1000);
+  };
+  return (
+    <div>
+      <ReactToPrint
+        content={() => componentRef.current}
+        // Only pass print callback if window electron api is available
+        print={window?.api?.isElectron ? printWithElectron : undefined}
+        onPrintError={printErrorHandler}
+        removeAfterPrint
+        trigger={reactToPrintTrigger}
+      />
+      <div style={{ display: "none" }}>
+        <ComponentToPrint
+          orderData={printData}
+          restaurant={restaurant}
+          logo={logo}
+          ref={componentRef}
         />
-        <div style={{ display: "none" }}>
-          <ComponentToPrint
-            ref={this.setComponentRef}
-            text={"This prints automatically and silently"}
-          />
-        </div>
       </div>
-    );
-  }
-}
-export default ElectronPrint;
+    </div>
+  );
+};
+
+export default Example;
+
+// export class ElectronPrint extends React.PureComponent {
+//   componentRef = null;
+
+//   constructor(props) {
+//     super(props);
+//   }
+
+//   setComponentRef = (ref) => {
+//     this.componentRef = ref;
+//   };
+
+//   reactToPrintContent = () => {
+//     return this.componentRef;
+//   };
+
+//   reactToPrintTrigger = () => {
+//     return (
+//       <a href="#">
+//         Print silently if running Electron (WILL PRINT WITH DEFAULT PRINTER
+//         WITHOUT DIALOG)
+//       </a>
+//     );
+//   };
+
+//   printWithElectron = (target) => {
+//     // Create a new Electron window (opening the current url in the new window to allow relative sources to work)
+//     let printWindow = window.open(window.location.href, "silent-print-content");
+
+//     // Write the iframe contents into its body
+//     printWindow.document.body = target.contentWindow.document.body;
+
+//     // Call the Electron print function from the electron preloader, from
+//     // the new window and close that window after the printing is done
+//     return printWindow.api.printSilently();
+//   };
+
+//   printErrorHandler = (_errorLocation, error) => {
+//     // TODO: Handle errors in the print callback here, instead of inside that callback
+//     alert("Something went wrong while printing: " + error.message);
+//   };
+
+//   render() {
+//     return (
+//       <div>
+//         <ReactToPrint
+//           content={this.reactToPrintContent}
+//           // Only pass print callback if window electron api is available
+//           print={window?.api?.isElectron ? this.printWithElectron : undefined}
+//           onPrintError={this.printErrorHandler}
+//           removeAfterPrint
+//           trigger={this.reactToPrintTrigger}
+//         />
+// <div style={{ display: "none" }}>
+//   <ComponentToPrint
+//     ref={this.setComponentRef}
+//     text={"This prints automatically and silently"}
+//   />
+// </div>
+//       </div>
+//     );
+//   }
+// }
+
+// export default ElectronPrint;

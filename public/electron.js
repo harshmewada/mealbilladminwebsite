@@ -26,9 +26,7 @@ function createWindow() {
   win.webContents.on(
     "new-window",
     function (e, url, frameName, disposition, options) {
-      if (frameName === "silent-print-content") {
-        // options.show = false;
-      }
+      options.show = false;
     }
   );
   // win.webContents.on('did-create-window', (childWindow) => {

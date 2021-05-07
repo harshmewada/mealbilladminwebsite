@@ -20,7 +20,6 @@ const UtilComponent = () => {
       history.push("/expired");
     }
   }, [isExpired, isLogged]);
-  window.alert = (data) => dispatch(showWarningAlert(data));
   return (
     <React.Fragment>
       {enablePrinting && <PrintComponent />}

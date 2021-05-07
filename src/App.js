@@ -11,7 +11,7 @@ function App() {
   return !isMobile ? (
     <HashRouter>
       <Provider store={Store()}>
-        <button
+        {/* <button
           onClick={(_) => {
             console.log("isElectron window", window.api);
             window.api.notify("this is mesaage");
@@ -19,7 +19,7 @@ function App() {
         >
           <i class="mdi-wallet">cloud</i>
           Notify
-        </button>
+        </button> */}
         <Routes />
       </Provider>
     </HashRouter>
