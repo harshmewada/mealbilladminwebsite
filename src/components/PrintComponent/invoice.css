@@ -1,88 +1,93 @@
-.ticket td,
-.ticket th,
-.ticket tr,
-.ticket table {
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
+/* * {
+  font-family: "Roboto", sans-serif;
+  font-size: 12px;
+} */
+
+.postable td,
+.postable th,
+.postable tr,
+.postable {
   width: 100%;
   text-align: right;
 }
-
-.ticket table {
+.postable {
   border-top: 1px solid black;
   border-bottom: 1px solid black;
   border-collapse: collapse;
 }
-.ticket th {
+.postable th {
   border-bottom: 1px solid black;
   padding: 5px 0;
 }
-.ticket table td {
+.postable td {
   padding: 0 0 5px 0;
 }
-.ticket table tbody tr:first-child td {
+.postable tbody tr:first-child td {
   padding-top: 5px;
 }
-.ticket td.sr,
-.ticket th.sr {
+.postable td.sr,
+.postable th.sr {
   text-align: left;
   width: 7%;
   max-width: 7%;
 }
 
-.ticket td.pro,
-.ticket th.pro {
+.postable td.pro,
+.postable th.pro {
   text-align: left;
   width: 45%;
   max-width: 45%;
 }
 
-.ticket td.pro {
+.postable td.pro {
   width: 100%;
   max-width: 100%;
 }
 
-td.quantity,
-th.quantity {
+.postable td.quantity,
+.postable th.quantity {
   width: 10%;
   max-width: 10%;
   word-break: break-all;
 }
 
-td.price,
-th.price {
+.postable td.price,
+.postable th.price {
   width: 20%;
   max-width: 20%;
   word-break: break-all;
 }
 
-td.amount,
+.postable td.amount,
 th.amount {
   width: 30%;
   max-width: 30%;
   word-break: break-all;
 }
-td.subtotal {
+.postable td.subtotal {
   text-transform: uppercase;
   text-align: right;
 }
 
-td.discount {
+.postable td.discount {
   text-align: right;
 }
 
-td.subtotalamount {
-  font-size: 50px;
+.postable td.subtotalamount {
+  font-size: 20px;
   font-weight: 600;
   text-align: right;
 }
-td.grand {
+.postable td.grand {
   padding: 5px 0;
   border-top: 1px solid black;
   font-weight: 500;
-  font-size: 50px;
+  font-size: 20px;
   text-align: right;
 }
 
-td.grandtotal {
+.postable td.grandtotal {
   padding: 5px 0;
   border-top: 1px solid black;
   font-size: 14px;
@@ -90,7 +95,7 @@ td.grandtotal {
   text-align: right;
 }
 
-td.priceword {
+.postable td.priceword {
   padding: 5px 0;
   border-top: 1px solid black;
   border-bottom: 1px solid black;
@@ -99,26 +104,28 @@ td.priceword {
   font-style: italic;
 }
 
-.ticket table.top-table {
+.postable.top-table {
   border-top: 1px solid transparent;
 }
 
 .centered {
   padding: 0;
-  padding-top: 5px;
+  padding: 5px 0;
   margin: 0;
   text-align: center;
   align-content: center;
 }
 .centered span {
-  font-size: 25px;
+  font-size: 20px;
   text-transform: uppercase;
   font-weight: 700;
 }
 .ticket {
-  padding: 5px;
-  width: 100%;
-  height: 100%;
+  font-family: "Roboto", sans-serif;
+  font-size: 20px;
+  /* padding: 5px; */
+  width: 100mm;
+  max-width: 100mm;
 }
 
 .invoice {

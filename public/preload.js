@@ -5,11 +5,19 @@ const { contextBridge, ipcRenderer } = require("electron");
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld("api", {
   isElectron: true,
-  send: (data, func) => {
+  printSilently: () =>
+    new Promise((res, fail) => {
+      ipcRenderer.send("silent-print");
+      ipcRenderer.once("silent-print-result", (event, result) => {
+        result === "success" ? res() : fail(result);
+      });
+    }),
+  send: (content, func) => {
     // whitelist channels
-    console.log("isElectron send", data);
+    // console.log("isElectron send", data);
 
-    ipcRenderer.send("printPage", data);
+    // ipcRenderer.send("printPage", data);
+    ipcRenderer.send("printPage", content);
     // ipcRenderer.sendSync("notify", {
     //   message: data,
     // });

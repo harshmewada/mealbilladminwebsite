@@ -295,8 +295,11 @@ const ManageItemCategories = () => {
         restaurantId: restaurantId,
         ...(currBranchId && { branchId: branchId }),
         data: data.map((item) => {
+          delete item.id;
+          delete item._id;
           return {
             ...item,
+
             restaurantId: restaurantId,
             ...(currBranchId && { branchId: branchId }),
           };

@@ -308,6 +308,8 @@ const ManageItems = () => {
       importItems({
         restaurantId: restaurantId,
         data: data.map((item) => {
+          delete item.id;
+          delete item._id;
           return {
             ...item,
             restaurantId: restaurantId,

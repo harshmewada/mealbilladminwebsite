@@ -75,11 +75,8 @@ const Header = ({ invoiceNo, resName, date, custMobile, paymentMethod }) => {
       <p class="centered">
         <span>{resName}</span>
       </p>
-      <div class="invoice">
-        <span>Invoice No./Date : </span>
-        <span>{invoiceNo}</span>
-        <span>{date}</span>
-      </div>
+      <div class="mobile">Invoice No.: {invoiceNo}</div>
+      <div class="mobile">Date: {date}</div>
       <div class="mobile">Cust Mobile No. : {custMobile}</div>
       <div class="mobile">Payment by : {paymentMethod}</div>
     </>
@@ -121,7 +118,7 @@ const ProductTable = ({
   grandtotal,
 }) => {
   return (
-    <table>
+    <table class="postable">
       <thead>
         <tr>
           <th class="sr">Sr.</th>
@@ -191,9 +188,9 @@ const ProductTable = ({
   );
 };
 
-function Invoice() {
+const Invoice = React.forwardRef((props, ref) => {
   return (
-    <div class="ticket">
+    <div class="ticket" ref={ref}>
       <Header
         resName="KESAV SUPER MARKET"
         invoiceNo="#123456"
@@ -213,7 +210,7 @@ function Invoice() {
       </p>
     </div>
   );
-}
+});
 
 class BillComponent extends React.Component {
   render() {

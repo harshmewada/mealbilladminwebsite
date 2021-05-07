@@ -1,7 +1,9 @@
 const { app, BrowserWindow, ipcMain, Notification } = require("electron");
 const printBill = require("./elctronfunction/electronPrintBill");
 const path = require("path");
-
+const {
+  createPrintWindow,
+} = require("simple-electron-printer-and-thermalprinter");
 const isDev = require("electron-is-dev");
 
 let win;
@@ -19,7 +21,15 @@ function createWindow() {
     },
   });
   win.removeMenu();
-  //load the index.html from a url
+
+  win.webContents.on(
+    "new-window",
+    function (e, url, frameName, disposition, options) {
+      if (frameName === "silent-print-content") {
+        options.show = false;
+      }
+    }
+  );
   win.loadURL(
     isDev
       ? "http://localhost:3000"
@@ -27,16 +37,34 @@ function createWindow() {
   );
 
   win.on("closed", () => (win = null));
+
   // Open the DevTools.
   isDev && win.webContents.openDevTools();
 }
+ipcMain.on("silent-print", (event) => {
+  alert("silent printing");
+  // Print the window silently
+  event.sender.print({ silent: true }, (success, failureReason) => {
+    // Signal that the print is finished
+    event.reply("silent-print-result", success ? "success" : failureReason);
+  });
+});
 ipcMain.on("printPage", async (_, data) => {
   let printers = win.webContents.getPrinters(); //list the printers
 
-  console.log("print printers", printers);
-  // const printres = await printBill(data);
-  // console.log("printres", printres);
-  win.webContents.print();
+  console.log("printres", printers);
+  createPrintWindow({
+    html: data,
+
+    cssUrl: "../../resources/css/tablas-printer.css",
+
+    mainWindow: win,
+
+    sheetSize: "A3",
+    printerName: "pos",
+
+    config: ["timePrinter", "hiddenWindow"],
+  });
 
   // new Notification({ title: "Notifiatddion", body: message }).show();
 });
@@ -67,7 +95,9 @@ ipcMain.on("notify", (_, message) => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  createWindow();
+});
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

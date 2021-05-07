@@ -17,7 +17,7 @@ function App() {
             window.api.notify("this is mesaage");
           }}
         >
-          <i class="material-icons">cloud</i>
+          <i class="mdi-wallet">cloud</i>
           Notify
         </button>
         <Routes />
