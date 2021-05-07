@@ -1,17 +1,52 @@
 // import electronPrintBill from "./elctronfunction/electronPrintBill";
 
-const { contextBridge, ipcRenderer } = require("electron");
+const {
+  contextBridge,
+  ipcRenderer,
+  BrowserWindow,
+  ipcMain,
+  remote,
+  path,
+} = require("electron");
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld("api", {
   isElectron: true,
-  printSilently: () =>
-    new Promise((res, fail) => {
-      ipcRenderer.send("silent-print");
-      ipcRenderer.once("silent-print-result", (event, result) => {
-        result === "success" ? res() : fail(result);
-      });
-    }),
+  printSilently: (htmldata) => {
+    console.log("htmldata", htmldata);
+    var BrowserWindow = remote.BrowserWindow;
+    var win = new BrowserWindow({
+      width: 1024,
+      height: 768,
+      show: true,
+      webPreferences: {
+        nodeIntegration: false,
+        webSecurity: true,
+        allowEval: false,
+        nativeWindowOpen: true,
+        allowRunningInsecureContent: false,
+        contextIsolation: true,
+        enableRemoteModule: true,
+      },
+      autoHideMenuBar: true,
+    });
+    var html = [
+      `<body>
+      <h1>It works</h1>
+       ${htmldata}
+      </body>`,
+    ].join("");
+    win.loadURL("data:text/html;charset=utf-8," + encodeURI(html));
+    win.webContents.on("did-finish-load", function () {
+      win.webContents.print({ silent: true });
+    });
+    //   new Promise((res, fail) => {
+    //   ipcRenderer.send("silent-print");
+    //   ipcRenderer.once("silent-print-result", (event, result) => {
+    //     result === "success" ? res() : fail(result);
+    //   });
+    // }),
+  },
   send: (content, func) => {
     // whitelist channels
     // console.log("isElectron send", data);

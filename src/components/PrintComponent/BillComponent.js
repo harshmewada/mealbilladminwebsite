@@ -222,10 +222,6 @@ class BillComponent extends React.Component {
       customAction,
       orderData,
     } = this.props;
-    const tableHeaders = headers || printheaders;
-    const tableFooters = footers || printfooters;
-
-    const data = orderData?.detailList || [];
 
     const renderRow = (data) => {
       return (
@@ -240,27 +236,29 @@ class BillComponent extends React.Component {
       );
     };
 
-    return orderData ? (
-      <Invoice />
-    ) : (
-      <div
-        className={`invoice-box ${!showComponent ? "invoice-box-hide" : ""}`}
-      >
-        No Data found
-        {/* <SmartTable
-          showHeader={false}
-          headerData={tableHeaders}
-          tableData={data || []}
-          selectable={false}
-          small={true}
-          title={"title"}
-          showActions={false}
-          disablePagination
-          rowsPerPage={data.length}
-          customAction={customAction}
-        /> */}
-      </div>
-    );
+    return <Invoice />;
+
+    // return orderData ? (
+    //   <Invoice />
+    // ) : (
+    //   <div
+    //     className={`invoice-box ${!showComponent ? "invoice-box-hide" : ""}`}
+    //   >
+    //     No Data found
+    //     {/* <SmartTable
+    //       showHeader={false}
+    //       headerData={tableHeaders}
+    //       tableData={data || []}
+    //       selectable={false}
+    //       small={true}
+    //       title={"title"}
+    //       showActions={false}
+    //       disablePagination
+    //       rowsPerPage={data.length}
+    //       customAction={customAction}
+    //     /> */}
+    //   </div>
+    // );
   }
 }
 export default BillComponent;

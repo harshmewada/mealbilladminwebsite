@@ -16,7 +16,8 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true, // is default value after Electron v5
       contextIsolation: true, // protect against prototype pollution
-      enableRemoteModule: false, // turn off remote
+      enableRemoteModule: true, // turn off remote
+      nativeWindowOpen: true,
       preload: path.join(__dirname, "preload.js"), // use a preload script
     },
   });
@@ -26,10 +27,17 @@ function createWindow() {
     "new-window",
     function (e, url, frameName, disposition, options) {
       if (frameName === "silent-print-content") {
-        options.show = false;
+        // options.show = false;
       }
     }
   );
+  // win.webContents.on('did-create-window', (childWindow) => {
+  //   // For example...
+  //   console.log('')
+  //   childWindow.webContents('will-navigate', (e) => {
+  //     e.preventDefault()
+  //   })
+  // })
   win.loadURL(
     isDev
       ? "http://localhost:3000"
@@ -42,7 +50,7 @@ function createWindow() {
   isDev && win.webContents.openDevTools();
 }
 ipcMain.on("silent-print", (event) => {
-  alert("silent printing");
+  console.log("silent printing", event.sender);
   // Print the window silently
   event.sender.print({ silent: true }, (success, failureReason) => {
     // Signal that the print is finished
@@ -69,6 +77,7 @@ ipcMain.on("printPage", async (_, data) => {
   // new Notification({ title: "Notifiatddion", body: message }).show();
 });
 ipcMain.on("notify", (_, message) => {
+  console.log("notify");
   // let printers = win.webContents.getPrinters(); //list the printers
   // var options = {
   //   silent: false,
