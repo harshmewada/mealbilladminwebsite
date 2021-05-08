@@ -80,16 +80,23 @@ const printfooters = [
   },
 ];
 
-const Header = ({ orderNumber, resName, orderDate, paymentType }) => {
+const Header = ({ orderNumber, resName, orderDate, paymentType, logo, tableNumber }) => {
   return (
     <>
-      <p class="centered">
-        <span>{resName}</span>
-      </p>
-      <div class="mobile">Invoice No.: {orderNumber}</div>
-      <div class="mobile">Date: {orderDate}</div>
-
-      <div class="mobile">Payment by : {paymentType}</div>
+      <div class="centered">
+        <img src={logo} class="logo" />
+        <p>{resName}</p>
+      </div>
+      <div className="info">
+        <div className="subinfo">
+          <p>{orderNumber}</p>
+          <p>{orderDate}</p>
+        </div>
+        <div className="subinfo">
+          <p>{tableNumber}</p>
+          <p>{paymentType}</p>
+        </div>
+      </div>
     </>
   );
 };
@@ -112,15 +119,8 @@ const renderItem = (value, index, i) => {
     <React.Fragment key={index}>
       <tr>
         <td class="sr">{i}</td>
-        <td class="pro" colspan="5">
-          {value.itemName}
-        </td>
-      </tr>
-      <tr>
-        <td class="sr">{i}</td>
-        <td class="quantity" colspan="2">
-          {value.quantity}
-        </td>
+        <td class="pro" >{value.itemName}</td>
+        <td class="quantity">{value.quantity}</td>
         <td class="price">{value.itemPrice}</td>
         <td class="amount">{value.itemTotal}</td>
       </tr>
@@ -153,8 +153,8 @@ const ProductTable = ({ orderData }) => {
   );
 };
 
-const Invoice = React.forwardRef(({ restaurant, orderData, count }, ref) => {
-  const { branchOrderNumber, paymentType, createdAt } = orderData;
+const Invoice = React.forwardRef(({ restaurant, orderData, count, logo }, ref) => {
+  const { branchOrderNumber, paymentType, createdAt, tableNumber } = orderData;
   return (
     <div class="ticket" ref={ref}>
       <Header
@@ -162,10 +162,12 @@ const Invoice = React.forwardRef(({ restaurant, orderData, count }, ref) => {
         orderNumber={branchOrderNumber}
         paymentType={paymentType}
         orderDate={createdAt}
+        tableNumber={tableNumber}
+        logo={logo}
       />
       <ProductTable orderData={orderData} />
       <p class="centered">
-        <span>thank you, visit us again</span>
+        <p>thank you, visit us again</p>
       </p>
     </div>
   );
@@ -176,7 +178,7 @@ class BillComponent extends React.Component {
     const { logo, customAction, orderData, count, restaurant } = this.props;
     console.log("orderData", orderData);
     return orderData ? (
-      <Invoice count={count} restaurant={restaurant} orderData={orderData} />
+      <Invoice count={count} restaurant={restaurant} orderData={orderData} logo={logo} />
     ) : (
       <div className={`invoice-box invoice-box-hide" `}>
         No Data found

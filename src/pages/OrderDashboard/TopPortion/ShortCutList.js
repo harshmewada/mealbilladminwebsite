@@ -21,7 +21,7 @@ const ShortCutList = () => {
     },
     {
       title: "fullscreen",
-      icon: "ti-fullscreen",
+      icon: "mdi mdi-fullscreen",
       onClick: () => handleFullscreen(),
     },
   ];

@@ -71,7 +71,7 @@
     "react-build": "react-scripts build",
     "react-test": "react-scripts test --env=jsdom",
     "react-eject": "react-scripts eject",
-    "dev": "concurrently -k \"BROWSER=none npm run react-start\" \"npm:electron\"",
+    "dev": "concurrently -k \"cross-env BROWSER=none npm run react-start\" \"npm:electron\"",
     "electron": "wait-on tcp:3000 && electron .",
     "electron-build": "electron-builder",
     "release": "npm run react-build && electron-builder --publish=always",
@@ -80,7 +80,6 @@
   "build": {
     "appId": "com.mealbill",
     "win": {
-      "title": "Mealbill",
       "icon": "build/logo512.png"
     },
     "files": [

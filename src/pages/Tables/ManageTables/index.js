@@ -133,6 +133,8 @@ const ManageTables = () => {
 
   const handleEdit = (data) => {
     toggleAdd("Edit");
+    const editTableNumber = data.tableNumber.substring(1);
+    data.tableNumber = editTableNumber;
     setActionData(data);
   };
 
