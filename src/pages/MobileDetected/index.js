@@ -22,7 +22,11 @@ const MobileDetected = () => {
             Hello There , You are not supposed to access this website on mobile
             device, please come back with desktop or download our app.
           </p>
-          <a class="btn btn-gradient-primary btn-lg" href="#" role="button">
+          <a
+            class="btn btn-gradient-primary btn-lg"
+            href="javascript:void(0);"
+            role="button"
+          >
             Learn more
           </a>
         </div>

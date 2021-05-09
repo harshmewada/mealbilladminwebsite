@@ -75,7 +75,7 @@ function ItemsSearchModal({ open, onClose }) {
               </Fragment>
             </Col>
             <Col lg={2}>
-              <a href="#" onClick={() => handleClose()}>
+              <a href="javascript:void(0);" onClick={() => handleClose()}>
                 <i
                   class={`mdi mdi-close-circle text-danger`}
                   style={{ fontSize: 25 }}

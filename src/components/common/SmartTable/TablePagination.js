@@ -1,5 +1,5 @@
 import React from "react";
-
+import ReactPaginate from "react-paginate";
 const TablePagination = ({
   count,
   rowsPerPage,
@@ -18,17 +18,34 @@ const TablePagination = ({
           role="status"
           aria-live="polite"
         >
-          Showing {page === 0 ? "1" : page + rowsPerPage} to
-          {page === 0 ? page + rowsPerPage : page + 1 + rowsPerPage} of {count}
+          Showing{" "}
+          {page === 0
+            ? `1 to ${rowsPerPage}`
+            : `${page * rowsPerPage} to ${page * rowsPerPage + rowsPerPage} `}
+          {/* {page === 0 ? page + rowsPerPage : page + 1 + rowsPerPage} of {count} */}
           entries
         </div>
       </div>
       <div class="col-sm-12 col-md-7">
-        <div
-          class="dataTables_paginate paging_simple_numbers"
-          id="datatable_paginate"
-        >
-          <ul class="pagination">
+        <ReactPaginate
+          previousLabel={"previous"}
+          nextLabel={"next"}
+          breakLabel={"..."}
+          breakClassName={"page-link"}
+          pageCount={result.length}
+          pageRangeDisplayed={1}
+          marginPagesDisplayed={5}
+          containerClassName={"pagination"}
+          activeClassName={"active"}
+          pageClassName="paginate_button page-item "
+          pageLinkClassName="page-link"
+          previousClassName={"paginate_button page-item previous"}
+          previousLinkClassName={"page-link"}
+          nextLinkClassName={"page-link"}
+          nextClassName="paginate_button page-item next"
+          onPageChange={({ selected }) => onChangePage(selected)}
+        />
+        {/* <ul class="pagination">
             <li
               class={`paginate_button page-item previous ${
                 page === 0 ? "disabled" : ""
@@ -36,7 +53,7 @@ const TablePagination = ({
               id="datatable_previous"
             >
               <a
-                href="#"
+                href="javascript:void(0);"
                 aria-controls="datatable"
                 data-dt-idx="0"
                 tabindex="0"
@@ -75,7 +92,7 @@ const TablePagination = ({
               id="datatable_next"
             >
               <a
-                href="#"
+                href="javascript:void(0);"
                 aria-controls="datatable"
                 data-dt-idx="7"
                 tabindex="0"
@@ -85,8 +102,7 @@ const TablePagination = ({
                 Next
               </a>
             </li>
-          </ul>
-        </div>
+          </ul> */}
       </div>
     </div>
   );

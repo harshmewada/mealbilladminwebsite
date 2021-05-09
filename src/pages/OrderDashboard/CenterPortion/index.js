@@ -72,7 +72,7 @@ const CenterPortion = () => {
       return allItems;
     } else {
       return allItems.filter((item) => {
-        return item.categoryId == selectedCategory;
+        return item.categoryName === selectedCategory;
       });
     }
   };

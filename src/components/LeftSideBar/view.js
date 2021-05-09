@@ -74,7 +74,7 @@ function LeftSidebar({ sidebarData }) {
           {/* 
           <div class="pro-metrica-end">
             <a
-              href=""
+             href="javascript:void(0);"
               class="help"
               data-toggle="tooltip-custom"
               data-placement="right"
@@ -87,7 +87,7 @@ function LeftSidebar({ sidebarData }) {
                 class="align-self-center menu-icon icon-md icon-dual mb-4"
               ></i>
             </a>
-            <a href="" class="profile">
+            <ahref="javascript:void(0);" class="profile">
               <img
                 src="assets/images/users/user-4.jpg"
                 alt="profile-user"

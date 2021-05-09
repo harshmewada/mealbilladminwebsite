@@ -34,7 +34,7 @@ const View = ({ handleLogout }) => {
           <li class="dropdown">
             <a
               class="nav-link dropdown-toggle waves-effect waves-light nav-user"
-              href="#"
+              href="javascript:void(0);"
               role="button"
               aria-haspopup="false"
               aria-expanded="false"
@@ -67,7 +67,7 @@ const View = ({ handleLogout }) => {
           </li>
           <li class="mr-2">
             <a
-              href="#"
+              href="javascript:void(0);"
               class="nav-link"
               data-toggle="modal"
               data-animation="fade"

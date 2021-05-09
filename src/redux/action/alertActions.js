@@ -15,12 +15,20 @@ export const showAlert = (data, severnity) => {
 };
 
 export const showWarningAlert = (data) => {
-  return {
-    type: "SHOW_ALERT",
-    payload: {
-      data: data,
-      severity: "warning",
-    },
+  return (dispatch) => {
+    dispatch({ type: "FETCHING_ITEMS" }); // Will throw error
+
+    setTimeout(() => {
+      dispatch({
+        type: "SHOW_ALERT",
+        payload: {
+          data: data,
+          severity: "warning",
+        },
+      });
+    }, 1); // Works flawlessly
+
+    // Rest of function code here that works flawlessly
   };
 };
 

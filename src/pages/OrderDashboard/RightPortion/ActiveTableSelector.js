@@ -73,7 +73,7 @@ const ActiveOrderSelector = ({ tables }) => {
             onClick={() => makeTableActive(index)}
           >
             <a
-              href=""
+              href="javascript:void(0);"
               class={`text-dark mb-0 pb-0`}
               data-toggle="collapse"
               data-target={`#collapseOne${index}`}
@@ -114,7 +114,10 @@ const ActiveOrderSelector = ({ tables }) => {
                 </div>
                 <div className="col-md-2 d-flex justify-content-end">
                   <span>
-                    <a href="#" onClick={() => deleteOrder(index)}>
+                    <a
+                      href="javascript:void(0);"
+                      onClick={() => deleteOrder(index)}
+                    >
                       <i
                         class={`mdi mdi-close-circle font-16 ${
                           active === index ? `text-primary` : " text-danger "
@@ -169,7 +172,10 @@ const ActiveOrderSelector = ({ tables }) => {
                           </td>
 
                           <td>
-                            <a href="#" onClick={() => deleteItem(index)}>
+                            <a
+                              href="javascript:void(0);"
+                              onClick={() => deleteItem(index)}
+                            >
                               <i class="mdi mdi-close-circle-outline text-danger font-16"></i>
                             </a>
                           </td>
@@ -251,7 +257,7 @@ export default ActiveOrderSelector;
 //             onClick={() => makeTableActive(data.tableNumber, index)}
 //           >
 //             <a
-//               href=""
+//              href="javascript:void(0);"
 //               class={`text-dark mb-0 pb-0` }
 //               data-toggle="collapse"
 //               data-target={`#collapseOne${index}`}
@@ -337,7 +343,7 @@ export default ActiveOrderSelector;
 //                           </td>
 
 //                           <td>
-//                             <a href="#" onClick={() => deleteItem(index)}>
+//                             <a href="javascript:void(0);" onClick={() => deleteItem(index)}>
 //                               <i class="mdi mdi-close-circle-outline text-danger font-16"></i>
 //                             </a>
 //                           </td>

@@ -92,7 +92,7 @@ export default Example;
 
 //   reactToPrintTrigger = () => {
 //     return (
-//       <a href="#">
+//       <a href="javascript:void(0);">
 //         Print silently if running Electron (WILL PRINT WITH DEFAULT PRINTER
 //         WITHOUT DIALOG)
 //       </a>

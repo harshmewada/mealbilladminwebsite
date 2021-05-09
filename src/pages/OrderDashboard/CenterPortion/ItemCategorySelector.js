@@ -35,7 +35,7 @@ const ItemCategorySelector = ({ selected, setSelected }) => {
 
         {itemCategories.map((cat, index) => {
           return (
-            <option key={index} value={cat.id}>
+            <option key={index} value={cat.categoryName}>
               {cat.categoryName}
             </option>
           );
