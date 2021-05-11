@@ -108,15 +108,17 @@ const Header = ({ orderNumber, resName, orderDate, paymentType, logo, tableNumbe
 };
 
 const renderRow = (data, value) => {
+  console.log("data.valueClass", data.valueClass);
   return (
-    <tr>
-      <td colspan="3" class={data.titleClass}>
-        {data.title}
-      </td>
-      <td colspan="3" class={data.valueClass}>
-        {data.hasCurrency ? "₹" : " "} {value}
-      </td>
-    </tr>
+    value ?
+      (<tr>
+        <td colspan="3" class={data.titleClass}>
+          {data.title}
+        </td>
+        <td colspan="3" class={data.valueClass}>
+          {data.hasCurrency ? "₹" : " "} {value}
+        </td>
+      </tr>) : ''
   );
 };
 
