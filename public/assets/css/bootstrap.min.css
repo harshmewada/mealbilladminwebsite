@@ -83,7 +83,8 @@ section {
 
 body {
   margin: 0;
-  font-family: "Poppins", sans-serif;
+  /* font-family: "Poppins", sans-serif; */
+  font-family: "Roboto", sans-serif;
   font-size: 0.845rem;
   font-weight: 400;
   line-height: 1.8;
@@ -5946,7 +5947,7 @@ input[type="button"].btn-block {
 .page-link:focus {
   z-index: 3;
   outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(80, 110, 228, 0.25);
+  /* box-shadow: 0 0 0 0.2rem rgba(80, 110, 228, 0.25); */
 }
 
 .page-item:first-child .page-link {
@@ -7420,7 +7421,8 @@ a.close.disabled {
   z-index: 1070;
   display: block;
   margin: 0;
-  font-family: "Poppins", sans-serif;
+  /* font-family: "Poppins", sans-serif; */
+  font-family: "Roboto", sans-serif;
   font-style: normal;
   font-weight: 400;
   line-height: 1.8;
@@ -7545,7 +7547,8 @@ a.close.disabled {
   z-index: 1060;
   display: block;
   max-width: 276px;
-  font-family: "Poppins", sans-serif;
+  /* font-family: "Poppins", sans-serif; */
+  font-family: "Roboto", sans-serif;
   font-style: normal;
   font-weight: 400;
   line-height: 1.8;

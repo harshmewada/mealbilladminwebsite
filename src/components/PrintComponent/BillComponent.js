@@ -1,6 +1,7 @@
 import moment from "moment";
 import React from "react";
 // import SmartTable from "../../Component/Common/SmartTable";
+import { TYPESOFORDERS } from '../../contants/index'
 import "./invoice.css";
 // const printheaders = [
 //   { title: "SKU", key: "sku", type: "text", currency: false },
@@ -80,7 +81,11 @@ const printfooters = [
   },
 ];
 
-const Header = ({ orderNumber, resName, orderDate, paymentType, logo, tableNumber }) => {
+const Header = ({ orderNumber, resName, orderDate, paymentType, logo, tableNumber, orderType }) => {
+  const orderTypes = TYPESOFORDERS.find((types) => {
+    console.log("types", types.value, orderType);
+    return types.value == orderType
+  })
   return (
     <>
       <div class="centered">
@@ -93,6 +98,7 @@ const Header = ({ orderNumber, resName, orderDate, paymentType, logo, tableNumbe
           <p>{orderDate}</p>
         </div>
         <div className="subinfo">
+          <p>{orderTypes.key}</p>
           <p>{tableNumber}</p>
           <p>{paymentType}</p>
         </div>
@@ -154,7 +160,7 @@ const ProductTable = ({ orderData }) => {
 };
 
 const Invoice = React.forwardRef(({ restaurant, orderData, count, logo }, ref) => {
-  const { branchOrderNumber, paymentType, createdAt, tableNumber } = orderData;
+  const { branchOrderNumber, paymentType, createdAt, tableNumber, orderType } = orderData;
   return (
     <div class="ticket" ref={ref}>
       <Header
@@ -163,6 +169,7 @@ const Invoice = React.forwardRef(({ restaurant, orderData, count, logo }, ref) =
         paymentType={paymentType}
         orderDate={createdAt}
         tableNumber={tableNumber}
+        orderType={orderType}
         logo={logo}
       />
       <ProductTable orderData={orderData} />

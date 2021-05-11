@@ -310,12 +310,13 @@ export default {
           width: 12,
 
           headers: [
-            { title: "Order Number", key: "orderNumber" },
+            { title: "Order Number", key: "branchOrderNumber" },
             { title: "Items", key: "itemsLength" },
-            { title: "Amount", key: "grandTotal" },
+
             { title: "SGST", key: "sgstCharges" },
             { title: "CGST", key: "cgstCharges" },
             { title: "Other Charges", key: "otherCharges" },
+            { title: "Amount", key: "grandTotal" },
           ],
         },
       ],
@@ -372,44 +373,20 @@ export default {
           headerVariable: "iconheaders",
           isCurrency: true,
           width: 12,
+        },
+        {
+          type: "table",
+          dataVariable: "table",
+          tableOptions: {
+            sortable: true,
+            paginated: true,
+          },
+          width: 12,
 
           headers: [
-            {
-              title: "Orders",
-              key: "totalOrders",
-              icon: "typcn typcn-printer",
-            },
-            {
-              title: "Total Order Amount",
-              key: "billingAmount",
-              icon: "mdi mdi-cart-arrow-right",
-            },
-            {
-              title: "Total Card Amount",
-              key: "cardAmount",
-              icon: "mdi mdi-cart-arrow-right",
-            },
-            {
-              title: "Total Cash Amount",
-              key: "cashAmount",
-              icon: "mdi mdi-cart-arrow-right",
-            },
-            {
-              title: "Total Other Amount",
-              key: "otherAmount",
-              icon: "mdi mdi-cart-arrow-right",
-            },
-            {
-              title: "Discount",
-              key: "totalDiscount",
-              icon: "mdi mdi-ticket-percent",
-            },
-            {
-              title: "Tax",
-              key: "totalTax",
-              icon: "mdi mdi-home-currency-usd",
-            },
-            { title: "Expenses", key: "totalExpense", icon: "mdi mdi-wallet" },
+            { title: "Expense Title", key: "expenseTitle" },
+            { title: "Expense Type", key: "expenseType" },
+            { title: "Amount", key: "expensePrice" },
           ],
         },
       ],

@@ -95,7 +95,7 @@ const View = ({ handleLogout }) => {
               onClick={() => handleNavigate("/")}
             >
               <img
-                src={"/images/logo.png"}
+                src={"./images/logo.png"}
                 style={{ height: "50px", width: "auto" }}
               />
             </li>

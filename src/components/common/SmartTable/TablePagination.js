@@ -28,8 +28,8 @@ const TablePagination = ({
       </div>
       <div class="col-sm-12 col-md-7">
         <ReactPaginate
-          previousLabel={"previous"}
-          nextLabel={"next"}
+          previousLabel={"Previous"}
+          nextLabel={"Next"}
           breakLabel={"..."}
           breakClassName={"page-link"}
           pageCount={result.length}

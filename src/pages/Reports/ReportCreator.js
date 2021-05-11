@@ -20,11 +20,12 @@ const ReportCreator = ({
   return (
     <div class="page-content-tab">
       {title && (
-        <div class="card ">
-          <div class="card-header bg-primary">
-            <h4 class="text-white">{title}</h4>
-          </div>
-        </div>
+        // <div class="card ">
+        //   <div class="card-header bg-primary">
+        //     <h4 class="text-white">{title}</h4>
+        //   </div>
+        // </div>
+        <h4 class="text-primary mb-4">{title}</h4>
       )}
       {selectorData && (
         <ReportSelector

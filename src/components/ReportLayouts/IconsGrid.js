@@ -52,7 +52,7 @@ const IconsGrid = ({ headers, data, headerVariable, isCurrency }) => {
                         <div class="col-9">
                           <p
                             class=" mb-1 font-weight-semibold font-13 "
-                            style={{ color: "#f0583c" }}
+                            style={{ color: "#2e3846" }}
                           >
                             {head.title}
                           </p>

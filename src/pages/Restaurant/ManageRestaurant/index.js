@@ -147,9 +147,9 @@ const AddRestaurant = () => {
       type: "number",
       name: "balance",
       label: "Current Balance",
-      size: 6,
+      size: 3,
 
-      placeholder: "Current Balance",
+      placeholder: "Enter Current Balance",
       required: true,
       disabled: disabled,
       rules: {
@@ -160,12 +160,28 @@ const AddRestaurant = () => {
       },
     },
     {
+      type: "text",
+      name: "gstNumber",
+      label: "GST Number",
+      size: 3,
+
+      placeholder: "Enter GST Number",
+      required: true,
+      disabled: disabled,
+      rules: {
+        required: {
+          value: true,
+          message: "GST Number is required",
+        },
+      },
+    },
+    {
       type: "number",
       name: "cgst",
       label: "CGST",
       size: 3,
 
-      placeholder: "CGST",
+      placeholder: "Enter CGST tax",
       required: true,
       rules: {
         required: {
@@ -180,7 +196,7 @@ const AddRestaurant = () => {
       label: "SGST",
       size: 3,
 
-      placeholder: "SGST",
+      placeholder: "Enter SGST tax",
       required: true,
       rules: {
         required: {
@@ -286,8 +302,8 @@ const AddRestaurant = () => {
             ...data,
             ...(data?.logo[0] &&
               typeof data?.logo[0] !== "string" && {
-                logo: data?.logo[0],
-              }),
+              logo: data?.logo[0],
+            }),
           },
           () => {
             toggleAdd();

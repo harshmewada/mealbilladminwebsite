@@ -245,11 +245,12 @@ const ManageBranches = () => {
 
   const headers = [
     { title: "Branch Name", key: "branchName" },
+    { title: "Restaurant Name", key: "restaurantName" },
     { title: "Branch Code", key: "branchCode" },
 
     { title: "Total Users", key: "userCount" },
 
-    { title: "Total Items", key: "itemCount" },
+    // { title: "Total Items", key: "itemCount" },
     { title: "Status", key: "status" },
   ];
 

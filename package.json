@@ -25,6 +25,7 @@
     "electron-pos-printer": "^1.2.4",
     "electron-print": "^1.0.2",
     "i": "^0.3.6",
+    "modclean": "^3.0.0-beta.1",
     "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
     "node-thermal-printer": "^4.1.2",
@@ -81,6 +82,7 @@
     "build": "npm run react-build && npm run electron-build"
   },
   "build": {
+    "productName": "Mealbill Desktop",
     "appId": "com.mealbill",
     "win": {
       "icon": "build/logo512.png"

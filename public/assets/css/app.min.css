@@ -2792,7 +2792,8 @@ h4 {
 }
 
 a {
-  font-family: "Poppins", sans-serif;
+  /* font-family: "Poppins", sans-serif; */
+  font-family: "Roboto", sans-serif;
   color: #303e67;
 }
 
@@ -3746,16 +3747,24 @@ a.ui-button:active,
 }
 
 .table th {
-  color: #303e67;
+  color: #2e3846;
   font-weight: 500;
   vertical-align: middle;
   border-color: #eaf0f7;
-  background-color: #cee1f2;
+  background-color: #f1f5fa;
+}
+
+.table th button {
+  color: #2e3846;
+  /* font-family: "Poppins", sans-serif; */
+  font-family: "Roboto", sans-serif;
+  font-weight: 500;
 }
 
 .table td {
   font-weight: 400;
   vertical-align: middle;
+  color: #2e3846;
   border-color: #eaf0f7;
 }
 
@@ -4459,8 +4468,8 @@ dt {
 
 .modal-content .modal-header,
 .modal-content .modal-footer {
-  border-color: #cee1f2;
-  background-color: #cee1f2;
+  border-color: #f1f5fa;
+  background-color: #f1f5fa;
 }
 
 .modal-content .modal-header .modal-title,
@@ -9139,7 +9148,8 @@ hr.thick {
 
 .profile-card .socials-data h3 {
   color: #303e67;
-  font-family: "Poppins", sans-serif;
+  /* font-family: "Poppins", sans-serif; */
+  font-family: "Roboto", sans-serif;
   font-size: 18px;
 }
 
@@ -9263,7 +9273,8 @@ hr.thick {
 .c-progress-steps {
   margin: 0;
   list-style-type: none;
-  font-family: "Poppins", sans-serif;
+  /* font-family: "Poppins", sans-serif; */
+  font-family: "Roboto", sans-serif;
 }
 
 .c-progress-steps li {
@@ -11419,5 +11430,11 @@ input:-webkit-autofill:focus {
 }
 
 .blog-card p {
-  font-family: "Poppins", sans-serif;
+  /* font-family: "Poppins", sans-serif; */
+  font-family: "Roboto", sans-serif;
+}
+
+.paginate_button {
+  cursor: pointer;
+  user-select: none;
 }
