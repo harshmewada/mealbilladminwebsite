@@ -11,7 +11,9 @@ const PrintComponent = (props) => {
   const logo =
     RootUrl + "/" + useSelector((state) => state.user.restaurantLogo);
 
-  const { restaurantName, branchName } = useSelector((state) => state.user);
+  const { restaurantName, branchName, gstNumber } = useSelector(
+    (state) => state.user
+  );
 
   const restaurant = `${restaurantName}${branchName ? `(${branchName})` : ""}`;
   return !enablePrinting ? (
@@ -21,12 +23,14 @@ const PrintComponent = (props) => {
       printData={printData}
       logo={logo}
       restaurant={restaurant}
+      gstNumber={gstNumber}
     />
   ) : (
     <BrowserComponent
       printData={printData}
       logo={logo}
       restaurant={restaurant}
+      gstNumber={gstNumber}
     />
   );
   // return <BrowserComponent {...props} />;

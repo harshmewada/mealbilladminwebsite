@@ -12,6 +12,8 @@ const PrintComponent = ({
   printData,
   restaurant,
   logo,
+  gstNumber,
+
   containerStyle,
 }) => {
   const dispatch = useDispatch();
@@ -39,12 +41,14 @@ const PrintComponent = ({
   }, [printData, isPrinting]);
   return (
     <div style={containerStyle}>
+      {gstNumber}
       <div style={{ display: "none" }}>
         <BillComponent
           ref={componentRef}
           orderData={printData}
           restaurant={restaurant}
           logo={logo}
+          gstNumber={gstNumber}
         />
       </div>
     </div>

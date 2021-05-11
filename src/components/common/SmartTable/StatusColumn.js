@@ -9,7 +9,6 @@ const StatusColumn = ({ data }) => {
       : data
       ? true
       : false;
-  console.log("StatusColumn", data);
 
   return (
     <div>

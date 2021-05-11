@@ -4,8 +4,13 @@ import ComponentToPrint from "./BillComponent";
 import ReactToPrint from "react-to-print";
 import useDetectPrint from "use-detect-print";
 
-// TODO: Should ideally be declared somewhere else, not
-const Example = ({ printData, restaurant, logo }) => {
+const ElectronComponent = ({
+  printData,
+  restaurant,
+  logo,
+
+  gstNumber,
+}) => {
   const componentRef = React.useRef();
   const triggerRef = React.useRef();
 
@@ -67,13 +72,14 @@ const Example = ({ printData, restaurant, logo }) => {
           restaurant={restaurant}
           logo={logo}
           ref={componentRef}
+          gstNumber={gstNumber}
         />
       </div>
     </div>
   );
 };
 
-export default Example;
+export default ElectronComponent;
 
 // export class ElectronPrint extends React.PureComponent {
 //   componentRef = null;

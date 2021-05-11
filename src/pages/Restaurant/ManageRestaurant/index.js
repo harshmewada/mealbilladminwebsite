@@ -65,7 +65,7 @@ const AddRestaurant = () => {
       // hideAt: "Edit",
       label: "Restaurant Logo",
       size: 4,
-      disabled: disabled,
+      // disabled: disabled,
       ...(open === "Add" && {
         rules: {
           required: {
@@ -167,7 +167,6 @@ const AddRestaurant = () => {
 
       placeholder: "Enter GST Number",
       required: true,
-      disabled: disabled,
       rules: {
         required: {
           value: true,
@@ -302,8 +301,8 @@ const AddRestaurant = () => {
             ...data,
             ...(data?.logo[0] &&
               typeof data?.logo[0] !== "string" && {
-              logo: data?.logo[0],
-            }),
+                logo: data?.logo[0],
+              }),
           },
           () => {
             toggleAdd();
@@ -314,6 +313,15 @@ const AddRestaurant = () => {
       );
     }
     if (open === "Edit") {
+      delete actionData.subscription;
+      if (data.logo) {
+        if (data.logo?.length < 1) {
+          delete data?.logo;
+        } else {
+          data.logo = data?.logo[0];
+        }
+      }
+      console.log("Editdata", data);
       dispatch(
         updateRestaurant({
           ...actionData,

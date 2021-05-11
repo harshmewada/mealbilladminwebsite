@@ -120,6 +120,12 @@ th.amount {
   text-transform: capitalize;
   font-weight: 700;
 }
+.centered p.gstNumber {
+  font-size: 17px;
+  margin: 5px;
+  text-transform: capitalize;
+  font-weight: 300;
+}
 .ticket {
   /* font-family: "Roboto", sans-serif; */
   font-family: "Open Sans", sans-serif;
@@ -157,7 +163,9 @@ th.amount {
 .logo {
   width: 150px;
 }
-
+.gstNumber {
+  font-weight: 400;
+}
 @media print {
   .hidden-print,
   .hidden-print * {
