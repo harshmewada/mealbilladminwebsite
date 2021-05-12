@@ -23,6 +23,12 @@ import getErrorMessage from "../../helpers/getErrorMessage";
 import CommonImportModal from "../../components/common/Modals/CommonImportModal";
 import ImportCommonAction from "../../components/common/Actions/ImportCommonAction";
 
+//date
+import DateRangePicker from "react-bootstrap-daterangepicker";
+import "bootstrap-daterangepicker/daterangepicker.css";
+import moment from "moment";
+import { DATEFORMAT, dateRanges } from "../../contants";
+
 const ManageExpense = () => {
   const { expenses: arraycat, restaurantExpenseTypes } = useSelector(
     (state) => state.branch
@@ -57,6 +63,18 @@ const ManageExpense = () => {
     : isRestaurantAdmin
     ? restaurantExpenseTypes
     : arraycat;
+
+  const [state, setState] = React.useState({
+    start: moment(),
+    end: moment(),
+  });
+  const { start, end } = state;
+
+  const handleCallback = (start, end) => {
+    // props.setValue({ start, end });
+    // onChange(setState({ start, end }));
+    setState({ start, end });
+  };
 
   const formData = [
     // {
@@ -224,7 +242,7 @@ const ManageExpense = () => {
     }
     if (isBranchAdmin || isBranchUser) {
       dispatch(getRestaurantExpenseType(restaurantId));
-      dispatch(getAllExpenses(restaurantId, branchId));
+      dispatch(getAllExpenses(state));
     }
     if (isSuperAdmin) {
       dispatch(getAllexpenseTypes());
@@ -400,7 +418,7 @@ const ManageExpense = () => {
     { title: "Expense Type", key: "expenseType" },
     { title: "Quantity", key: "quantity" },
 
-    { title: "Expense Price", key: "expensePrice" },
+    { title: "Expense Price", key: "expensePrice", isCurrency: true },
   ];
   const headers = isRestaurantAdmin
     ? restauranttableheaders
@@ -410,33 +428,24 @@ const ManageExpense = () => {
     restaurantId: restaurantId,
   };
 
-  const BranchFilter = (action) => (
+  const DatePicker = (action) => (
     <div class="">
-      <select
-        name="status"
-        class="form-control"
-        defaultValue="true"
-        required
-        value={selectedBranch}
-        onChange={(e) => {
-          if (e.target.value === "all") {
-            return setSelectedBranch(undefined);
-          } else {
-            setSelectedBranch(e.target.value);
-          }
+      <DateRangePicker
+        initialSettings={{
+          startDate: start.toDate(),
+          endDate: end.toDate(),
+
+          locale: {
+            format: DATEFORMAT,
+          },
+          maxDate: new Date(),
+
+          ranges: dateRanges,
         }}
+        onCallback={handleCallback}
       >
-        <option value={""} selected>
-          This Restaurant
-        </option>
-        {branches.map((res, resindex) => {
-          return (
-            <option key={resindex} value={res._id || res.id}>
-              {res.branchName}
-            </option>
-          );
-        })}
-      </select>
+        <input type="text" class="form-control" />
+      </DateRangePicker>
     </div>
   );
 
@@ -445,12 +454,13 @@ const ManageExpense = () => {
       // ...[BranchFilter],
       ...(!currBranchId ? [ImportAction] : []),
     ],
+    branchadmin: [DatePicker],
   };
   React.useEffect(() => {
     getAllData();
     // isRestaurantAdmin && dispatch(getAllexpenseTypes());
     // isBranchAdmin && dispatch(getRestaurantExpenseType(restaurantId));
-  }, []);
+  }, [state]);
 
   return (
     <>

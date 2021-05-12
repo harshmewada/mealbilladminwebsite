@@ -4,24 +4,8 @@ import "bootstrap-daterangepicker/daterangepicker.css";
 import moment from "moment";
 import InputContainer from "./InputContainer";
 import { useController, useForm } from "react-hook-form";
-import { DATEFORMAT } from "../../../contants";
-const dateRanges = {
-  Today: [moment().toDate(), moment().toDate()],
-  Yesterday: [
-    moment().subtract(1, "days").toDate(),
-    moment().subtract(1, "days").toDate(),
-  ],
-  "Last 7 Days": [moment().subtract(6, "days").toDate(), moment().toDate()],
-  "Last 30 Days": [moment().subtract(29, "days").toDate(), moment().toDate()],
-  "This Month": [
-    moment().startOf("month").toDate(),
-    moment().endOf("month").toDate(),
-  ],
-  "Last Month": [
-    moment().subtract(1, "month").startOf("month").toDate(),
-    moment().subtract(1, "month").endOf("month").toDate(),
-  ],
-};
+import { DATEFORMAT, dateRanges } from "../../../contants";
+
 const DateRange = (props) => {
   const {
     label,

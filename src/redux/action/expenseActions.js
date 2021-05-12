@@ -135,7 +135,7 @@ export const deleteRestaurantExpenseType = (data) => {
   };
 };
 
-export const getAllExpenses = (resId, branchId) => {
+export const getAllExpenses = (data) => {
   return {
     type: expenseTypes.GET_ALL_EXPENSES,
     payload: {
@@ -143,8 +143,7 @@ export const getAllExpenses = (resId, branchId) => {
         url: expenseApi.GET_ALL_EXPENSES,
         method: "get",
         params: {
-          resId: resId,
-          branchId: branchId,
+          ...data,
         },
       },
     },

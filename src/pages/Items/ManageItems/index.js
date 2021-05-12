@@ -380,7 +380,7 @@ const ManageItems = () => {
       type: "image",
       sourceUrl: RootUrl,
     },
-    { title: "Price", key: "itemPrice" },
+    { title: "Price", key: "itemPrice", isCurrency: true },
     { title: "Category", key: "categoryName" },
     { title: "Hotkey", key: "hotKey" },
 

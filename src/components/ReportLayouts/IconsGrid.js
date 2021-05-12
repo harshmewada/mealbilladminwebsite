@@ -57,11 +57,7 @@ const IconsGrid = ({ headers, data, headerVariable, isCurrency }) => {
                             {head.title}
                           </p>
                           <h3 class="my-2">
-                            {!head.hideCurrency
-                              ? isCurrency
-                                ? Curreny
-                                : ""
-                              : ""}
+                            {head.isCurrency && Curreny}
 
                             {data[head.key] || 0}
                           </h3>

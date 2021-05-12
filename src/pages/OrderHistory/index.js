@@ -27,26 +27,8 @@ import getErrorMessage from "../../helpers/getErrorMessage";
 import DateRangePicker from "react-bootstrap-daterangepicker";
 import "bootstrap-daterangepicker/daterangepicker.css";
 import moment from "moment";
-import { DATEFORMAT } from "../../contants";
+import { DATEFORMAT, dateRanges } from "../../contants";
 import { getPreviosOrders } from "../../redux/action/orderActions";
-
-const dateRanges = {
-  Today: [moment().toDate(), moment().toDate()],
-  Yesterday: [
-    moment().subtract(1, "days").toDate(),
-    moment().subtract(1, "days").toDate(),
-  ],
-  "Last 7 Days": [moment().subtract(6, "days").toDate(), moment().toDate()],
-  "Last 30 Days": [moment().subtract(29, "days").toDate(), moment().toDate()],
-  "This Month": [
-    moment().startOf("month").toDate(),
-    moment().endOf("month").toDate(),
-  ],
-  "Last Month": [
-    moment().subtract(1, "month").startOf("month").toDate(),
-    moment().subtract(1, "month").endOf("month").toDate(),
-  ],
-};
 
 const PageTitle = "Order History";
 
@@ -123,10 +105,10 @@ const OrderHistory = () => {
       key: "itemsLength",
       renderRow: (child) => child.orderItems.length,
     },
-    { title: "Amount", key: "grandTotal" },
-    { title: "SGST", key: "sgstCharges" },
-    { title: "CGST", key: "cgstCharges" },
-    { title: "Other Charges", key: "otherCharges" },
+    { title: "Amount", key: "grandTotal", isCurrency: true },
+    { title: "SGST", key: "sgstCharges", isCurrency: true },
+    { title: "CGST", key: "cgstCharges", isCurrency: true },
+    { title: "Other Charges", key: "otherCharges", isCurrency: true },
   ];
 
   const defaultValues = {

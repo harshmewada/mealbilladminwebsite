@@ -41,7 +41,6 @@ const PrintComponent = ({
   }, [printData, isPrinting]);
   return (
     <div style={containerStyle}>
-      {gstNumber}
       <div style={{ display: "none" }}>
         <BillComponent
           ref={componentRef}

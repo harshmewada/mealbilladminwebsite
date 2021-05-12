@@ -1,4 +1,5 @@
 import React from "react";
+import { CURRENCY } from "../../../contants";
 
 const styles = {
   th: {
@@ -47,6 +48,7 @@ const TableHeading = ({
           </th>
         )}
         {data?.map((child, index) => {
+          const isCurrency = child.isCurrency;
           return (
             <th class="sorting" style={styles.th}>
               {sortable && (
@@ -60,7 +62,7 @@ const TableHeading = ({
                 style={styles.button}
                 onClick={createSortHandler(child.key)}
               >
-                {child.title}
+                {isCurrency && `(${CURRENCY})`} {child.title}
               </button>
             </th>
           );

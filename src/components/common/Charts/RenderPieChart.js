@@ -15,12 +15,14 @@ const RenderPieChart = ({ data, showCards }) => {
         class={showCards ? "card-body" : ""}
         style={{ height: "100%", width: "100%" }}
       >
-        {data?.series.length > 0 && (
+        {data?.series.length > 0 ? (
           <ReactApexChart
             options={data?.options}
             series={data?.series.map((ser) => parseFloat(ser) * 100)}
             type="donut"
           />
+        ) : (
+          <div>No Data Available</div>
         )}
       </div>
     </div>

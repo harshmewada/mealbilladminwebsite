@@ -1,8 +1,15 @@
+import moment from "moment";
+
+// export const BASEURL = "http://192.168.0.111:4000";
+export const BASEURL = "https://mealbill.in/api";
+
 export const DATEFORMAT = "DD/MM/YYYY";
 
 export const DATETIMEFORMAT = "HH:mm:ss";
 
 export const TIMEZONE = "Asia/Kolkata";
+
+export const CURRENCY = "₹";
 
 export const TYPESOFORDERS = [
   { key: "Dine In", value: 0 },
@@ -32,3 +39,21 @@ export const MONTHSARRAY = [
   "Dec",
 ];
 export const SHORTCUTKEYS = [{ key: "Search and add item", value: "CTRL+S" }];
+
+export const dateRanges = {
+  Today: [moment().toDate(), moment().toDate()],
+  Yesterday: [
+    moment().subtract(1, "days").toDate(),
+    moment().subtract(1, "days").toDate(),
+  ],
+  "Last 7 Days": [moment().subtract(6, "days").toDate(), moment().toDate()],
+  "Last 30 Days": [moment().subtract(29, "days").toDate(), moment().toDate()],
+  "This Month": [
+    moment().startOf("month").toDate(),
+    moment().endOf("month").toDate(),
+  ],
+  "Last Month": [
+    moment().subtract(1, "month").startOf("month").toDate(),
+    moment().subtract(1, "month").endOf("month").toDate(),
+  ],
+};

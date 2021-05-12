@@ -102,7 +102,7 @@ const ManageSubscriptions = () => {
     { title: "Subscription Name", key: "subscriptionName" },
 
     { title: "Duration (Months)", key: "subscriptionDuration" },
-    { title: "Amount", key: "subscriptionAmount" },
+    { title: "Amount", key: "subscriptionAmount", isCurrency: true },
 
     { title: "Subscribers", key: "subscribers" },
     { title: "Status", key: "status" },

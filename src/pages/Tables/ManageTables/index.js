@@ -219,7 +219,7 @@ const ManageTables = () => {
     },
 
     { title: "Table Type", key: "tableType" },
-    { title: "Extra Price", key: "tablePrice" },
+    { title: "Extra Price", key: "tablePrice", isCurrency: true },
 
     { title: "Status", key: "status" },
   ];

@@ -51,24 +51,25 @@ export default {
           {
             title: " Today's Sales Amount",
             key: "saleAmount",
+
             icon: "typcn typcn-printer",
-            hideCurrency: true,
+            isCurrency: true,
           },
           {
             title: "Today's Number of Orders",
             key: "totalOrders",
-            hideCurrency: true,
+
             icon: "mdi mdi-cart-arrow-right",
           },
           {
             title: "Today's Expenses            ",
             key: "totalExpenses",
             icon: "mdi mdi-cart-arrow-right",
+            isCurrency: true,
           },
           {
             title: " Total Active Tables",
             key: "totalTables",
-            hideCurrency: true,
             icon: "mdi mdi-cart-arrow-right",
           },
         ],
@@ -298,7 +299,7 @@ export default {
         type: "table",
         dataVariable: "sortedItems",
         tableOptions: {
-          title: "Top 10 Selling Items",
+          title: "Top 10 Selling Items this month",
           sortable: false,
           paginated: false,
         },
@@ -307,9 +308,11 @@ export default {
 
         headers: [
           { title: "Item Name", key: "itemName" },
-          { title: "Total Revenue", key: "totalSold" },
+          { title: "Branch", key: "branchName" },
+
+          { title: "Total Revenue", key: "totalSold", isCurrency: true },
           { title: "Total Quantity Sold", key: "quantity" },
-          { title: "Price", key: "itemPrice" },
+          { title: "Price", key: "itemPrice", isCurrency: true },
         ],
       },
       {
@@ -393,7 +396,7 @@ export default {
 
         dataVariable: "sortedExpenses",
         tableOptions: {
-          title: "Top 10 Expenses",
+          title: "Top 10 Expenses this month",
           sortable: false,
           paginated: false,
         },
@@ -402,8 +405,11 @@ export default {
 
         headers: [
           { title: "Expense Title", key: "expenseTitle" },
+
           { title: "Expense Type", key: "expenseType" },
-          { title: "Amount", key: "expensePrice" },
+          { title: "Branch", key: "branchName" },
+
+          { title: "Amount", key: "expensePrice", isCurrency: true },
         ],
       },
     ],
@@ -422,23 +428,24 @@ export default {
             title: " Today's Sales Amount",
             key: "saleAmount",
             icon: "typcn typcn-printer",
-            hideCurrency: false,
+            isCurrency: true,
           },
           {
             title: "Today's Number of Orders",
             key: "totalOrders",
-            hideCurrency: true,
+
             icon: "mdi mdi-cart-arrow-right",
           },
           {
             title: "Today's Expenses            ",
             key: "totalExpenses",
             icon: "mdi mdi-cart-arrow-right",
+            isCurrency: true,
           },
           {
             title: " Total Active Tables",
             key: "totalTables",
-            hideCurrency: true,
+
             icon: "mdi mdi-cart-arrow-right",
           },
         ],
@@ -677,9 +684,10 @@ export default {
 
         headers: [
           { title: "Item Name", key: "itemName" },
-          { title: "Total Revenue", key: "totalSold" },
+
+          { title: "Total Revenue", key: "totalSold", isCurrency: true },
           { title: "Total Quantity Sold", key: "quantity" },
-          { title: "Price", key: "itemPrice" },
+          { title: "Price", key: "itemPrice", isCurrency: true },
         ],
       },
       {
@@ -773,7 +781,7 @@ export default {
         headers: [
           { title: "Expense Title", key: "expenseTitle" },
           { title: "Expense Type", key: "expenseType" },
-          { title: "Amount", key: "expensePrice" },
+          { title: "Amount", key: "expensePrice", isCurrency: true },
         ],
       },
     ],

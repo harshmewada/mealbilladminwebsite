@@ -58,10 +58,10 @@ export default {
           headers: [
             { title: "Order Number", key: "branchOrderNumber" },
             { title: "Items", key: "itemsLength" },
-            { title: "Amount", key: "grandTotal" },
-            { title: "SGST", key: "sgstCharges" },
-            { title: "CGST", key: "cgstCharges" },
-            { title: "Other Charges", key: "otherCharges" },
+            { title: "Amount", key: "grandTotal", isCurrency: true },
+            { title: "SGST", key: "sgstCharges", isCurrency: true },
+            { title: "CGST", key: "cgstCharges", isCurrency: true },
+            { title: "Other Charges", key: "otherCharges", isCurrency: true },
           ],
         },
       ],
@@ -120,7 +120,6 @@ export default {
               title: "Orders",
               key: "totalOrders",
               icon: "typcn typcn-printer",
-              hideCurrency: true,
             },
             {
               title: "Total Order Amount",
@@ -313,10 +312,10 @@ export default {
             { title: "Order Number", key: "branchOrderNumber" },
             { title: "Items", key: "itemsLength" },
 
-            { title: "SGST", key: "sgstCharges" },
-            { title: "CGST", key: "cgstCharges" },
-            { title: "Other Charges", key: "otherCharges" },
-            { title: "Amount", key: "grandTotal" },
+            { title: "SGST", key: "sgstCharges", isCurrency: true },
+            { title: "CGST", key: "cgstCharges", isCurrency: true },
+            { title: "Other Charges", key: "otherCharges", isCurrency: true },
+            { title: "Amount", key: "grandTotal", isCurrency: true },
           ],
         },
       ],
@@ -386,7 +385,7 @@ export default {
           headers: [
             { title: "Expense Title", key: "expenseTitle" },
             { title: "Expense Type", key: "expenseType" },
-            { title: "Amount", key: "expensePrice" },
+            { title: "Amount", key: "expensePrice", isCurrency: true },
           ],
         },
       ],
@@ -445,9 +444,9 @@ export default {
 
           headers: [
             { title: "Item Name", key: "itemName" },
-            { title: "Total Revenue", key: "totalSold" },
+            { title: "Total Revenue", key: "totalSold", isCurrency: true },
             { title: "Total Quantity Sold", key: "quantity" },
-            { title: "Price", key: "itemPrice" },
+            { title: "Price", key: "itemPrice", isCurrency: true },
           ],
         },
       ],
