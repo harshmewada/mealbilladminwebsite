@@ -105,10 +105,13 @@ const OrderHistory = () => {
       key: "itemsLength",
       renderRow: (child) => child.orderItems.length,
     },
-    { title: "Amount", key: "grandTotal", isCurrency: true },
+
     { title: "SGST", key: "sgstCharges", isCurrency: true },
     { title: "CGST", key: "cgstCharges", isCurrency: true },
+    { title: "Discount", key: "discount", isCurrency: true },
+
     { title: "Other Charges", key: "otherCharges", isCurrency: true },
+    { title: "Amount", key: "grandTotal", isCurrency: true },
   ];
 
   const defaultValues = {

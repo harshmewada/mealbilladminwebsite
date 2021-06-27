@@ -1,5 +1,5 @@
 import React from "react";
-import { Route } from "react-router-dom";
+import { Route, useLocation } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import ManageBranches from "../pages/Branches/ManageBranches";
 import ManageItemCategories from "../pages/ItemCategories/ManageItemCategories";
@@ -31,6 +31,7 @@ import Printers from "../pages/Printers";
 
 const DashBoardRoutes = () => {
   const role = useSelector((state) => state.user.role);
+  const { pathname } = useLocation();
 
   const isBranchAdmin = role === "branchadmin";
   const isBranchUser = role === "branchuser";
@@ -42,7 +43,7 @@ const DashBoardRoutes = () => {
 
   return (
     <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
-      <TopBar />
+      <TopBar hide={isBranchUser && pathname === "/"} />
       <div className="data-container" style={{ height: "100%" }}>
         <LeftSideBar />
 

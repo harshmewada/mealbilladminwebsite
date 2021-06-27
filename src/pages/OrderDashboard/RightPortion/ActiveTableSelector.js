@@ -39,6 +39,7 @@ const styles = {
 
 const ActiveOrderSelector = ({ tables }) => {
   const dispatch = useDispatch();
+  const tablesRef = React.useRef([]);
 
   const active = useSelector((state) => state.order.activeOrderIndex);
   const { lastOrderNumber, activeOrders } = useSelector((state) => state.order);
@@ -59,11 +60,29 @@ const ActiveOrderSelector = ({ tables }) => {
     dispatch(setActiveOrder(index));
   };
 
-  return [...tables].reverse().map((data, dofaindex) => {
-    const index = activeOrders.length - 1 - dofaindex;
+  React.useEffect(() => {
+    tablesRef.current = tablesRef.current.slice(0, tables.length);
+  }, [tables]);
+  const executeScroll = (index) => {
+    index &&
+      tablesRef.current[tables.length - index].scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+        inline: "nearest",
+      });
+  };
+
+  React.useEffect(() => {
+    executeScroll(active);
+  }, [active]);
+  return [...tables].reverse().map((data, dataIndex) => {
+    const index = activeOrders.length - 1 - dataIndex;
     return (
       <>
-        <div class="card border mb-1 shadow-none">
+        <div
+          class="card border mb-1 shadow-none"
+          ref={(el) => (tablesRef.current[dataIndex] = el)}
+        >
           <div
             class={`card-header ${active === index ? "bg-purple " : ""}`}
             style={{
@@ -239,8 +258,8 @@ export default ActiveOrderSelector;
 //   const makeTableActive = (tableNumber, index) => {
 //     dispatch(setActiveOrder(index));
 //   };
-//   return [...tables].reverse().map((data, dofaindex) => {
-//     const index = activeOrders.length - 1 - dofaindex;
+//   return [...tables].reverse().map((data, dataIndex) => {
+//     const index = activeOrders.length - 1 - dataIndex;
 //     return (
 //       <div
 //         key={index}

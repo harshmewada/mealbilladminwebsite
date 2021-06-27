@@ -8,7 +8,10 @@ const TablePagination = ({
   onChangeRowsPerPage,
 }) => {
   const result = new Array(Math.ceil(count / rowsPerPage)).fill("d");
-
+  const endEntries =
+    page * rowsPerPage + rowsPerPage > count
+      ? count
+      : page * rowsPerPage + rowsPerPage;
   return (
     <div class="row">
       <div class="col-sm-12 col-md-5">
@@ -20,10 +23,10 @@ const TablePagination = ({
         >
           Showing{" "}
           {page === 0
-            ? `1 to ${rowsPerPage}`
-            : `${page * rowsPerPage} to ${page * rowsPerPage + rowsPerPage} `}
+            ? `1 to ${rowsPerPage} `
+            : `${page * rowsPerPage} to ${endEntries} `}
           {/* {page === 0 ? page + rowsPerPage : page + 1 + rowsPerPage} of {count} */}
-          entries
+          entries of {count} entries
         </div>
       </div>
       <div class="col-sm-12 col-md-7">

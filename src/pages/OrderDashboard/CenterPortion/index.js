@@ -100,10 +100,10 @@ const CenterPortion = () => {
   return (
     <div style={styles.root}>
       <KeyboardInputs />
-      <HotKeySelector
+      {/* <HotKeySelector
         handleClick={(data) => handleItemClick(data)}
         items={allItems.filter((item) => item.hotKey)}
-      />
+      /> */}
       <div style={styles.container}>
         <div style={styles.row}>
           <ItemCategorySelector

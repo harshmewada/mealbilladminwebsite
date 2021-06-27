@@ -26,7 +26,7 @@ const LeftPortion = () => {
   };
   const handleTableNumberClick = (data, index) => {
     if (checkactive(data.tableNumber)) {
-      alert("Table is already active");
+      // alert("Table is already active");
     } else {
       dispatch(
         activateTable(

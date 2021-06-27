@@ -115,7 +115,11 @@ const ManageExpense = () => {
       options: restaurantExpenseTypes,
       optionLabelProp: "expenseType",
       optionValueProp: "id",
-
+      defaultOption: () => (
+        <option selected disabled>
+          Select Expense Type
+        </option>
+      ),
       // required: true,
       // rules: {
       //   required: {
@@ -487,7 +491,6 @@ const ManageExpense = () => {
           formData={formData}
           defaultValue={defaultValues}
         />
-
         <DeleteModal
           size="md"
           open={open === "Delete"}
@@ -495,7 +498,6 @@ const ManageExpense = () => {
           onClose={() => toggleAdd()}
           onConfirm={() => confirmDelete()}
         />
-
         <SmartTable
           title={PageTitle}
           headerComponents={headerComponents[role]}
@@ -505,8 +507,8 @@ const ManageExpense = () => {
           headers={headers}
           sortable={true}
           paginated={true}
-          searchByLabel={"Expense Title"}
-          searchByField={"expenseTitle"}
+          searchByLabel={isRestaurantAdmin ? "Expense Type" : "Expense Title"}
+          searchByField={isRestaurantAdmin ? "expenseType" : "expenseTitle"}
           rowsPerPage={5}
         />
       </div>

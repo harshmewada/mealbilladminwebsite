@@ -233,7 +233,7 @@ export const branchuser = [
   {
     title: "Order Dashboard",
     icon: "mdi mdi-bowling",
-    link: "/order/",
+    link: "/",
   },
   {
     title: "Expenses",

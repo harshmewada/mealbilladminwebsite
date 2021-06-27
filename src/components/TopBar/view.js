@@ -12,13 +12,8 @@ const View = ({ handleLogout }) => {
   const branchuser = "branchuser";
   const [open, setOpen] = React.useState(false);
   const roles = [superadmin, restaurantadmin, branchadmin, branchuser];
-  const {
-    role,
-    name,
-    restaurantLogo,
-    restaurantName,
-    branchName,
-  } = useSelector((state) => state.user);
+  const { role, name, restaurantLogo, restaurantName, branchName } =
+    useSelector((state) => state.user);
   const setRole = (role) => {
     dispatch({
       type: "SET_ROLE",

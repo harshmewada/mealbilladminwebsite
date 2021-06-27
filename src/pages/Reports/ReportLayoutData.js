@@ -314,6 +314,8 @@ export default {
 
             { title: "SGST", key: "sgstCharges", isCurrency: true },
             { title: "CGST", key: "cgstCharges", isCurrency: true },
+            { title: "Discount", key: "discount", isCurrency: true },
+
             { title: "Other Charges", key: "otherCharges", isCurrency: true },
             { title: "Amount", key: "grandTotal", isCurrency: true },
           ],
@@ -386,6 +388,17 @@ export default {
             { title: "Expense Title", key: "expenseTitle" },
             { title: "Expense Type", key: "expenseType" },
             { title: "Amount", key: "expensePrice", isCurrency: true },
+            {
+              title: "Quantity",
+              key: "quantity",
+              renderRow: (data) => {
+                // console.log("renderRow", data);
+
+                return data.quantity
+                  ? `${data.quantity} ${data.quantityType}`
+                  : " - ";
+              },
+            },
           ],
         },
       ],

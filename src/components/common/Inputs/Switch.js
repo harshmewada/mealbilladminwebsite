@@ -11,23 +11,27 @@ const Switch = React.forwardRef((props, ref) => {
     error,
     size,
     onChange,
+    value,
+    defaultValue,
   } = props;
-  console.log("switch props", props);
   return (
-    <InputContainer label={" "} error={error} size={size}>
+    <InputContainer {...props} label={" "} error={error} size={size}>
       <div class="custom-control custom-switch switch-primary">
         <input
           class="custom-control-input form-control"
           id="customSwitchPrimary"
           ref={ref}
-          {...props}
+          // {...props}
+          name={name}
           type="checkbox"
+          checked={value}
+          defaultChecked={defaultValue}
         />
         <label class="custom-control-label" for="customSwitchPrimary">
           {label}
         </label>
       </div>
-      {/* 
+      {/*
       <input
         ref={ref}
         type="text"

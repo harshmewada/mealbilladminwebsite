@@ -29,10 +29,13 @@ const CommonAddModal = ({
     formState,
     reset,
     setValue,
+    getValues,
   } = methods;
+
+  // console.log("methods", methods);
   const isLoading = useSelector((state) => state.util.spinner);
   const [formErrors, setFormErrors] = React.useState({});
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   // console.log("error", errors);
   React.useEffect(() => {

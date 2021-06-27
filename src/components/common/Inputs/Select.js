@@ -18,6 +18,7 @@ const MyTextField = React.forwardRef((props, ref) => {
   } = props;
   return (
     <InputContainer
+      {...props}
       noPadding={noPadding}
       size={size}
       label={label}

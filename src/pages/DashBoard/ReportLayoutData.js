@@ -15,24 +15,24 @@ export default {
           {
             title: "Active Restaurants",
             key: "activeRestaurants",
-            icon: "typcn typcn-printer",
+            icon: "dripicons-store",
           },
           {
             title: "Active Branches",
             key: "branchCount",
 
-            icon: "mdi mdi-cart-arrow-right",
+            icon: "dripicons-network-3",
           },
           {
             title: "Active Users",
             key: "userCount",
-            icon: "mdi mdi-cart-arrow-right",
+            icon: "dripicons-user-group",
           },
           {
             title: "Total Number of Orders",
             key: "orderCount",
 
-            icon: "mdi mdi-cart-arrow-right",
+            icon: "dripicons-cart",
           },
         ],
       },
@@ -50,27 +50,30 @@ export default {
         headers: [
           {
             title: " Today's Sales Amount",
+            icon: "mdi mdi-cash-100",
+
             key: "saleAmount",
 
-            icon: "typcn typcn-printer",
             isCurrency: true,
           },
           {
             title: "Today's Number of Orders",
-            key: "totalOrders",
+            icon: "dripicons-basket",
 
-            icon: "mdi mdi-cart-arrow-right",
+            key: "totalOrders",
           },
           {
-            title: "Today's Expenses            ",
+            title: "Today's Expenses",
+            icon: "mdi mdi-cash-refund",
+
             key: "totalExpenses",
-            icon: "mdi mdi-cart-arrow-right",
             isCurrency: true,
           },
           {
             title: " Total Active Tables",
+            icon: "mdi mdi-soccer-field",
+
             key: "totalTables",
-            icon: "mdi mdi-cart-arrow-right",
           },
         ],
       },
@@ -108,6 +111,9 @@ export default {
             title: {
               text: "Sales",
               align: "left",
+              style: {
+                // fontFamily: "Roboto",
+              },
             },
             grid: {
               row: {
@@ -426,27 +432,28 @@ export default {
         headers: [
           {
             title: " Today's Sales Amount",
+            icon: "mdi mdi-cash-100",
+
             key: "saleAmount",
-            icon: "typcn typcn-printer",
             isCurrency: true,
           },
           {
             title: "Today's Number of Orders",
-            key: "totalOrders",
+            icon: "dripicons-basket",
 
-            icon: "mdi mdi-cart-arrow-right",
+            key: "totalOrders",
           },
           {
-            title: "Today's Expenses            ",
+            title: "Today's Expenses",
+            icon: "mdi mdi-cash-refund",
             key: "totalExpenses",
-            icon: "mdi mdi-cart-arrow-right",
             isCurrency: true,
           },
           {
             title: " Total Active Tables",
-            key: "totalTables",
+            icon: "mdi mdi-soccer-field",
 
-            icon: "mdi mdi-cart-arrow-right",
+            key: "totalTables",
           },
         ],
       },

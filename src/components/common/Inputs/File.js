@@ -6,7 +6,7 @@
 //   console.log("edi tprops", props);
 //   // delete props.defaultValue;
 //   return (
-//     <InputContainer label={" "} error={error} size={size}>
+//     <InputContainer {...props} label={" "} error={error} size={size}>
 //       <div class="mt-1" />
 //       <input
 //         ref={ref}
@@ -33,16 +33,8 @@ import Form from "react-bootstrap/Form";
 import { RootUrl } from "../../../redux/types";
 
 const MyTextField = React.forwardRef((props, ref) => {
-  const {
-    label,
-    name,
-    placeholder,
-    multiline,
-    rows,
-    error,
-    size,
-    mode,
-  } = props;
+  const { label, name, placeholder, multiline, rows, error, size, mode } =
+    props;
   const [file, selectedFile] = React.useState();
   const [preview, setPreview] = React.useState();
 

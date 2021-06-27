@@ -43,14 +43,16 @@ import "./invoice.css";
 // ];
 const printfooters = [
   {
-    title: "Net Amt.",
+    title: "Sub Total",
     hasCurrency: true,
     key: "itemsTotal",
     titleClass: "subtotal",
     valueClass: "subtotalamount",
   },
   {
-    title: "  Tax Amt.",
+    // title: "Tax",
+    title: "GST",
+
     hasCurrency: true,
     key: "taxTotal",
     titleClass: "discount",
@@ -58,7 +60,7 @@ const printfooters = [
   },
 
   {
-    title: "Discount Amt.",
+    title: "Discount",
     hasCurrency: true,
     key: "discount",
     titleClass: "discount",
@@ -204,14 +206,8 @@ const Invoice = React.forwardRef(
 
 class BillComponent extends React.Component {
   render() {
-    const {
-      logo,
-      customAction,
-      orderData,
-      count,
-      restaurant,
-      gstNumber,
-    } = this.props;
+    const { logo, customAction, orderData, count, restaurant, gstNumber } =
+      this.props;
     console.log("orderData", orderData);
     return orderData ? (
       <Invoice

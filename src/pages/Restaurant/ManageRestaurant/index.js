@@ -166,13 +166,13 @@ const AddRestaurant = () => {
       size: 3,
 
       placeholder: "Enter GST Number",
-      required: true,
-      rules: {
-        required: {
-          value: true,
-          message: "GST Number is required",
-        },
-      },
+      // required: fal,
+      // rules: {
+      //   required: {
+      //     value: true,
+      //     message: "GST Number is required",
+      //   },
+      // },
     },
     {
       type: "number",
@@ -265,6 +265,9 @@ const AddRestaurant = () => {
 
   const handleEdit = (data) => {
     toggleAdd("Edit");
+    if (data.balance) {
+      data.balance = data.balance.toFixed(2);
+    }
     setActionData(data);
   };
 
@@ -284,13 +287,12 @@ const AddRestaurant = () => {
   };
 
   const confirmDelete = (data) => {
-    dispatch(deleteRestaurant(actionData._id)).then((res) => {
-      if (res.payload.status === 200) {
+    dispatch(
+      deleteRestaurant(actionData._id, () => {
         toggleAdd();
-        dispatch(showSnackBar("Deleted succesfully"));
         dispatch(getAllRestaurants());
-      }
-    });
+      })
+    );
   };
 
   const onAdd = (data) => {
@@ -407,7 +409,7 @@ const AddRestaurant = () => {
       <div></div>
     ) : (
       <TableRowCommonAction
-        icon="dripicons-tag-delete"
+        icon="dripicons-cross"
         onClick={() => handleDeleteSubscription(action.data)}
       />
     );

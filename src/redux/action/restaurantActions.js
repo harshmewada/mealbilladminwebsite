@@ -80,17 +80,22 @@ export const createRestaurant = (data, cb) => {
     });
 };
 
-export const deleteRestaurant = (data) => {
-  return {
-    type: restaurantTypes.DELETE_RESTAURANT,
-    payload: {
-      request: {
-        url: SuperAdminApi.DELETE_RESTAURANT,
-        method: "delete",
-        data: { id: data },
+export const deleteRestaurant = (data, cb) => {
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      type: restaurantTypes.DELETE_RESTAURANT,
+      successMessage: "Restaurant Deleted Succesfully",
+      errorMessage: "Failed to Delete Restaurant",
+      enableMessage: true,
+      cb: cb,
+      payload: {
+        request: {
+          url: SuperAdminApi.DELETE_RESTAURANT,
+          method: "delete",
+          data: { id: data },
+        },
       },
-    },
-  };
+    });
 };
 
 export const updateRestaurant = (data) => {

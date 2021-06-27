@@ -1,7 +1,10 @@
 import React from "react";
 import OrderTypeSelector from "./OrderTypeSelector";
 import { useDispatch, useSelector } from "react-redux";
-import { activateTable } from "../../../redux/action/orderActions";
+import {
+  activateTable,
+  setActiveOrder,
+} from "../../../redux/action/orderActions";
 import TableNumberSelector from "./TableNumberSelector";
 import TableStatusInfo from "./TableStatusInfo";
 import TableTypeSelector from "./TableTypeSelector";
@@ -12,24 +15,24 @@ const TopPortion = () => {
   const dispatch = useDispatch();
   const username = useSelector((state) => state.user.name);
   const [tableFilterId, setTableFilterId] = React.useState("all");
+  const active = useSelector((state) => state.order.activeOrderIndex);
 
   const allTables = useSelector((state) => state.order.allTables);
   const activeOrders = useSelector((state) => state.order.activeOrders);
 
   const checkactive = (tableNumber) => {
-    if (
-      activeOrders.findIndex((table) => {
-        return tableNumber === table.tableNumber;
-      }) >= 0
-    ) {
-      return true;
+    let myIndex = activeOrders.findIndex((table) => {
+      return tableNumber === table.tableNumber;
+    });
+    if (myIndex) {
+      return myIndex;
     } else {
       return false;
     }
   };
   const handleTableNumberClick = (data, index) => {
-    if (checkactive(data.tableNumber)) {
-      alert("Table is already active");
+    if (checkactive(data.tableNumber) >= 0) {
+      dispatch(setActiveOrder(checkactive(data.tableNumber)));
     } else {
       dispatch(
         activateTable(

@@ -72,9 +72,15 @@ const SmartTable = ({
   };
 
   const handleCheckChange = (value, index) => {
+    let myIndex = index;
+
+    if (page > 0) {
+      myIndex = page * rowsPerPage + index;
+    }
+
     let newData = tableData;
 
-    newData[index].selected = value;
+    newData[myIndex].selected = value;
 
     setTableData([...newData]);
   };
@@ -175,9 +181,9 @@ const SmartTable = ({
                 <TableData
                   actions={actions}
                   header={headers}
-                  handleCheckChange={(value, index) =>
-                    handleCheckChange(value, index)
-                  }
+                  handleCheckChange={(value, index) => {
+                    handleCheckChange(value, index);
+                  }}
                   selectable={selectable}
                   data={stableSort(rows, getComparator(order, orderBy)).slice(
                     page * rowsPerPage,

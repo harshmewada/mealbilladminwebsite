@@ -35,6 +35,9 @@ const AddModal = ({ open, onClose, title }) => {
         value={currRes}
         ref={register}
       >
+        <option value="" disabled selected>
+          Choose Restaurant
+        </option>
         {restaurants.map((res, resindex) => {
           return (
             <option key={resindex} value={res._id}>
@@ -60,11 +63,16 @@ const AddModal = ({ open, onClose, title }) => {
         required
         ref={register}
       >
-        {branches.length === 0 && (
+        {branches.length === 0 ? (
           <option value="" disabled selected>
             No Branches
           </option>
+        ) : (
+          <option value="" disabled selected>
+            Choose branch
+          </option>
         )}
+
         {branches.map((res, resindex) => {
           return (
             <option key={resindex} value={res._id}>
@@ -135,9 +143,9 @@ const AddModal = ({ open, onClose, title }) => {
   React.useEffect(() => {
     dispatch(getAllBranches(currRestaurandId, "true"));
   }, [currRestaurandId]);
-  React.useEffect(() => {
-    dispatch(getAllBranches(currRestaurandId, "true"));
-  }, []);
+  // React.useEffect(() => {
+  //   dispatch(getAllBranches(currRestaurandId, "true"));
+  // }, []);
 
   console.log("err", errors);
   return (

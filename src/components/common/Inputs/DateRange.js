@@ -31,6 +31,7 @@ const DateRange = (props) => {
 
   return (
     <InputContainer
+      {...props}
       noPadding={noPadding}
       size={size}
       label={label}

@@ -4,15 +4,17 @@ import { useLocation } from "react-router";
 import { logoutUser } from "../../redux/action/userActions";
 import View from "./view";
 
-const TopBar = () => {
+const TopBar = ({ hide }) => {
   const { pathname } = useLocation();
-  console.log(pathname);
   const dispatch = useDispatch();
 
   const handleLogout = () => {
     dispatch(logoutUser());
   };
-  return pathname !== "/order" && <View handleLogout={() => handleLogout()} />;
+  return (
+    pathname !== "/order" &&
+    !hide && <View handleLogout={() => handleLogout()} />
+  );
 };
 
 export default TopBar;
