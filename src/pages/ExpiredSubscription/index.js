@@ -2,7 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router";
 import { expireSubScription, logoutUser } from "../../redux/action/userActions";
-import { CONTACTUSURL } from "../../redux/types/index";
+import { CONTACTUSURL, SMALLLOGO } from "../../redux/types/index";
 const ExpiredSubscription = () => {
   const dispatch = useDispatch();
   const history = useHistory();
@@ -33,10 +33,10 @@ const ExpiredSubscription = () => {
                         class="logo logo-admin"
                       >
                         <img
-                          src="http://metrica.laravel.themesbrand.com/assets/images/logo-sm.png"
+                          src={SMALLLOGO}
                           height="55"
                           alt="logo"
-                          class="auth-logo"
+                          className="auth-logo"
                         />
                       </a>
                     </div>

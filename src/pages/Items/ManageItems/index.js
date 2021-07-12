@@ -19,6 +19,7 @@ import {
   getBranchItems,
   importItems,
   updateItem,
+  clearItems,
 } from "../../../redux/action/itemActions";
 import { RootUrl } from "../../../redux/types";
 import { getAllBranches } from "../../../redux/action/branchActions";
@@ -53,7 +54,7 @@ const ManageItems = () => {
       ? items
       : resItems
     : items;
-
+  // console.log("selectedBranch", selectedBranch, items, resItems);
   const importData = () => {
     if (isBranchAdmin) {
       const mydata = resItems
@@ -86,9 +87,12 @@ const ManageItems = () => {
   };
 
   const getAllData = () => {
+    dispatch(clearItems());
+
     if (isRestaurantAdmin) {
       if (selectedBranch) {
         dispatch(getBranchItems(selectedBranch));
+        return;
       }
       dispatch(getRestaurantItems());
       dispatch(getAllBranches(restaurantId));
@@ -440,7 +444,9 @@ const ManageItems = () => {
         defaultValue="true"
         required
         value={selectedBranch}
-        onChange={(e) => setSelectedBranch(e.target.value)}
+        onChange={(e) => {
+          setSelectedBranch(e.target.value);
+        }}
       >
         <option value={""} selected>
           This restaurant

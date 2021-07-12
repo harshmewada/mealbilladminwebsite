@@ -199,6 +199,8 @@ const ManageExpenseTypes = () => {
 
   const headers = [
     { title: "Expense Type", key: "expenseType" },
+    { title: "Include quantity", key: "includeQuantity", type: "boolean" },
+
     { title: "Status", key: "status" },
   ];
 

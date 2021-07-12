@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   confirmOrder,
   deleteLocalOrder,
+  setDiscount,
+  setOtherCharges,
 } from "../../../redux/action/orderActions";
 import { showSnackBar } from "../../../redux/action/snackActions";
 import { setPrintData } from "../../../redux/action/utilActions";
@@ -54,19 +56,26 @@ const styles = {
 };
 const OrderTotalDisplay = () => {
   const dispatch = useDispatch();
-  const [discount, setDiscount] = React.useState(0);
-  const [otherCharges, setOtherCharges] = React.useState(0);
+  // const [discount, setDiscount] = React.useState(0);
+  // const [otherCharges, setOtherCharges] = React.useState(0);
   const [orderConfirmOpen, setOrderConfirmOpen] = React.useState();
+  const {
+    activeOrderIndex: index,
+    activeOrders,
+    lastOrderNumber,
+  } = useSelector((state) => state.order);
+
   const { name, restaurantId, branchId, branchCode, cgst, sgst } = useSelector(
     (state) => state.user
   );
 
-  const { activeOrderIndex } = useSelector((state) => state.order);
+  const discount = activeOrders[index]?.discount || 0;
+  const otherCharges = activeOrders[index]?.otherCharges || 0;
 
-  React.useEffect(() => {
-    setOtherCharges(0);
-    setDiscount(0);
-  }, [activeOrderIndex]);
+  // React.useEffect(() => {
+  //   setOtherCharges(0);
+  //   setDiscount(0);
+  // }, [index]);
 
   const toggleOrderConfirmModal = () => {
     setOrderConfirmOpen(!orderConfirmOpen);
@@ -109,7 +118,7 @@ const OrderTotalDisplay = () => {
           setOtherCharges(0);
           setDiscount(0);
 
-          dispatch(deleteLocalOrder(activeOrderIndex));
+          dispatch(deleteLocalOrder(index));
         } else {
           dispatch(showSnackBar("Failed To Order", "error"));
         }
@@ -120,12 +129,6 @@ const OrderTotalDisplay = () => {
         dispatch(showSnackBar("Failed To Order", "error"));
       });
   };
-
-  const {
-    activeOrderIndex: index,
-    activeOrders,
-    lastOrderNumber,
-  } = useSelector((state) => state.order);
 
   const getData = (mydiscount) => {
     // const calculateddiscount = mydiscount || discount;
@@ -186,9 +189,9 @@ const OrderTotalDisplay = () => {
             value={getData().otherCharges}
             onChange={(e) => {
               if (parseFloat(e.target.value) >= 0) {
-                setOtherCharges(e.target.value);
+                dispatch(setOtherCharges(e.target.value));
               } else {
-                setOtherCharges(0);
+                dispatch(setOtherCharges(0));
               }
             }}
           />
@@ -210,14 +213,16 @@ const OrderTotalDisplay = () => {
                 parseFloat(e.target.value) >= parseFloat(getData().grandTotal)
               ) {
                 alert("Maximum Discount Reached");
-                setDiscount(
-                  parseFloat(getData().discount) +
-                    parseFloat(getData().grandTotal)
+                dispatch(
+                  setDiscount(
+                    parseFloat(getData().discount) +
+                      parseFloat(getData().grandTotal)
+                  )
                 );
               } else {
                 console.log("discount else");
 
-                setDiscount(e.target.value);
+                dispatch(setDiscount(e.target.value));
               }
             }}
           />

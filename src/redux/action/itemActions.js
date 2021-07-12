@@ -100,3 +100,9 @@ export const importItems = (data) => {
     },
   };
 };
+
+export const clearItems = () => {
+  return {
+    type: itemTypes.CLEAR_ITEMS,
+  };
+};

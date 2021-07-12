@@ -33,6 +33,8 @@ const dummyActive = (payload) => {
     items: [],
     tablePrice: tablePrice || 0,
     orderType: 0,
+    otherCharges: 0,
+    discount: 0,
   };
 };
 const initialstate = {
@@ -103,6 +105,8 @@ const addNewOtherOrder = (activeOrders, selectedOrderTypeId) => {
     items: [],
     tablePrice: 0,
     orderType: selectedOrderTypeId,
+    otherCharges: 0,
+    discount: 0,
   });
   return activeOrders;
 };
@@ -161,6 +165,17 @@ const deleteLocalOrder = (activeOrders, allTables, orderIndex, tableNumber) => {
     allTables: allTables,
   };
 };
+
+const changeMiscDetails = (activeOrders, activeOrderIndex, data, variable) => {
+  if (activeOrderIndex || activeOrderIndex === 0) {
+    activeOrders[activeOrderIndex][variable] = data;
+  } else {
+    alert("Please activate an order to change");
+  }
+
+  return activeOrders;
+};
+
 const orderReducer = (state = initialstate, action) => {
   const getData = () => action.payload.data;
   switch (action.type) {
@@ -295,6 +310,32 @@ const orderReducer = (state = initialstate, action) => {
         ],
       };
 
+    case orderTypes.SET_DISCOUNT:
+      return {
+        ...state,
+        activeOrders: [
+          ...changeMiscDetails(
+            state.activeOrders,
+            state.activeOrderIndex,
+            action.payload,
+            "discount"
+          ),
+        ],
+      };
+
+    case orderTypes.SET_OTHER_CHARGES:
+      return {
+        ...state,
+        activeOrders: [
+          ...changeMiscDetails(
+            state.activeOrders,
+            state.activeOrderIndex,
+            action.payload,
+            "otherCharges"
+          ),
+        ],
+      };
+
     case orderTypes.CONFIRM_ORDER_SUCCESS:
       return {
         ...state,
@@ -310,7 +351,7 @@ const orderReducer = (state = initialstate, action) => {
       };
 
     case userTypes.LOGOUT_USER:
-      return { ...initialstate };
+      return initialstate;
     default:
       return state;
   }

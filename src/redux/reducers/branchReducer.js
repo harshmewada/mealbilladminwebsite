@@ -67,7 +67,6 @@ const branchReducer = (state = initialstate, action) => {
       };
 
     case itemTypes.GET_RESTAURANT_ITEMS_SUCCESS:
-      console.log("data");
       return {
         ...state,
         restaurantItems: getData().data.filter((item) => {
@@ -102,7 +101,12 @@ const branchReducer = (state = initialstate, action) => {
     //     ...state,
     //     ...getData().restaurant,
     //   };
-
+    case itemTypes.CLEAR_ITEMS:
+      return {
+        ...state,
+        restaurantItems: [],
+        items: [],
+      };
     default:
       return state;
   }

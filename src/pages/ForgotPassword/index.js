@@ -90,11 +90,11 @@ const ForgotPassword = () => {
                           class="alert alert-secondary border-0"
                           role="alert"
                         >
-                          <h6>Otp send successfully on your device</h6>
+                          <h6>OTP sent to your register Mobile number</h6>
                         </div>
                       ) : (
                         <p className="text-muted mb-0">
-                          Enter your mobile number to get the otp.
+                          Enter your mobile number to get the OTP.
                         </p>
                       )}
                     </div>
@@ -143,7 +143,7 @@ const ForgotPassword = () => {
 
                               <input
                                 type="number"
-                                placeholder="Otp"
+                                placeholder="OTP"
                                 className="form-control"
                                 name="otp"
                                 // value={data.password}
@@ -245,7 +245,7 @@ const ForgotPassword = () => {
                                 style={{ marginRight: "20px" }}
                               ></span>
                             )} */}
-                            Log In
+                            {otp ? "Confirm" : "Reset Password"}
                             <i className="fas fa-sign-in-alt ml-1"></i>
                           </button>
                         </div>

@@ -21,7 +21,7 @@ export default {
           required: true,
           //   option: branches,
           getOptionLabel: (opt) => opt.branchName,
-          defaultOption: () => <option selected>All</option>,
+          defaultOption: () => <option selected>All Branches</option>,
           size: 4,
           rules: {
             required: {
@@ -83,7 +83,8 @@ export default {
           required: true,
           //   option: branches,
           getOptionLabel: (opt) => opt.branchName,
-          defaultOption: () => <option selected>All</option>,
+          defaultOption: () => <option selected>All Branches</option>,
+
           size: 4,
           rules: {
             required: {
@@ -420,7 +421,8 @@ export default {
           required: true,
           //   option: branches,
           getOptionLabel: (opt) => opt.branchName,
-          defaultOption: () => <option selected>All</option>,
+          defaultOption: () => <option selected>All Branches</option>,
+
           size: 4,
           rules: {
             required: {
@@ -481,7 +483,8 @@ export default {
           required: true,
           //   option: branches,
           getOptionLabel: (opt) => opt.branchName,
-          defaultOption: () => <option selected>All</option>,
+          defaultOption: () => <option selected>All Branches</option>,
+
           size: 4,
           rules: {
             required: {

@@ -2,6 +2,7 @@ import SuperAdminApi from "../api/superadmin";
 import { branchTypes, restaurantTypes } from "../types";
 import store from "../store";
 import branchApi from "../api/branchApi";
+import checkIfAsyncReqSuccess from "./checkIfAsyncReqSuccess";
 export const createBranch = (data) => {
   //   const role = store.getState();
 
@@ -65,4 +66,60 @@ export const getAllBranches = (id, status) => {
       },
     },
   };
+};
+
+export const updateReceiptMessage = ({
+  message,
+  resId,
+  branchId,
+  cb,
+  errorCb,
+}) => {
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: "Receipt Message updated successfully",
+      errorMessage: "Failed to update Receipt Message",
+      cb: cb,
+      errorCb: errorCb,
+      type: branchTypes.UPDATE_RECEIPT_MESSAGE,
+      payload: {
+        request: {
+          url: branchApi.UPDATE_RECEIPT_MESSAGE,
+          method: "put",
+          data: {
+            receiptMessage: message,
+            restaurantId: resId,
+            _id: branchId,
+          },
+        },
+      },
+    });
+};
+
+export const deleteReceiptMessage = ({
+  message,
+  resId,
+  branchId,
+  cb,
+  errorCb,
+}) => {
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: "Receipt Message Deleted successfully",
+      errorMessage: "Failed to delete Receipt Message",
+      cb: cb,
+      errorCb: errorCb,
+      type: branchTypes.DELETE_RECEIPT_MESSAGE,
+      payload: {
+        request: {
+          url: branchApi.UPDATE_RECEIPT_MESSAGE,
+          method: "put",
+          data: {
+            receiptMessage: null,
+            restaurantId: resId,
+            _id: branchId,
+          },
+        },
+      },
+    });
 };

@@ -47,10 +47,24 @@ contextBridge.exposeInMainWorld("api", {
   //   });
   // }),
   // },
-  printSilently: () =>
-    new Promise((res, fail) => {
-      ipcRenderer.send("silent-print");
-    }),
+  printSilently: (data, func) => {
+    // new Promise((res, fail) => {
+    ipcRenderer.send("printPage", data);
+    // ipcRenderer.send("silent-print");
+    // })
+    // ipcRenderer.sendSync("notify", {
+    //   message: "notify",
+    // });
+  },
+  saveLogo: (data, func) => {
+    // new Promise((res, fail) => {
+    ipcRenderer.send("saveLogo", data);
+    // ipcRenderer.send("silent-print");
+    // })
+    // ipcRenderer.sendSync("notify", {
+    //   message: "notify",
+    // });
+  },
   send: (content, func) => {
     // whitelist channels
     // console.log("isElectron send", data);

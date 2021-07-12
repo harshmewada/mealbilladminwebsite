@@ -24,7 +24,8 @@ const ManageBranches = () => {
   const [open, setOpen] = React.useState();
   const [actionData, setActionData] = React.useState();
 
-  const { role, restaurantId, branchId } = useSelector((state) => state.user);
+  const { role, restaurantId, branchId, currentBranches, allowedBranches } =
+    useSelector((state) => state.user);
 
   const isSuperAdmin = role === "superadmin";
 
@@ -231,7 +232,12 @@ const ManageBranches = () => {
 
   const AddAction = () => {
     return (
-      <AddCommonAction onClick={() => toggleAdd("Add")} title={PageTitle} />
+      <AddCommonAction
+        onClick={() => toggleAdd("Add")}
+        title={PageTitle}
+        disabled={currentBranches >= allowedBranches}
+        disabledTitle="Can not add new branches, branch limit is exceeded."
+      />
     );
   };
 

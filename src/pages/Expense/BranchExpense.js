@@ -7,7 +7,7 @@ import DeleteModal from "../../components/common/Modals/DeleteModal";
 import AddCommonAction from "../../components/common/Actions/AddCommonAction";
 import EditCommonAction from "../../components/common/Actions/EditAction";
 import DeleteCommonAction from "../../components/common/Actions/DeleteCommonAction";
-import CommonAddModal from "../../components/common/Modals/CommonAddModal";
+import CommonAddModal from "../../components/common/Modals/ExpenseAddModal";
 import {
   createExpense,
   deleteExpense,
@@ -35,34 +35,20 @@ const ManageExpense = () => {
   );
   const { role, restaurantId, branchId } = useSelector((state) => state.user);
 
-  const branches = useSelector((state) => state.branch.allBranches);
-
-  const superadminExpenseTypes = useSelector(
-    (state) => state.common.expenseTypes
-  );
-
-  const isRestaurantAdmin = ["restaurantadmin"].includes(role);
   const isBranchAdmin = ["branchadmin"].includes(role);
 
   const isBranchUser = ["branchuser"].includes(role);
 
-  const isSuperAdmin = ["superadmin"].includes(role);
-  const PageTitle = isRestaurantAdmin ? "Expense Types" : "Expenses";
+  const PageTitle = "Expenses";
 
   const [open, setOpen] = React.useState();
 
   const [importOpen, setImportOpen] = React.useState();
 
-  const [selectedBranch, setSelectedBranch] = React.useState(branchId);
-
   const currRestaurantId = restaurantId || undefined;
 
-  const currBranchId = branchId || selectedBranch;
-  const expenses = isBranchAdmin
-    ? arraycat
-    : isRestaurantAdmin
-    ? restaurantExpenseTypes
-    : arraycat;
+  const currBranchId = branchId;
+  const expenses = arraycat;
 
   const [state, setState] = React.useState({
     start: moment(),
@@ -75,152 +61,6 @@ const ManageExpense = () => {
     // onChange(setState({ start, end }));
     setState({ start, end });
   };
-
-  const formData = [
-    // {
-    //   type: isRestaurantAdmin ? "select" : "none",
-    //   name: "branchId",
-    //   label: "Branch",
-    //   options: branches,
-    //   optionLabelProp: "branchName",
-    //   optionValueProp: "_id",
-    //   hideAt: "Edit",
-    //   required: true,
-    //   rules: {
-    //     required: {
-    //       value: true,
-    //       message: "Branch Name is required",
-    //     },
-    //   },
-    // },
-
-    {
-      type: isRestaurantAdmin ? "text" : "none",
-      name: "expenseType",
-      label: "Expense Type",
-      placeholder: "Type Expense Type",
-
-      rules: {
-        required: {
-          value: true,
-          message: "Expense Type is required",
-        },
-      },
-    },
-    {
-      type: isRestaurantAdmin ? "switch" : "none",
-      name: "includeQuantity",
-      label: "Include Quantity ",
-      placeholder: "Enter Include Quantity ",
-    },
-
-    {
-      type: isRestaurantAdmin ? "select" : "none",
-      name: "status",
-      label: "Status",
-      options: [
-        {
-          title: "Active",
-          value: true,
-        },
-        {
-          title: "Inactive",
-          value: false,
-        },
-      ],
-      optionLabelProp: "title",
-      optionValueProp: "value",
-
-      required: true,
-      rules: {
-        required: {
-          value: true,
-        },
-      },
-    },
-
-    {
-      type: !isRestaurantAdmin ? "select" : "none",
-      name: "expenseTypeId",
-      label: "Expense Type",
-      options: restaurantExpenseTypes,
-      optionLabelProp: "expenseType",
-      optionValueProp: "id",
-      defaultOption: () => (
-        <option selected disabled>
-          Select Expense Type
-        </option>
-      ),
-      // required: true,
-      // rules: {
-      //   required: {
-      //     value: true,
-      //     message: "Branch Name is required",
-      //   },
-      // },
-    },
-    {
-      type: !isRestaurantAdmin ? "text" : "none",
-      name: "expenseTitle",
-      label: "Expense Title",
-      placeholder: "Type Expense Title",
-      required: true,
-      rules: {
-        required: {
-          value: true,
-          message: "Expense Title is required",
-        },
-      },
-    },
-    {
-      type: !isRestaurantAdmin ? "number" : "none",
-
-      name: "quantity",
-      label: "Expense Quantity",
-      placeholder: "Type Expense Quantity",
-    },
-    {
-      type: !isRestaurantAdmin ? "select" : "none",
-      name: "quantityType",
-      size: 4,
-
-      label: "Quantity Type",
-      options: [
-        {
-          title: "Kg, ",
-          value: "kg",
-        },
-        {
-          title: "Gram",
-          value: "Gram",
-        },
-        {
-          title: " Nos.",
-          value: " Nos.",
-        },
-        {
-          title: "Litres",
-          value: "Litres",
-        },
-      ],
-      optionLabelProp: "title",
-      optionValueProp: "value",
-    },
-
-    {
-      type: !isRestaurantAdmin ? "number" : "none",
-      name: "expensePrice",
-      label: "Expense Price",
-
-      required: true,
-      rules: {
-        required: {
-          value: true,
-          message: "Branch Name is required",
-        },
-      },
-    },
-  ];
 
   const dispatch = useDispatch();
   // const Cateogrys = useSelector((state) => state.common.Cateogrys);
@@ -272,33 +112,14 @@ const ManageExpense = () => {
   };
 
   const getAllData = (selectedBranch) => {
-    if (isRestaurantAdmin) {
-      dispatch(getRestaurantExpenseType(restaurantId));
-    }
     if (isBranchAdmin || isBranchUser) {
       dispatch(getRestaurantExpenseType(restaurantId));
       dispatch(getAllExpenses(state));
-    }
-    if (isSuperAdmin) {
-      dispatch(getAllexpenseTypes());
     }
   };
 
   console.log("restaurantExpenseTypes", restaurantExpenseTypes);
 
-  const importData = () => {
-    if (isRestaurantAdmin) {
-      return superadminExpenseTypes.filter((item) => {
-        return (
-          restaurantExpenseTypes.findIndex((data) => {
-            return data.expenseType === item.expenseType;
-          }) < 0
-        );
-      });
-    } else {
-      return restaurantExpenseTypes;
-    }
-  };
   const onAdd = (data) => {
     if (open === "Add") {
       dispatch(
@@ -369,65 +190,9 @@ const ManageExpense = () => {
     }
   };
 
-  const onImport = (data) => {
-    dispatch(
-      importExpenseTypes({
-        restaurantId: restaurantId,
-        ...(currBranchId && { branchId: branchId }),
-        data: data.map((item) => {
-          return {
-            ...item,
-            restaurantId: restaurantId,
-            ...(currBranchId && { branchId: branchId }),
-          };
-        }),
-      })
-    )
-      .then((res) => {
-        if (res.payload.status === 200) {
-          toggleAdd();
-          dispatch(showSnackBar("Expense Imported successfully"));
-          getAllData();
-
-          setImportOpen(false);
-        } else {
-          dispatch(
-            showSnackBar(
-              getErrorMessage(res) || "Failed to Import Cateogry",
-              "error"
-            )
-          );
-        }
-      })
-      .catch((err) => {
-        dispatch(
-          showSnackBar(
-            getErrorMessage(err) || "Failed to Import Cateogry",
-            "error"
-          )
-        );
-      });
-  };
   const AddAction = () => {
     return (
       <AddCommonAction onClick={() => toggleAdd("Add")} title={PageTitle} />
-    );
-  };
-
-  const ImportAction = () => {
-    return (
-      <ImportCommonAction
-        onClick={() => {
-          if (isRestaurantAdmin) {
-            dispatch(getAllexpenseTypes(undefined, undefined, "true"));
-          }
-          if (isBranchAdmin) {
-            dispatch(getRestaurantExpenseType(restaurantId, undefined, "true"));
-          }
-          setImportOpen(true);
-        }}
-        title={PageTitle}
-      />
     );
   };
 
@@ -439,18 +204,6 @@ const ManageExpense = () => {
     <DeleteCommonAction onClick={() => handleDelete(action.data)} />
   );
 
-  const restauranttableheaders = [
-    { title: "Expense Type", key: "expenseType" },
-
-    { title: "Include quantity", key: "includeQuantity", type: "boolean" },
-
-    { title: "Status", key: "status" },
-    // {
-    //   title: "Status",
-    //   key: "status",
-    // },
-  ];
-
   const branchtableheaders = [
     { title: "Expense Title", key: "expenseTitle" },
     { title: "Expense Type", key: "expenseType" },
@@ -458,9 +211,7 @@ const ManageExpense = () => {
 
     { title: "Expense Price", key: "expensePrice", isCurrency: true },
   ];
-  const headers = isRestaurantAdmin
-    ? restauranttableheaders
-    : branchtableheaders;
+  const headers = branchtableheaders;
 
   const defaultValues = {
     restaurantId: restaurantId,
@@ -488,33 +239,15 @@ const ManageExpense = () => {
   );
 
   const headerComponents = {
-    restaurantadmin: [
-      // ...[BranchFilter],
-      ...(!currBranchId ? [ImportAction] : []),
-    ],
     branchadmin: [DatePicker],
   };
   React.useEffect(() => {
     getAllData();
-    // isRestaurantAdmin && dispatch(getAllexpenseTypes());
-    // isBranchAdmin && dispatch(getRestaurantExpenseType(restaurantId));
   }, [state]);
 
   return (
     <>
       <div class="page-content-tab">
-        {!isSuperAdmin && (
-          <CommonImportModal
-            headers={headers}
-            open={importOpen}
-            title={PageTitle}
-            data={importData()}
-            onClose={() => setImportOpen(false)}
-            onSubmit={(data) => {
-              onImport(data);
-            }}
-          />
-        )}
         <CommonAddModal
           title={PageTitle}
           open={open === "Add" || open === "Edit"}
@@ -522,7 +255,7 @@ const ManageExpense = () => {
           mode={open}
           onSubmit={(e) => onAdd(e)}
           data={actionData}
-          formData={formData}
+          restaurantExpenseTypes={restaurantExpenseTypes}
           defaultValue={defaultValues}
         />
         <DeleteModal
@@ -541,8 +274,8 @@ const ManageExpense = () => {
           headers={headers}
           sortable={true}
           paginated={true}
-          searchByLabel={isRestaurantAdmin ? "Expense Type" : "Expense Title"}
-          searchByField={isRestaurantAdmin ? "expenseType" : "expenseTitle"}
+          searchByLabel={"Expense Title"}
+          searchByField={"expenseTitle"}
           rowsPerPage={5}
         />
       </div>

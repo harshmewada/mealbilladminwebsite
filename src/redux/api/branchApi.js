@@ -3,5 +3,7 @@ const branchApi = {
   CREATE_BRANCH: "/api/restaurant/branches/create",
   UPDATE_BRANCH: "/api/restaurant/branches/update",
   DELETE_BRANCH: `/api/restaurant/branches/delete`,
+
+  UPDATE_RECEIPT_MESSAGE: `/api/restaurant/branches/updateReceipt`,
 };
 export default branchApi;

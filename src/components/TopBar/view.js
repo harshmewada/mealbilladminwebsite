@@ -22,6 +22,14 @@ const View = ({ handleLogout }) => {
   };
   const handleNavigate = (link) => history.push(link);
 
+  const logoPath = RootUrl + "/" + restaurantLogo;
+
+  // React.useEffect(() => {
+  //   if (window?.api.isElectron) {
+  //     // window.api.saveLogo(logoPath);
+
+  //   }
+  // }, [restaurantLogo]);
   return (
     <div class="topbar">
       <nav class="navbar-custom">
@@ -79,10 +87,7 @@ const View = ({ handleLogout }) => {
               style={{ padding: "10px", cursor: "pointer" }}
               onClick={() => handleNavigate("/")}
             >
-              <img
-                src={RootUrl + "/" + restaurantLogo}
-                style={{ height: "50px", width: "auto" }}
-              />
+              <img src={logoPath} style={{ height: "50px", width: "auto" }} />
             </li>
           ) : (
             <li

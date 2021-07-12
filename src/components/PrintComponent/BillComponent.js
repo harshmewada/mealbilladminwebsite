@@ -175,7 +175,7 @@ const ProductTable = ({ orderData }) => {
 };
 
 const Invoice = React.forwardRef(
-  ({ restaurant, orderData, count, logo, gstNumber }, ref) => {
+  ({ restaurant, orderData, count, logo, gstNumber, receiptMessage }, ref) => {
     const {
       branchOrderNumber,
       paymentType,
@@ -199,6 +199,11 @@ const Invoice = React.forwardRef(
         <p class="centered">
           <p>thank you, visit us again</p>
         </p>
+        {receiptMessage && (
+          <p class="centered">
+            <p>{receiptMessage}</p>
+          </p>
+        )}
       </div>
     );
   }
@@ -206,9 +211,16 @@ const Invoice = React.forwardRef(
 
 class BillComponent extends React.Component {
   render() {
-    const { logo, customAction, orderData, count, restaurant, gstNumber } =
-      this.props;
-    console.log("orderData", orderData);
+    const {
+      logo,
+      customAction,
+      orderData,
+      count,
+      restaurant,
+      gstNumber,
+      receiptMessage,
+    } = this.props;
+    // console.log("orderData", orderData);
     return orderData ? (
       <Invoice
         count={count}
@@ -216,6 +228,7 @@ class BillComponent extends React.Component {
         orderData={orderData}
         logo={logo}
         gstNumber={gstNumber}
+        receiptMessage={receiptMessage}
       />
     ) : (
       <div className={`invoice-box invoice-box-hide" `}>

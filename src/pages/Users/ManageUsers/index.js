@@ -84,8 +84,11 @@ const ManageUsers = () => {
   const [open, setOpen] = React.useState();
   const [actionData, setActionData] = React.useState();
 
-  const { role, restaurantId, branchId } = useSelector((state) => state.user);
+  const { role, restaurantId, branchId, allowedUsers, currentUsers } =
+    useSelector((state) => state.user);
+  // console.log("allowedUsers, currentUsers", currentUsers, allowedUsers);
 
+  const isSuperAdmin = role === "superadmin";
   const [selectedRes, setSelectedRes] = React.useState(restaurantId || "all");
 
   const CurrentRestaurant = restaurantId || selectedRes;
@@ -151,6 +154,8 @@ const ManageUsers = () => {
       <AddCommonAction
         onClick={() => history.push("/adduser")}
         title={PageTitle}
+        disabled={!isSuperAdmin && currentUsers >= allowedUsers}
+        disabledTitle={"Can not add new users, user limit is exceeded."}
       />
     );
   };

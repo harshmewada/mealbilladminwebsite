@@ -4,7 +4,8 @@ import {
   stableSort,
   getComparator,
 } from "../../../components/common/SmartTable/functions";
-const TableNumberSelector = ({ tables, handleClick }) => {
+import { TYPESOFORDERS } from "../../../contants";
+const TableNumberSelector = ({ tables, handleClick, otherOrders }) => {
   const activeOrders = useSelector((state) => state.order.activeOrders);
 
   const checkactive = (tableNumber) => {
@@ -17,6 +18,9 @@ const TableNumberSelector = ({ tables, handleClick }) => {
     } else {
       return false;
     }
+  };
+  const findTitle = (orderType) => {
+    return TYPESOFORDERS.find((order) => order.value === orderType).key;
   };
   return (
     <div class="flex-container" style={{ maxHeight: 80, overflow: "auto" }}>
@@ -35,6 +39,19 @@ const TableNumberSelector = ({ tables, handleClick }) => {
           );
         }
       )}
+      {/* {otherOrders.map((data, index) => {
+        return (
+          <button key={index} onClick={() => handleClick(data, index)}>
+            <div
+              class={`child ${
+                checkactive(data.tableNumber) ? `child-active` : ""
+              }`}
+            >
+              {findTitle(data.orderType)}
+            </div>
+          </button>
+        );
+      })} */}
     </div>
   );
 };

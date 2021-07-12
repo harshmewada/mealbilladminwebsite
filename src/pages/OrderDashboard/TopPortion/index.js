@@ -58,6 +58,10 @@ const TopPortion = () => {
     }
   };
 
+  const getOtherOrders = () => {
+    return activeOrders.filter((order) => !order.tableTypeId);
+  };
+
   const RowRender = ({ children }) => <Row class="pb-0 mb-0 ">{children}</Row>;
   const ColRender = ({ children, lg }) => (
     <Col lg={lg} class="pb-0 mb-0 ">
@@ -105,6 +109,7 @@ const TopPortion = () => {
               <ColRender lg={9}>
                 <TableNumberSelector
                   tables={getFilteredTables()}
+                  otherOrders={getOtherOrders()}
                   handleClick={handleTableNumberClick}
                 />
               </ColRender>

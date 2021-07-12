@@ -9,6 +9,7 @@ import ManageHotKeys from "../pages/HotKeys/ManageHotKeys";
 import ManageTableTypes from "../pages/TableTypes/index";
 // import ManageCategoryTypes from "../pages/CategoryTypes/index";
 import ManageExpense from "../pages/Expense/index";
+import ManageBranchExpense from "../pages/Expense/BranchExpense";
 
 import AddRestaurant from "../pages/Restaurant/ManageRestaurant";
 import ManageSubScriptions from "../pages/Subscriptions/ManageSubscriptions";
@@ -27,7 +28,7 @@ import ManageExpenseTypes from "../pages/ExpenseTypes";
 import OrderHistory from "../pages/OrderHistory";
 
 import ExpiredSubscription from "../pages/ExpiredSubscription";
-import Printers from "../pages/Printers";
+import BranchAdminSettings from "../pages/Settings/BranchAdminSettings";
 
 const DashBoardRoutes = () => {
   const role = useSelector((state) => state.user.role);
@@ -35,6 +36,7 @@ const DashBoardRoutes = () => {
 
   const isBranchAdmin = role === "branchadmin";
   const isBranchUser = role === "branchuser";
+  const isRestaurantAdmin = role === "branchuser";
 
   const superadmin = "superadmin";
   const restaurantadmin = "restaurantadmin";
@@ -138,7 +140,7 @@ const DashBoardRoutes = () => {
           <ProtectedRoute
             roles={[restaurantadmin, branchadmin, branchuser]}
             path="/manageexpense"
-            component={ManageExpense}
+            component={isRestaurantAdmin ? ManageExpense : ManageBranchExpense}
           />
 
           <ProtectedRoute
@@ -149,8 +151,8 @@ const DashBoardRoutes = () => {
 
           <ProtectedRoute
             roles={[branchadmin, branchuser]}
-            path="/manageprinters"
-            component={Printers}
+            path="/settings"
+            component={BranchAdminSettings}
           />
           {/* 
           <ProtectedRoute

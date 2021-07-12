@@ -195,13 +195,14 @@ export const branchadmin = [
   {
     title: "Setting",
     icon: "mdi mdi-cog-outline",
+    link: "/settings",
 
-    children: [
-      {
-        title: "Printer Setting",
-        link: "/manageprinters",
-      },
-    ],
+    // children: [
+    //   {
+    //     title: "Printer Setting",
+    //     link: "/manageprinters",
+    //   },
+    // ],
   },
   // {
   //   title: "Manage Hotkeys",

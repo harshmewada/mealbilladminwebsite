@@ -1,10 +1,18 @@
-const { app, BrowserWindow, ipcMain, Notification } = require("electron");
-const printBill = require("./elctronfunction/electronPrintBill");
+const {
+  app,
+  BrowserWindow,
+  ipcMain,
+  Notification,
+  remote,
+  globalShortcut,
+} = require("electron");
+const electronPrintBill = require("./elctronfunction/electronPrintBill");
 const path = require("path");
 const {
   createPrintWindow,
 } = require("simple-electron-printer-and-thermalprinter");
 const isDev = require("electron-is-dev");
+const saveLogoFile = require("./elctronfunction/saveLogoFile");
 
 let win;
 function createWindow() {
@@ -45,37 +53,45 @@ function createWindow() {
   win.on("closed", () => (win = null));
 
   // Open the DevTools.
-  isDev && win.webContents.openDevTools();
+  // isDev && win.webContents.openDevTools();
 }
 ipcMain.on("silent-print", (event) => {
-  console.log("silent printing", event.sender);
+  // alert("hehe");
+  // alert("silent printing", event.sender);
   // Print the window silently
-  event.sender.print({ silent: true }, (success, failureReason) => {
-    // Signal that the print is finished
-    event.reply("silent-print-result", success ? "success" : failureReason);
-  });
+  // event.sender.print({ silent: true }, (success, failureReason) => {
+  //   // Signal that the print is finished
+  //   event.reply("silent-print-result", success ? "success" : failureReason);
+  // });
 });
-ipcMain.on("printPage", async (_, data) => {
-  let printers = win.webContents.getPrinters(); //list the printers
+ipcMain.on("saveLogo", (_, data) => {
+  saveLogoFile(data);
+});
+ipcMain.on("printPage", (_, data) => {
+  new Notification({ title: "printPage", body: "printing" }).show();
+  electronPrintBill(data);
 
-  console.log("printres", printers);
-  createPrintWindow({
-    html: data,
+  // alert("hehe");
+  // let printers = win.webContents.getPrinters(); //list the printers
 
-    cssUrl: "../../resources/css/tablas-printer.css",
+  // console.log("printres", printers);
+  // createPrintWindow({
+  //   html: data,
 
-    mainWindow: win,
+  //   cssUrl: "../../resources/css/tablas-printer.css",
 
-    sheetSize: "A3",
-    printerName: "pos",
+  //   mainWindow: win,
 
-    config: ["timePrinter", "hiddenWindow"],
-  });
+  //   sheetSize: "A3",
+  //   printerName: "pos",
+
+  //   config: ["timePrinter", "hiddenWindow"],
+  // });
 
   // new Notification({ title: "Notifiatddion", body: message }).show();
 });
 ipcMain.on("notify", (_, message) => {
-  console.log("notify");
+  // alert("notify");
   // let printers = win.webContents.getPrinters(); //list the printers
   // var options = {
   //   silent: false,
@@ -104,6 +120,10 @@ ipcMain.on("notify", (_, message) => {
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
   createWindow();
+
+  globalShortcut.register("F12", () => {
+    win.webContents.openDevTools();
+  });
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

@@ -2,7 +2,7 @@ import getErrorMessage from "../../helpers/getErrorMessage";
 import { showSnackBar } from "./snackActions";
 
 const checkIfAsyncReqSuccess = (dispatch, mainReq) => {
-  const { successMessage, errorMessage, cb, enableMessage } = mainReq;
+  const { successMessage, errorMessage, cb, enableMessage, errorCb } = mainReq;
 
   const succMessage = (res) =>
     enableMessage ? res.payload.data.message || successMessage : successMessage;
@@ -20,15 +20,18 @@ const checkIfAsyncReqSuccess = (dispatch, mainReq) => {
               data: res.payload.data,
             });
         } else if (succMessage(res)) {
+          errorCb && errorCb();
           dispatch(showSnackBar(succMessage(res), "error"));
         }
       })
       .catch((err) => {
         if (err && errMessage(err)) {
+          errorCb && errorCb();
           dispatch(showSnackBar(errMessage(err) || "Failed", "error"));
         }
       });
   } catch {
+    errorCb && errorCb();
     dispatch(showSnackBar(errMessage() || "Failed", "error"));
   }
 };

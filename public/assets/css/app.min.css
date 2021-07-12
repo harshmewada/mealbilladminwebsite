@@ -3031,7 +3031,8 @@ p {
 }
 
 .card .card-header {
-  background-color: #f1f5fa;
+  background-color: #11212e;
+  color: "white";
 }
 
 .badge-success,

@@ -44,7 +44,7 @@ const ActiveOrderSelector = ({ tables }) => {
   const active = useSelector((state) => state.order.activeOrderIndex);
   const { lastOrderNumber, activeOrders } = useSelector((state) => state.order);
   const branchCode = useSelector((state) => state.user.branchCode);
-
+  console.log("activeOrders", activeOrders);
   const handleItemQuantity = (quantity, itemindex) => {
     dispatch(changeItemQuantity(parseInt(quantity), itemindex));
   };
@@ -64,7 +64,14 @@ const ActiveOrderSelector = ({ tables }) => {
     tablesRef.current = tablesRef.current.slice(0, tables.length);
   }, [tables]);
   const executeScroll = (index) => {
+    console.log(
+      "executeScroll",
+      index,
+      tables.length,
+      tablesRef.current[tables.length - index]
+    );
     index &&
+      tablesRef.current[tables.length - index] &&
       tablesRef.current[tables.length - index].scrollIntoView({
         behavior: "smooth",
         block: "end",

@@ -1,4 +1,4 @@
-import { userTypes } from "../types";
+import { branchTypes, RootUrl, userTypes } from "../types";
 import setToken from "../../helpers/setToken";
 import removeToken from "../../helpers/removeToken";
 
@@ -16,8 +16,16 @@ const initialstate = {
   cgst: 0,
   sgst: 0,
   hasSubscriptionExpired: false,
+  receiptMessage: null,
 };
 
+const saveLocallogo = (path) => {
+  if (window?.api?.isElectron) {
+    // const logoPath =  path;
+    // console.log("path", logoPath);
+    window.api.saveLogo(RootUrl + "/" + path);
+  }
+};
 const userReducer = (state = initialstate, action) => {
   const getData = () => action.payload.data;
   switch (action.type) {
@@ -36,6 +44,9 @@ const userReducer = (state = initialstate, action) => {
       };
     case userTypes.LOGIN_USER_SUCCESS:
       setToken(getData().token);
+      if (getData().user.restaurantLogo) {
+        saveLocallogo(getData().user.restaurantLogo);
+      }
       return {
         ...state,
         isLoading: false,
@@ -52,6 +63,9 @@ const userReducer = (state = initialstate, action) => {
       };
 
     case userTypes.GET_USER_DETAILS_SUCCESS:
+      if (getData().user.restaurantLogo) {
+        saveLocallogo(getData().user.restaurantLogo);
+      }
       return {
         ...state,
         isLogged: true,
@@ -82,6 +96,12 @@ const userReducer = (state = initialstate, action) => {
         // ...getData().user,
         // token: getData().token,
       };
+
+    case branchTypes.UPDATE_RECEIPT_MESSAGE_SUCCESS:
+      return { ...state, receiptMessage: action.payload.data.data };
+
+    case branchTypes.DELETE_RECEIPT_MESSAGE_SUCCESS:
+      return { ...state, receiptMessage: null };
 
     case userTypes.LOGOUT_USER:
       removeToken();

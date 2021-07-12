@@ -103,6 +103,8 @@ const ManageSubscriptions = () => {
 
     { title: "Duration (Months)", key: "subscriptionDuration" },
     { title: "Amount", key: "subscriptionAmount", isCurrency: true },
+    { title: "Allowed Branches", key: "allowedBranches" },
+    { title: "Allowed Users", key: "allowedUsers" },
 
     { title: "Subscribers", key: "subscribers" },
     { title: "Status", key: "status" },
@@ -154,6 +156,44 @@ const ManageSubscriptions = () => {
         required: {
           value: true,
           message: "Subscription Duration is required",
+        },
+        maxLength: {
+          value: 2,
+          message: "Please select lesser duration , maximum allowed 99",
+        },
+      },
+    },
+    {
+      type: "number",
+      name: "allowedBranches",
+      label: "Allowed Branches",
+      size: 3,
+
+      placeholder: "Type Number of allowed branches",
+      required: true,
+      rules: {
+        required: {
+          value: true,
+          message: "Allowed Branches is required",
+        },
+        maxLength: {
+          value: 2,
+          message: "Please select lesser duration , maximum allowed 99",
+        },
+      },
+    },
+    {
+      type: "number",
+      name: "allowedUsers",
+      label: "Allowed Users",
+      size: 3,
+
+      placeholder: "Type Number of allowed Users",
+      required: true,
+      rules: {
+        required: {
+          value: true,
+          message: "Allowed Users is required",
         },
         maxLength: {
           value: 2,

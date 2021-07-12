@@ -15,6 +15,7 @@ const PrintComponent = ({
   gstNumber,
 
   containerStyle,
+  receiptMessage,
 }) => {
   const dispatch = useDispatch();
   const isPrinting = useDetectPrint();
@@ -48,6 +49,7 @@ const PrintComponent = ({
           restaurant={restaurant}
           logo={logo}
           gstNumber={gstNumber}
+          receiptMessage={receiptMessage}
         />
       </div>
     </div>

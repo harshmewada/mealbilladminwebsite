@@ -134,3 +134,17 @@ export const getPreviosOrders = (data) => {
     },
   };
 };
+
+export const setOtherCharges = (data) => {
+  return {
+    type: orderTypes.SET_OTHER_CHARGES,
+    payload: data,
+  };
+};
+
+export const setDiscount = (data) => {
+  return {
+    type: orderTypes.SET_DISCOUNT,
+    payload: data,
+  };
+};

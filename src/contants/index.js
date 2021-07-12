@@ -1,10 +1,11 @@
 import moment from "moment";
 
-// export const BASEURL = "http://192.168.0.111:4000";
+// export const BASEURL = "http://192.168.0.111:4001";
 export const BASEURL = "https://test.mealbill.in/api";
+// export const BASEURL = "https://web.mealbill.in/api";
 
 // export const BASEURL = "http://34.202.79.31/api";
-// export const BASEURL = "http://3.108.102.23/api";
+// export const BASEURL = "https://web.mealbill.in/api";
 
 export const DATEFORMAT = "DD/MM/YYYY";
 
