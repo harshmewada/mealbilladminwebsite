@@ -114,27 +114,16 @@ const AddModal = ({ open, onClose, title }) => {
       return dispatch(showSnackBar("Passwords do not match", "error"));
     }
     dispatch(
-      createUser({
-        ...data,
-        ...(restaurantId !== "all" &&
-          restaurantId && { restaurantId: restaurantId }),
-      })
-    )
-      .then((res) => {
-        if (res.payload.status === 200) {
-          // alert("ASd");
-          dispatch(showSnackBar("User created successfully"));
-          reset();
-        } else {
-          // alert("ASd");
-          dispatch(showSnackBar("Failed to create user", "error"));
-        }
-      })
-      .catch((err) => {
-        dispatch(
-          showSnackBar(getErrorMessage(err) || "Failed to create user", "error")
-        );
-      });
+      createUser(
+        {
+          ...data,
+          ...(restaurantId !== "all" &&
+            restaurantId && { restaurantId: restaurantId }),
+        },
+        () => reset(),
+        () => {}
+      )
+    );
   };
   React.useEffect(() => {
     role === "superadmin" && dispatch(getAllRestaurants("all"));
@@ -143,9 +132,6 @@ const AddModal = ({ open, onClose, title }) => {
   React.useEffect(() => {
     dispatch(getAllBranches(currRestaurandId, "true"));
   }, [currRestaurandId]);
-  // React.useEffect(() => {
-  //   dispatch(getAllBranches(currRestaurandId, "true"));
-  // }, []);
 
   console.log("err", errors);
   return (

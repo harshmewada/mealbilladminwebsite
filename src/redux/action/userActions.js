@@ -126,17 +126,23 @@ export const getAllUsers = (resId, branchId, status) => {
   };
 };
 
-export const createUser = (data) => {
-  return {
-    type: userTypes.CREATE_USER,
-    payload: {
-      request: {
-        url: userApi.CREATE_USER,
-        method: "post",
-        data: data,
+export const createUser = (data, cb, errorCb) => {
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: "User Added Succesfully",
+      errorMessage: "Failed to Add User",
+      enableMessage: true,
+      cb: cb,
+      errorCb: errorCb,
+      type: userTypes.CREATE_USER,
+      payload: {
+        request: {
+          url: userApi.CREATE_USER,
+          method: "post",
+          data: data,
+        },
       },
-    },
-  };
+    });
 };
 
 export const updateUser = (data) => {
