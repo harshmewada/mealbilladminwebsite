@@ -24,6 +24,7 @@ import TopBar from "../components/TopBar";
 import DashBoard from "../pages/DashBoard";
 import Reports from "../pages/Reports";
 import ManageExpenseTypes from "../pages/ExpenseTypes";
+import RestaurantExpenseTypes from "../pages/ExpenseTypes/RestaurantExpenseTypes";
 
 import OrderHistory from "../pages/OrderHistory";
 
@@ -36,7 +37,7 @@ const DashBoardRoutes = () => {
 
   const isBranchAdmin = role === "branchadmin";
   const isBranchUser = role === "branchuser";
-  const isRestaurantAdmin = role === "branchuser";
+  const isRestaurantAdmin = role === "restaurantadmin";
 
   const superadmin = "superadmin";
   const restaurantadmin = "restaurantadmin";
@@ -140,7 +141,9 @@ const DashBoardRoutes = () => {
           <ProtectedRoute
             roles={[restaurantadmin, branchadmin, branchuser]}
             path="/manageexpense"
-            component={isRestaurantAdmin ? ManageExpense : ManageBranchExpense}
+            component={
+              isRestaurantAdmin ? RestaurantExpenseTypes : ManageBranchExpense
+            }
           />
 
           <ProtectedRoute

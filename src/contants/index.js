@@ -21,6 +21,25 @@ export const TYPESOFORDERS = [
   { key: "Home Delivery", value: 2 },
 ];
 
+export const MEASUREUNITS = [
+  {
+    title: "Kg",
+    value: "kg",
+  },
+  {
+    title: "Gram",
+    value: "Gram",
+  },
+  {
+    title: " Nos.",
+    value: " Nos.",
+  },
+  {
+    title: "Litres",
+    value: "Litres",
+  },
+];
+
 export const TYPESOFPAYMENTS = [
   { type: "Cash", id: 0, icon: "mdi mdi-cash-multiple" },
 

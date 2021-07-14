@@ -2,6 +2,7 @@ import { expenseTypes } from "../types";
 
 import superadminapi from "../api/superadmin";
 import expenseApi from "../api/expenseApi";
+import checkIfAsyncReqSuccess from "./checkIfAsyncReqSuccess";
 
 export const createExpense = (data) => {
   if (data.role === "restaurantadmin") {
@@ -90,49 +91,64 @@ export const deleteExpense = (data) => {
     },
   };
 };
-export const createRestaurantExpenseType = (data) => {
-  return {
-    type: expenseTypes.CREATE_EXPENSE_TYPE,
-    payload: {
-      request: {
-        url: expenseApi.CREATE_EXPENSE_TYPES,
-        method: "post",
-        data: data,
-        headers: {
-          "Content-type": "application/json",
+export const createRestaurantExpenseType = (data, cb, errorCb) => {
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: "Expense created successfully",
+      errorMessage: "Failed to create Expense Type",
+      cb: cb,
+      errorCb: errorCb,
+      type: expenseTypes.CREATE_EXPENSE_TYPE,
+      payload: {
+        request: {
+          url: expenseApi.CREATE_EXPENSE_TYPES,
+          method: "post",
+          data: data,
+          headers: {
+            "Content-type": "application/json",
+          },
         },
       },
-    },
-  };
+    });
 };
 
-export const updateRestaurantExpenseType = (data) => {
-  return {
-    type: expenseTypes.UPDATE_EXPENSE_TYPE,
-    payload: {
-      request: {
-        url: expenseApi.UPDATE_EXPENSE_TYPES,
-        method: "PUT",
-        data: data,
-        headers: {
-          "Content-type": "application/json",
+export const updateRestaurantExpenseType = (data, cb, errorCb) => {
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: "Expense Updated successfully",
+      errorMessage: "Failed to update Expense Type",
+      cb: cb,
+      errorCb: errorCb,
+      type: expenseTypes.UPDATE_EXPENSE_TYPE,
+      payload: {
+        request: {
+          url: expenseApi.UPDATE_EXPENSE_TYPES,
+          method: "PUT",
+          data: data,
+          headers: {
+            "Content-type": "application/json",
+          },
         },
       },
-    },
-  };
+    });
 };
 
-export const deleteRestaurantExpenseType = (data) => {
-  return {
-    type: expenseTypes.DELETE_EXPENSE_TYPE,
-    payload: {
-      request: {
-        url: expenseApi.DELETE_EXPENSE_TYPES,
-        method: "delete",
-        data: data,
+export const deleteRestaurantExpenseType = (data, cb, errorCb) => {
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: "Expense Deleted successfully",
+      errorMessage: "Failed to delete Expense Type",
+      cb: cb,
+      errorCb: errorCb,
+      type: expenseTypes.DELETE_EXPENSE_TYPE,
+      payload: {
+        request: {
+          url: expenseApi.DELETE_EXPENSE_TYPES,
+          method: "delete",
+          data: data,
+        },
       },
-    },
-  };
+    });
 };
 
 export const getAllExpenses = (data) => {
@@ -152,51 +168,66 @@ export const getAllExpenses = (data) => {
 
 //Expense types
 
-export const createExpenseType = (data) => {
-  return {
-    type: expenseTypes.CREATE_EXPENSE_TYPE,
-    payload: {
-      request: {
-        url: superadminapi.CREATE_SUPERADMIN_EXPENSETYPE,
-        method: "post",
-        data: data,
-        headers: {
-          "Content-type": "application/json",
+export const createExpenseType = (data, cb, errorCb) => {
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: "Expense created successfully",
+      errorMessage: "Failed to create Expense Type",
+      cb: cb,
+      errorCb: errorCb,
+      type: expenseTypes.CREATE_EXPENSE_TYPE,
+      payload: {
+        request: {
+          url: superadminapi.CREATE_SUPERADMIN_EXPENSETYPE,
+          method: "post",
+          data: data,
+          headers: {
+            "Content-type": "application/json",
+          },
         },
       },
-    },
-  };
+    });
 };
 
-export const updateExpenseType = (data) => {
-  return {
-    type: expenseTypes.UPDATE_EXPENSE_TYPE,
-    payload: {
-      request: {
-        url: superadminapi.UPDATE_SUPERADMIN_EXPENSETYPE,
-        method: "PUT",
-        data: data,
-        headers: {
-          "Content-type": "application/json",
+export const updateExpenseType = (data, cb, errorCb) => {
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: "Expense Updated successfully",
+      errorMessage: "Failed to update Expense Type",
+      cb: cb,
+      errorCb: errorCb,
+      type: expenseTypes.UPDATE_EXPENSE_TYPE,
+      payload: {
+        request: {
+          url: superadminapi.UPDATE_SUPERADMIN_EXPENSETYPE,
+          method: "PUT",
+          data: data,
+          headers: {
+            "Content-type": "application/json",
+          },
         },
       },
-    },
-  };
+    });
 };
 
-export const deleteExpenseType = (data) => {
-  return {
-    type: expenseTypes.DELETE_EXPENSE_TYPE,
-    payload: {
-      request: {
-        url: superadminapi.DELETE_SUPERADMIN_EXPENSETYPE,
-        method: "delete",
-        data: {
-          id: data,
+export const deleteExpenseType = (data, cb, errorCb) => {
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: "Expense Deleted successfully",
+      errorMessage: "Failed to delete Expense Type",
+      cb: cb,
+      errorCb: errorCb,
+      type: expenseTypes.DELETE_EXPENSE_TYPE,
+      payload: {
+        request: {
+          url: superadminapi.DELETE_SUPERADMIN_EXPENSETYPE,
+          method: "delete",
+          data: {
+            id: data,
+          },
         },
       },
-    },
-  };
+    });
 };
 
 export const getAllexpenseTypes = (resId, branchId, status) => {
@@ -233,18 +264,23 @@ export const getRestaurantExpenseType = (resId, status) => {
   };
 };
 
-export const importExpenseTypes = (data) => {
-  return {
-    type: expenseTypes.IMPORT_EXPENSETYPES,
-    payload: {
-      request: {
-        url: expenseApi.IMPORT_EXPENSES,
-        method: "post",
-        data: data,
-        headers: {
-          "Content-type": "application/json",
+export const importExpenseTypes = (data, cb, errorCb) => {
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: "Expense Imported successfully",
+      errorMessage: "Failed to Import Expense Type",
+      cb: cb,
+      errorCb: errorCb,
+      type: expenseTypes.IMPORT_EXPENSETYPES,
+      payload: {
+        request: {
+          url: expenseApi.IMPORT_EXPENSES,
+          method: "post",
+          data: data,
+          headers: {
+            "Content-type": "application/json",
+          },
         },
       },
-    },
-  };
+    });
 };

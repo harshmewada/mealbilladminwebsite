@@ -15,6 +15,7 @@ import {
   getAllexpenseTypes,
 } from "../../redux/action/expenseActions";
 import getErrorMessage from "../../helpers/getErrorMessage";
+import SubExpensesModal from "../../components/common/Modals/SubExpensesTypesModal";
 const PageTitle = "Expense Types";
 
 const ManageExpenseTypes = () => {
@@ -92,95 +93,61 @@ const ManageExpenseTypes = () => {
     setActionData(data);
   };
 
-  const confirmDelete = (data) => {
-    dispatch(deleteExpenseType(actionData.id))
-      .then((res) => {
-        if (res.payload.status === 200) {
-          toggleAdd();
-          dispatch(showSnackBar("Deleted succesfully"));
-          dispatch(getAllexpenseTypes());
-        } else {
-          dispatch(
-            showSnackBar(
-              getErrorMessage(res) || "Failed to delete Expense Type",
-              "error"
-            )
-          );
-        }
-      })
-      .catch((err) => {
-        console.log("err", err);
-        dispatch(
-          showSnackBar(
-            getErrorMessage(err) || "Failed to delete Expense Type",
-            "error"
-          )
-        );
-      });
+  const handleAddSubExpense = (data) => {
+    toggleAdd("sub");
+    setActionData(data);
   };
 
+  const onAddNewSubExpenses = (e) => {
+    if (open === "sub") {
+      dispatch(
+        updateExpenseType(
+          {
+            ...actionData,
+            ...e,
+            // ...data,
+          },
+          () => {
+            dispatch(getAllexpenseTypes());
+            toggleAdd();
+          }
+        )
+      );
+    }
+  };
   const onAdd = (data) => {
     if (open === "Add") {
       dispatch(
-        createExpenseType({
-          ...data,
-        })
-      )
-        .then((res) => {
-          if (res.payload.status === 200) {
-            toggleAdd();
-            dispatch(showSnackBar("Expense created successfully"));
-            dispatch(getAllexpenseTypes());
-          } else {
-            dispatch(
-              showSnackBar(
-                getErrorMessage(res) || "Failed to create Expense Type",
-                "error"
-              )
-            );
-          }
-        })
-        .catch((err) => {
-          console.log("err", err);
-          dispatch(
-            showSnackBar(
-              getErrorMessage(err) || "Failed to create Expense",
-              "error"
-            )
-          );
-        });
+        createExpenseType(
+          {
+            ...data,
+          },
+          dispatch(getAllexpenseTypes())
+        )
+      );
     }
     if (open === "Edit") {
       dispatch(
-        updateExpenseType({
-          ...actionData,
-          ...data,
-        })
-      )
-        .then((res) => {
-          if (res.payload.status === 200) {
-            dispatch(showSnackBar("Expense Updated Successfully", "success"));
+        updateExpenseType(
+          {
+            ...actionData,
+            ...data,
+          },
+          () => {
             dispatch(getAllexpenseTypes());
             toggleAdd();
-          } else {
-            dispatch(
-              showSnackBar(
-                getErrorMessage(res) || "Failed to update Expense",
-                "error"
-              )
-            );
           }
-        })
-        .catch((err) => {
-          console.log("err", err);
-          dispatch(
-            showSnackBar(
-              getErrorMessage(err) || "Failed to update Expense",
-              "error"
-            )
-          );
-        });
+        )
+      );
     }
+  };
+
+  const confirmDelete = (data) => {
+    dispatch(
+      deleteExpenseType(actionData.id, () => {
+        dispatch(getAllexpenseTypes());
+      })
+    );
   };
 
   const AddAction = () => {
@@ -196,11 +163,23 @@ const ManageExpenseTypes = () => {
   const DeleteAction = (action) => (
     <DeleteCommonAction onClick={() => handleDelete(action.data)} />
   );
+  const AddSubExpenseAction = (action) => {
+    return (
+      <AddCommonAction
+        onClick={() => handleAddSubExpense(action.data)}
+        title={"Sub Expense Types"}
+      />
+    );
+  };
 
   const headers = [
     { title: "Expense Type", key: "expenseType" },
     { title: "Include quantity", key: "includeQuantity", type: "boolean" },
-
+    {
+      title: "Sub Expense Count",
+      key: "Sub Expense Count",
+      renderRow: (e) => e?.subExpenseTypes?.length || 0,
+    },
     { title: "Status", key: "status" },
   ];
 
@@ -221,6 +200,14 @@ const ManageExpenseTypes = () => {
   return (
     <>
       <div class="page-content-tab">
+        <SubExpensesModal
+          open={open === "sub" || open === "subEdit"}
+          onClose={() => toggleAdd()}
+          mode={open}
+          data={actionData}
+          onSubmit={(e) => onAddNewSubExpenses(e)}
+        />
+
         <CommonAddModal
           title={PageTitle}
           open={open === "Add" || open === "Edit"}
@@ -242,7 +229,7 @@ const ManageExpenseTypes = () => {
           headerComponents={headerComponents[role]}
           title={PageTitle}
           headAction={AddAction}
-          actions={[EditAction, DeleteAction]}
+          actions={[EditAction, DeleteAction, AddSubExpenseAction]}
           tableData={expenseTypes}
           headers={headers}
         />

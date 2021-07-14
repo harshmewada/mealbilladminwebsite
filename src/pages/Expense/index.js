@@ -27,7 +27,7 @@ import ImportCommonAction from "../../components/common/Actions/ImportCommonActi
 import DateRangePicker from "react-bootstrap-daterangepicker";
 import "bootstrap-daterangepicker/daterangepicker.css";
 import moment from "moment";
-import { DATEFORMAT, dateRanges } from "../../contants";
+import { DATEFORMAT, dateRanges, MEASUREUNITS } from "../../contants";
 
 const ManageExpense = () => {
   const { expenses: arraycat, restaurantExpenseTypes } = useSelector(
@@ -185,24 +185,7 @@ const ManageExpense = () => {
       size: 4,
 
       label: "Quantity Type",
-      options: [
-        {
-          title: "Kg, ",
-          value: "kg",
-        },
-        {
-          title: "Gram",
-          value: "Gram",
-        },
-        {
-          title: " Nos.",
-          value: " Nos.",
-        },
-        {
-          title: "Litres",
-          value: "Litres",
-        },
-      ],
+      options: MEASUREUNITS,
       optionLabelProp: "title",
       optionValueProp: "value",
     },

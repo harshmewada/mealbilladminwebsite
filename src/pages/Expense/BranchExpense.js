@@ -8,6 +8,7 @@ import AddCommonAction from "../../components/common/Actions/AddCommonAction";
 import EditCommonAction from "../../components/common/Actions/EditAction";
 import DeleteCommonAction from "../../components/common/Actions/DeleteCommonAction";
 import CommonAddModal from "../../components/common/Modals/ExpenseAddModal";
+
 import {
   createExpense,
   deleteExpense,
@@ -206,8 +207,22 @@ const ManageExpense = () => {
 
   const branchtableheaders = [
     { title: "Expense Title", key: "expenseTitle" },
-    { title: "Expense Type", key: "expenseType" },
-    { title: "Quantity", key: "quantity" },
+    {
+      title: "Expense Type",
+      key: "expenseType",
+      renderRow: (row) =>
+        row.subExpenseType
+          ? `${row.expenseType} (${row.subExpenseType})`
+          : row.expenseType,
+    },
+    {
+      title: "Quantity",
+      key: "quantity",
+      renderRow: (row) =>
+        row.quantityType
+          ? `${row.quantity} (${row.quantityType})`
+          : row.quantity,
+    },
 
     { title: "Expense Price", key: "expensePrice", isCurrency: true },
   ];
