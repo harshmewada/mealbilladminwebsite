@@ -11,10 +11,6 @@ import orderReducer from "./orderReducer";
 import reportReducer from "./reportReducer";
 import dashboardReducer from "./dashboardReducer";
 
-const initialState = {
-  values: {},
-};
-
 export default combineReducers({
   util: utilReducer,
   snack: snackReducer,

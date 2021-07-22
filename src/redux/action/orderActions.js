@@ -1,6 +1,7 @@
 import { branchTypes, orderTypes, restaurantTypes } from "../types";
 import branchApi from "../api/branchApi";
 import { orderApi } from "../api/orderApi";
+import checkIfAsyncReqSuccess from "./checkIfAsyncReqSuccess";
 // export const createBranch = (data) => {
 //   //   const role = store.getState();
 
@@ -79,10 +80,10 @@ export const changeItemQuantity = (quantity, index) => {
   };
 };
 
-export const setActiveOrder = (orderIndex) => {
+export const setActiveOrder = (refId) => {
   return {
     type: orderTypes.SET_ACTIVE_ORDER,
-    payload: orderIndex,
+    payload: refId,
   };
 };
 
@@ -104,20 +105,33 @@ export const removeItem = (index) => {
     },
   };
 };
-export const confirmOrder = (data) => {
+
+export const setKOTitemsData = (data) => {
   return {
-    type: orderTypes.CONFIRM_ORDER,
-    payload: {
-      request: {
-        url: orderApi.CREATE_ORDER,
-        method: "post",
-        data: data,
-        headers: {
-          "Content-type": "application/json",
+    type: orderTypes.SET_KOT_ITEMS,
+    payload: data,
+  };
+};
+
+export const confirmOrder = (data, cb, errorCb) => {
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: "Order Successfull",
+      errorMessage: "Failed To Order",
+      cb: cb,
+      errorCb: errorCb,
+      type: orderTypes.CONFIRM_ORDER,
+      payload: {
+        request: {
+          url: orderApi.CREATE_ORDER,
+          method: "post",
+          data: data,
+          headers: {
+            "Content-type": "application/json",
+          },
         },
       },
-    },
-  };
+    });
 };
 
 export const getPreviosOrders = (data) => {

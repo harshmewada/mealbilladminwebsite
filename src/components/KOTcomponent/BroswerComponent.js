@@ -13,9 +13,10 @@ const PrintComponent = ({
   restaurant,
   logo,
   gstNumber,
-  branchAddress,
+
   containerStyle,
   receiptMessage,
+  branchAddress,
 }) => {
   const dispatch = useDispatch();
   const isPrinting = useDetectPrint();
@@ -48,8 +49,6 @@ const PrintComponent = ({
           orderData={printData}
           restaurant={restaurant}
           logo={logo}
-          gstNumber={gstNumber}
-          receiptMessage={receiptMessage}
           branchAddress={branchAddress}
         />
       </div>

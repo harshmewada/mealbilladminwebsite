@@ -5,7 +5,7 @@ import {
   deleteReceiptMessage,
   updateReceiptMessage,
 } from "../../redux/action/branchActions";
-import { togglePrinting } from "../../redux/action/utilActions";
+import { toggleKOT, togglePrinting } from "../../redux/action/utilActions";
 
 const BranchAdminSettings = () => {
   const dispatch = useDispatch();
@@ -19,7 +19,7 @@ const BranchAdminSettings = () => {
     receiptMessage: customMessage,
   } = useSelector((state) => state.user);
 
-  const enablePrinting = useSelector((state) => state.util.enablePrinting);
+  const { enablePrinting, enableKOT } = useSelector((state) => state.util);
 
   const handleChange = (e) => {
     setReceiptMessage(e.target.value);
@@ -59,6 +59,15 @@ const BranchAdminSettings = () => {
     }
   }, [customMessage]);
 
+  const handleOfflineMode = () => {
+    window.api.sendData("toMain", "some data");
+
+    // window.api.notify("hehe", () => {
+    //   console.log("i am callback");
+    // });
+    // alert("hehe");
+  };
+
   return (
     <div class="page-content-tab">
       <Card>
@@ -81,6 +90,21 @@ const BranchAdminSettings = () => {
               Enable Printing
             </label>
           </div>
+          <div class="custom-control custom-switch switch-primary">
+            <input
+              type="checkbox"
+              class="custom-control-input"
+              id="customSwitchPrimary1"
+              checked={enableKOT}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                dispatch(toggleKOT(checked));
+              }}
+            />
+            <label class="custom-control-label" for="customSwitchPrimary1">
+              Enable KOT
+            </label>
+          </div>
         </Card.Body>
       </Card>
       <Card>
@@ -90,10 +114,11 @@ const BranchAdminSettings = () => {
         <Card.Body>
           <Row>
             <Col md={6}>
-              <input
+              <textarea
                 type="text"
                 placeholder="Enter message to add below receipt"
                 class="form-control"
+                rows={"4"}
                 value={receiptMessage}
                 onChange={(e) => {
                   // const checked = e.target.checked;
@@ -129,6 +154,25 @@ const BranchAdminSettings = () => {
                   ></span>
                 )}
                 Delete
+              </Button>
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
+
+      <Card>
+        <Card.Header class="card-header bg-primary">
+          <h5 class="text-white">Offline Mode</h5>
+        </Card.Header>
+        <Card.Body>
+          <Row>
+            <Col md={2}>
+              <Button
+                style={{ backgroundColor: "rgb(240, 88, 60)", border: "none" }}
+                block
+                onClick={() => handleOfflineMode()}
+              >
+                Go to offline mode
               </Button>
             </Col>
           </Row>

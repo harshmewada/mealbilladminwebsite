@@ -7,7 +7,7 @@ import {
   tableTypes,
   userTypes,
 } from "../types";
-
+import { uuid } from "uuidv4";
 const datatableTypes = [
   {
     tableTypeName: "Ac",
@@ -35,6 +35,8 @@ const dummyActive = (payload) => {
     orderType: 0,
     otherCharges: 0,
     discount: 0,
+    lastKOTItems: [],
+    refId: uuid(),
   };
 };
 const initialstate = {
@@ -48,6 +50,15 @@ const initialstate = {
   selectedOrderType: "Dine In",
   selectedOrderTypeId: 0,
   previousOrders: [],
+};
+
+const findActiveOrder = (activeOrders, refId) => {
+  const foundOrder = activeOrders.findIndex((order) => order.refId === refId);
+  if (foundOrder > -1) {
+    return foundOrder;
+  } else {
+    return null;
+  }
 };
 
 const setOrderType = ({ key, value }) => {
@@ -107,6 +118,8 @@ const addNewOtherOrder = (activeOrders, selectedOrderTypeId) => {
     orderType: selectedOrderTypeId,
     otherCharges: 0,
     discount: 0,
+    lastKOTItems: [],
+    refId: uuid(),
   });
   return activeOrders;
 };
@@ -132,20 +145,23 @@ const removeItem = (allTables, activeOrderIndex, index) => {
   return allTables;
 };
 
-// const afterOrderComplete = (activeOrders, allTables, data) => {
-//   if (data.tableNumber) {
-//     let filteredTables = activeOrders.filter((table) => {
-//       return table.tableNumber != data.tableNumber;
-//     });
-//     const allTableActiveIndex = allTables.findIndex((table) => {
-//       return table.tableNumber == data.tableNumber;
-//     });
-//     return {
-//       activeOrders: filteredTables,
-//       allTables: allTables,
-//     };
-//   }
-// };
+const setKOTITEMSDATA = (activeOrders, activeOrderIndex, data) => {
+  data.forEach((dataitem) => {
+    // if()
+    const foundItem = activeOrders[activeOrderIndex].lastKOTItems.findIndex(
+      (item) => item.id === dataitem.id
+    );
+
+    if (foundItem > -1) {
+      activeOrders[activeOrderIndex].lastKOTItems[foundItem].quantity +=
+        dataitem.quantity;
+    } else {
+      activeOrders[activeOrderIndex].lastKOTItems.push(dataitem);
+    }
+  });
+
+  return activeOrders;
+};
 
 const deleteLocalOrder = (activeOrders, allTables, orderIndex, tableNumber) => {
   let filteredTables = activeOrders.filter((table, tabindex) => {
@@ -226,7 +242,7 @@ const orderReducer = (state = initialstate, action) => {
     case orderTypes.SET_ACTIVE_ORDER:
       return {
         ...state,
-        activeOrderIndex: action.payload,
+        activeOrderIndex: findActiveOrder(state.activeOrders, action.payload),
       };
 
     case orderTypes.ACTIVATE_TABLE:
@@ -272,6 +288,18 @@ const orderReducer = (state = initialstate, action) => {
             state.activeOrderIndex,
             action.payload.quantity,
             action.payload.index
+          ),
+        ],
+      };
+
+    case orderTypes.SET_KOT_ITEMS:
+      return {
+        ...state,
+        activeOrders: [
+          ...setKOTITEMSDATA(
+            state.activeOrders,
+            state.activeOrderIndex,
+            action.payload
           ),
         ],
       };

@@ -4,13 +4,15 @@ import {
   confirmOrder,
   deleteLocalOrder,
   setDiscount,
+  setKOTitemsData,
   setOtherCharges,
 } from "../../../redux/action/orderActions";
-import { showSnackBar } from "../../../redux/action/snackActions";
-import { setPrintData } from "../../../redux/action/utilActions";
 import { Curreny } from "../../../redux/types";
 import OrderButton from "./OrderButton";
-import OrderConfirmModal from "./OrderConfirmModal";
+import OrderConfirmModal from "../../../components/common/Modals/OrderConfirmModal";
+import { setKOTPrintData } from "../../../redux/action/utilActions";
+import moment from "moment";
+import { DATETIMEFORMAT } from "../../../contants";
 
 function parseFloat2Decimals(value) {
   return parseFloat(parseFloat(value).toFixed(2));
@@ -59,6 +61,9 @@ const OrderTotalDisplay = () => {
   // const [discount, setDiscount] = React.useState(0);
   // const [otherCharges, setOtherCharges] = React.useState(0);
   const [orderConfirmOpen, setOrderConfirmOpen] = React.useState();
+  const [KOTModalOpen, setKOTModalOpen] = React.useState(false);
+  const [KOTData, setKOTData] = React.useState();
+
   const {
     activeOrderIndex: index,
     activeOrders,
@@ -68,6 +73,8 @@ const OrderTotalDisplay = () => {
   const { name, restaurantId, branchId, branchCode, cgst, sgst } = useSelector(
     (state) => state.user
   );
+
+  const { enableKOT } = useSelector((state) => state.util);
 
   const discount = activeOrders[index]?.discount || 0;
   const otherCharges = activeOrders[index]?.otherCharges || 0;
@@ -81,6 +88,10 @@ const OrderTotalDisplay = () => {
     setOrderConfirmOpen(!orderConfirmOpen);
   };
 
+  const toggleKOTConfirmModal = () => {
+    setKOTModalOpen(!KOTModalOpen);
+  };
+
   const handleOpenMdoal = (type) => {
     if (activeOrders[index].items.length > 0) setOrderConfirmOpen(type);
     else {
@@ -88,7 +99,65 @@ const OrderTotalDisplay = () => {
     }
   };
 
-  const handleConfirmOrder = (payment, customerMobile) => {
+  const handleKOTButtonClick = () => {
+    if (!activeOrders[index]) {
+      return alert("No active order");
+    }
+
+    // setKOTModalOpen(kotData);
+    toggleKOTConfirmModal();
+  };
+  const handleConfirmKOTOrder = (customerData) => {
+    const active = activeOrders[index];
+    let kotItems = [];
+
+    //kot loop
+    active.items.forEach((data) => {
+      const foundItemIndex = active.lastKOTItems.findIndex(
+        (lastitem) => lastitem.id === data.id
+      );
+      if (foundItemIndex > -1) {
+        const foundItem = active.lastKOTItems[foundItemIndex];
+        const diffrence = data.quantity - foundItem.quantity;
+        if (diffrence === 0) {
+        }
+        if (diffrence > 0) {
+          kotItems.push({ ...data, quantity: diffrence });
+        }
+        // else {
+        //   kotItems.push({ ...data, quantity: diffrence });
+        // }
+      } else {
+        kotItems.push({ ...data });
+      }
+    });
+
+    console.log("kotItems", kotItems);
+
+    let ItemsQuantity = 0;
+    kotItems.map((item) => {
+      ItemsQuantity = ItemsQuantity + item.quantity;
+    });
+    const kotData = {
+      branchOrderNumber: `# ${lastOrderNumber + index + 1}`,
+      orderType: active.orderType,
+      orderItems: kotItems,
+      orderDate: moment().format(DATETIMEFORMAT),
+      tableNumber: active?.tableNumber,
+
+      totalQuantity: ItemsQuantity,
+    };
+    dispatch(
+      setKOTPrintData({
+        ...kotData,
+        ...customerData,
+      })
+    );
+    dispatch(setKOTitemsData(kotItems));
+    toggleKOTConfirmModal();
+  };
+
+  const handleConfirmOrder = (payment, customerData) => {
     let orderdata = {
       ...getData(),
       otherCharges: parseFloat2Decimals(getData().otherCharges),
@@ -106,33 +175,22 @@ const OrderTotalDisplay = () => {
       orderNumber: lastOrderNumber + (activeOrders.length - index),
       branchCode: branchCode,
       orderType: activeOrders[index].orderType,
-      customerMobile: customerMobile,
+      ...customerData,
     };
 
     toggleOrderConfirmModal();
 
-    dispatch(confirmOrder(orderdata))
-      .then((res) => {
-        if (res.payload.status === 200) {
-          dispatch(showSnackBar("Order Successfull"));
-          setOtherCharges(0);
-          setDiscount(0);
+    dispatch(
+      confirmOrder(orderdata, () => {
+        setOtherCharges(0);
+        setDiscount(0);
 
-          dispatch(deleteLocalOrder(index));
-        } else {
-          dispatch(showSnackBar("Failed To Order", "error"));
-        }
+        dispatch(deleteLocalOrder(index));
       })
-
-      .catch((err) => {
-        console.log("fail", err);
-        dispatch(showSnackBar("Failed To Order", "error"));
-      });
+    );
   };
 
   const getData = (mydiscount) => {
-    // const calculateddiscount = mydiscount || discount;
-    // console.log("discount getdata", mydiscount, calculateddiscount);
     let itemsTotal = 0;
     let cgstCharges = 0;
 
@@ -276,6 +334,8 @@ const OrderTotalDisplay = () => {
 
       <div className="col-md-4 mb-0">
         <OrderButton
+          enableKOT={enableKOT}
+          onKOTButtonClick={() => handleKOTButtonClick()}
           onClick={(type) => {
             handleOpenMdoal(type);
           }}
@@ -286,8 +346,19 @@ const OrderTotalDisplay = () => {
         <OrderConfirmModal
           open={orderConfirmOpen}
           text={`Grand total : ${Curreny} ${getData().grandTotal}`}
-          onConfirm={(mobile) => handleConfirmOrder(orderConfirmOpen, mobile)}
+          onConfirm={(customerData) =>
+            handleConfirmOrder(orderConfirmOpen, customerData)
+          }
           onCancel={() => toggleOrderConfirmModal()}
+        />
+      )}
+      {enableKOT && KOTModalOpen && (
+        <OrderConfirmModal
+          enableRemarks
+          open={KOTModalOpen}
+          text={`Confirm Kot`}
+          onConfirm={(customerData) => handleConfirmKOTOrder(customerData)}
+          onCancel={() => toggleKOTConfirmModal()}
         />
       )}
     </div>

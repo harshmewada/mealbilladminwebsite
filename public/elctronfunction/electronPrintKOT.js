@@ -50,16 +50,6 @@ const bodyHeaders = [
     value: "Qty.",
     style: commonBodyHeaderStyle({ width: 10, textAlign: "right" }),
   },
-  {
-    type: "text",
-    value: "Price",
-    style: commonBodyHeaderStyle({ width: 20, textAlign: "right" }),
-  },
-  {
-    type: "text",
-    value: "Amt.",
-    style: commonBodyHeaderStyle({ width: 20, textAlign: "right" }),
-  },
 ];
 
 const renderItem = (value, index) => {
@@ -80,24 +70,13 @@ const renderItem = (value, index) => {
       value: value.quantity,
       style: commonBodyCellStyle({ textAlign: "right" }),
     },
-    {
-      type: "text",
-      value: value.itemPrice,
-      style: commonBodyCellStyle({ textAlign: "right" }),
-    },
-    {
-      type: "text",
-      value: value.itemTotal,
-      style: commonBodyCellStyle({ textAlign: "right" }),
-    },
   ];
 };
-const electronPrintBill = async (printdata) => {
-  console.log("isElectron electronPrintBill", printdata);
-  const receiptMessage = printdata.receiptMessage;
+const electronPrintKOT = async (printdata) => {
+  const remarks = printdata.printData?.remarks;
 
-  // const files = fs.readdirSync(filepath);
-  console.log("dir files", process.cwd());
+  console.log("printDtat", remarks);
+
   const currentOrderType = TYPESOFORDERS.find((types) => {
     return types.value == printdata.printData.orderType;
   });
@@ -123,7 +102,7 @@ const electronPrintBill = async (printdata) => {
           {
             type: "text",
             value: text,
-            style: `text-align:center; font-weight:500;
+            style: `text-align:left; font-weight:500;
                       font-size: 13px;
                      border:1px solid transparent`,
           },
@@ -131,20 +110,11 @@ const electronPrintBill = async (printdata) => {
       ],
     };
   };
-  if (receiptMessage) {
-    extraText = insert(extraText, 0, renderExtra(receiptMessage));
-  } else {
-    extraText = insert(extraText, 0, renderExtra(`Thank You, Visit Us Again`));
+  if (remarks) {
+    extraText = insert(extraText, 0, renderExtra(`Remarks : ${remarks}`));
   }
 
   const headerdata = [
-    {
-      type: "image",
-      path: `${process.cwd()}/offlineImages/resLogo.png`, // file path
-      position: "center", // position of image: 'left' | 'center' | 'right'
-      width: "auto", // width of image in px; default: auto
-      height: "80px", // width of image in px; default: 50 or '50px'
-    },
     ...(printdata?.restaurant && [
       {
         type: "table",
@@ -164,34 +134,32 @@ const electronPrintBill = async (printdata) => {
         ],
       },
     ]),
+    // ...(printdata.branchAddress && [
+    //   {
+    //     type: "table",
+    //     // style the table
+    //     // list of the columns to be rendered in the table header
+    //     // multi dimensional array depicting the rows and columns of the table body
+    //     tableBody: [
+    //       [
+    //         {
+    //           type: "text",
+    //           value: `${printdata.branchAddress}`,
+    //           style: commonBordlessTableCellStyle({ textAlign: "center" }),
+    //         },
+    //       ],
+    //     ],
+    //   },
+    // ]),
     ...(printdata?.branchAddress && [
       {
         type: "table",
-        // style the table
-        // list of the columns to be rendered in the table header
-        // multi dimensional array depicting the rows and columns of the table body
+
         tableBody: [
           [
             {
               type: "text",
-              value: `${printdata.branchAddress}`,
-              style: commonBordlessTableCellStyle({ textAlign: "center" }),
-            },
-          ],
-        ],
-      },
-    ]),
-    ...(printdata?.gstNumber && [
-      {
-        type: "table",
-        // style the table
-        // list of the columns to be rendered in the table header
-        // multi dimensional array depicting the rows and columns of the table body
-        tableBody: [
-          [
-            {
-              type: "text",
-              value: `GST  ${printdata.gstNumber}`,
+              value: printdata.branchAddress,
               style: commonBordlessTableCellStyle({ textAlign: "center" }),
             },
           ],
@@ -202,9 +170,6 @@ const electronPrintBill = async (printdata) => {
       {
         type: "table",
 
-        // style the table
-        // list of the columns to be rendered in the table header
-        // multi dimensional array depicting the rows and columns of the table body
         tableBody: [
           [
             {
@@ -220,32 +185,20 @@ const electronPrintBill = async (printdata) => {
     {
       type: "table",
       style: "padding:10px 10px",
-      // style the table
-      // list of the columns to be rendered in the table header
-      // multi dimensional array depicting the rows and columns of the table body
+
       tableBody: [
         [
           {
             type: "text",
-            value: printdata.printData.branchOrderNumber,
-            style: commonBordlessTableCellStyle({ textAlign: "left" }),
-          },
-          {
-            type: "text",
-            value: "",
-            style: commonBordlessTableCellStyle({ textAlign: "left" }),
-          },
-          {
-            type: "text",
-            value: ``,
-            style: commonBordlessTableCellStyle({ textAlign: "right" }),
-          },
-          {
-            type: "text",
-            value: printdata.printData.createdAt,
+            value: printdata.printData.orderDate,
             style: commonBordlessTableCellStyle({
-              textAlign: "right",
+              textAlign: "left",
             }),
+          },
+          {
+            type: "text",
+            value: `Token :${printdata.printData.branchOrderNumber}`,
+            style: commonBordlessTableCellStyle({ textAlign: "right" }),
           },
         ],
         [
@@ -254,22 +207,13 @@ const electronPrintBill = async (printdata) => {
             value: currentOrderType.key,
             style: commonBordlessTableCellStyle({ textAlign: "left" }),
           },
+
           {
             type: "text",
-            value: printdata.printData.orderNumber,
-            style: commonBordlessTableCellStyle({ textAlign: "left" }),
-          },
-          {
-            type: "text",
-            value: printdata.printData.tableNumber || "",
+            value: printdata.printData.tableNumber
+              ? `Table : ${printdata.printData.tableNumber}`
+              : "",
             style: commonBordlessTableCellStyle({ textAlign: "right" }),
-          },
-          {
-            type: "text",
-            value: printdata.printData.paymentType,
-            style: commonBordlessTableCellStyle({
-              textAlign: "right",
-            }),
           },
         ],
       ],
@@ -279,8 +223,8 @@ const electronPrintBill = async (printdata) => {
   let bodydata = [
     {
       type: "table",
-      style: "margin-top:5px", // style the table
-      // list of the columns to be rendered in the table header
+      style: "margin-top:5px",
+
       tableHeader: bodyHeaders,
       tableBody: printdata.printData.orderItems.map((value, index) => {
         return renderItem(value, index);
@@ -294,95 +238,25 @@ const electronPrintBill = async (printdata) => {
     {
       type: "table",
       style: "margin-top:0px",
-      // style the table
-      // list of the columns to be rendered in the table header
+
       tableBody: [
         [
           {
             type: "text",
-            value: "SUB TOTAL",
-            style:
-              "width:60%;text-align:right;border:1px solid transparent;padding:5px 0px",
-          },
-          {
-            type: "text",
-            value: renderCurrencyValue(printdata.printData.itemsTotal),
-            style:
-              "width:40%;text-align:right;border:1px solid transparent;padding:5px 0px",
-          },
-        ],
-        [
-          {
-            type: "text",
-            value: "GST",
-            style:
-              "width:60%;text-align:right;border:1px solid transparent;padding:5px 0px",
-          },
-          {
-            type: "text",
-            value: renderCurrencyValue(printdata.printData.taxTotal),
-            style:
-              "width:40%;text-align:right;border:1px solid transparent;padding:5px 0px",
-          },
-        ],
-
-        [
-          {
-            type: "text",
-            value: "GRAND TOTAL",
+            value: "TOTAL",
             style:
               "width:60%;text-align:right;border-top:1px solid #aaa;border-bottom:1px solid #aaa;padding:5px 0px;font-weight:600",
           },
           {
             type: "text",
-            value: renderCurrencyValue(printdata.printData.grandTotal),
+            value: printdata.printData.totalQuantity,
             style:
               "width:40%;text-align:right;border-top:1px solid #aaa;border-bottom:1px solid #aaa;padding:5px 0px;font-weight:600;font-size:14px",
           },
         ],
       ],
-
-      // tableFooter: [{ type: "text", value: "Animal" }, "Image"],
-      // custom style for the table header
-
-      // custom style for the table body
-      // tableBodyStyle: "border: 0.5px solid #ddd",
-      // custom style for the table footer
-      // tableFooterStyle: "background-color: #ddd; color: white;",
     },
   ];
-  if (printdata.printData.otherCharges) {
-    footerData[0].tableBody = insert(footerData[0].tableBody, 2, [
-      {
-        type: "text",
-        value: "OTHER CHARGES",
-        style:
-          "width:60%;text-align:right;border:1px solid transparent;padding:5px 0px",
-      },
-      {
-        type: "text",
-        value: renderCurrencyValue(printdata.printData.otherCharges),
-        style:
-          "width:40%;text-align:right;border:1px solid transparent;padding:5px 0px",
-      },
-    ]);
-  }
-  if (printdata.printData.discount) {
-    footerData[0].tableBody = insert(footerData[0].tableBody, 2, [
-      {
-        type: "text",
-        value: "DISCOUNT",
-        style:
-          "width:60%;text-align:right;border:1px solid transparent;padding:5px 0px",
-      },
-      {
-        type: "text",
-        value: renderCurrencyValue(printdata.printData.discount),
-        style:
-          "width:40%;text-align:right;border:1px solid transparent;padding:5px 0px",
-      },
-    ]);
-  }
 
   const d = [...headerdata, ...bodydata, ...footerData, ...extraText];
 
@@ -395,4 +269,4 @@ const electronPrintBill = async (printdata) => {
       return { status: 400, message: error };
     });
 };
-module.exports = electronPrintBill;
+module.exports = electronPrintKOT;

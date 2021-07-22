@@ -1,6 +1,6 @@
 import React from "react";
 import { TYPESOFPAYMENTS } from "../../../contants/index";
-const OrderButton = ({ onClick }) => {
+const OrderButton = ({ onClick, enableKOT, onKOTButtonClick }) => {
   const orderTypes = TYPESOFPAYMENTS;
   return (
     <div
@@ -9,6 +9,16 @@ const OrderButton = ({ onClick }) => {
       role="group"
       aria-label="Basic example"
     >
+      {enableKOT && (
+        <button
+          onClick={() => onKOTButtonClick()}
+          type="button"
+          class="btn btn-outline-primary"
+        >
+          <i class={`dripicons-print mr-2`}></i>
+          KOT
+        </button>
+      )}
       {orderTypes.map((ot, otinex) => {
         return (
           <button

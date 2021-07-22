@@ -1,5 +1,4 @@
 import React from "react";
-import ElectronComponent from "./ElectronComponent";
 import BrowserComponent from "./BroswerComponent";
 import { useSelector } from "react-redux";
 import { RootUrl } from "../../redux/types";
@@ -15,6 +14,7 @@ const PrintComponent = (props) => {
     restaurantName,
     branchName,
     gstNumber,
+    branchAddress,
     receiptMessage: currReceiptMessage,
   } = useSelector((state) => state.user);
 
@@ -26,12 +26,13 @@ const PrintComponent = (props) => {
       : undefined;
   React.useEffect(() => {
     if (isElectron && printData) {
-      window.api.printSilently({
+      window.api.printBillSilently({
         logo,
         printData,
         restaurant,
         gstNumber,
         receiptMessage: receiptMessage,
+        branchAddress,
       });
     }
   }, [printData, enablePrinting]);
@@ -46,6 +47,7 @@ const PrintComponent = (props) => {
       logo={logo}
       restaurant={restaurant}
       gstNumber={gstNumber}
+      branchAddress={branchAddress}
       receiptMessage={receiptMessage}
     />
   );

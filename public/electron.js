@@ -13,6 +13,7 @@ const {
 } = require("simple-electron-printer-and-thermalprinter");
 const isDev = require("electron-is-dev");
 const saveLogoFile = require("./elctronfunction/saveLogoFile");
+const electronPrintKOT = require("./elctronfunction/electronPrintKOT");
 
 let win;
 function createWindow() {
@@ -67,30 +68,23 @@ ipcMain.on("silent-print", (event) => {
 ipcMain.on("saveLogo", (_, data) => {
   saveLogoFile(data);
 });
-ipcMain.on("printPage", (_, data) => {
-  new Notification({ title: "printPage", body: "printing" }).show();
+ipcMain.on("printBill", (_, data) => {
   electronPrintBill(data);
-
-  // alert("hehe");
-  // let printers = win.webContents.getPrinters(); //list the printers
-
-  // console.log("printres", printers);
-  // createPrintWindow({
-  //   html: data,
-
-  //   cssUrl: "../../resources/css/tablas-printer.css",
-
-  //   mainWindow: win,
-
-  //   sheetSize: "A3",
-  //   printerName: "pos",
-
-  //   config: ["timePrinter", "hiddenWindow"],
-  // });
-
-  // new Notification({ title: "Notifiatddion", body: message }).show();
 });
-ipcMain.on("notify", (_, message) => {
+
+ipcMain.on("printKOT", (_, data) => {
+  electronPrintKOT(data);
+});
+
+ipcMain.on("online-status-changed", (event, status) => {
+  // console.log("online status", status);
+  new Notification({
+    title: "Notification",
+    body: `You are ${status ? "Online" : "Offline"}`,
+  }).show();
+});
+ipcMain.on("notify", (_, message, cb) => {
+  console.log("underscrore", _, message, cb);
   // alert("notify");
   // let printers = win.webContents.getPrinters(); //list the printers
   // var options = {
@@ -109,7 +103,7 @@ ipcMain.on("notify", (_, message) => {
   //   footer: "Footer of the Page",
   // };
   // console.log("print ", printers);
-  // win.webContents.printSilently()(options, (success, failureReason) => {
+  // win.webContents.printBillSilently()(options, (success, failureReason) => {
   //   if (!success) console.log("print failed", failureReason);
   //   console.log("Print Initiated");
   // });
@@ -144,11 +138,13 @@ app.on("activate", () => {
   }
 });
 
-// ipcMain.on("toMain", (event, args) => {
-//   // Do something with file contents
+ipcMain.on("toMain", (event, args) => {
+  // console.log("toMain");
 
-//   // Send result back to renderer process
-//   win.webContents.send("fromMain", "hehe");
-// });
+  // Do something with file contents
+  new Notification({ title: "Notifiatddion", body: "hehe" }).show();
+  // Send result back to renderer process
+  win.webContents.send("fromMain", "hehe");
+});
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

@@ -4,7 +4,7 @@ import ShortCutModal from "../../../components/common/Modals/ShortCutModal";
 import useFullscreenStatus from "../../../hooks/useFullscreenStatus";
 import { toggleFullScreen } from "../../../redux/action/utilActions";
 import Clock from "react-live-clock";
-import { DATETIMEFORMAT, TIMEZONE } from "../../../contants";
+import { TIMEFORMAT, TIMEZONE } from "../../../contants";
 const ShortCutList = () => {
   const btnRef = React.useRef();
   const dispatch = useDispatch();
@@ -40,7 +40,7 @@ const ShortCutList = () => {
           width: 100,
         }}
       >
-        <Clock format={DATETIMEFORMAT} ticking={true} timezone={TIMEZONE} />
+        <Clock format={TIMEFORMAT} ticking={true} timezone={TIMEZONE} />
       </button>
       {shortcuts.map((data, index) => {
         return (

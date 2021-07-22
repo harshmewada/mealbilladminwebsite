@@ -176,8 +176,8 @@ const ManageExpenseTypes = () => {
     { title: "Expense Type", key: "expenseType" },
     { title: "Include quantity", key: "includeQuantity", type: "boolean" },
     {
-      title: "Sub Expense Count",
-      key: "Sub Expense Count",
+      title: "SubExpenseCount",
+      key: "SubExpenseCount",
       renderRow: (e) => e?.subExpenseTypes?.length || 0,
     },
     { title: "Status", key: "status" },

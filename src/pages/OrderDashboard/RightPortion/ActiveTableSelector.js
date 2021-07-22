@@ -41,10 +41,14 @@ const ActiveOrderSelector = ({ tables }) => {
   const dispatch = useDispatch();
   const tablesRef = React.useRef([]);
 
-  const active = useSelector((state) => state.order.activeOrderIndex);
+  const activeOrderIndex = useSelector((state) => state.order.activeOrderIndex);
+
   const { lastOrderNumber, activeOrders } = useSelector((state) => state.order);
+
+  const active = activeOrders.find(
+    (order) => order.refId === activeOrders[activeOrderIndex]?.refId
+  );
   const branchCode = useSelector((state) => state.user.branchCode);
-  console.log("activeOrders", activeOrders);
   const handleItemQuantity = (quantity, itemindex) => {
     dispatch(changeItemQuantity(parseInt(quantity), itemindex));
   };
@@ -56,20 +60,14 @@ const ActiveOrderSelector = ({ tables }) => {
     dispatch(deleteLocalOrder(index));
   };
 
-  const makeTableActive = (index) => {
-    dispatch(setActiveOrder(index));
+  const makeTableActive = (refId) => {
+    dispatch(setActiveOrder(refId));
   };
 
   React.useEffect(() => {
     tablesRef.current = tablesRef.current.slice(0, tables.length);
   }, [tables]);
   const executeScroll = (index) => {
-    console.log(
-      "executeScroll",
-      index,
-      tables.length,
-      tablesRef.current[tables.length - index]
-    );
     index &&
       tablesRef.current[tables.length - index] &&
       tablesRef.current[tables.length - index].scrollIntoView({
@@ -84,6 +82,8 @@ const ActiveOrderSelector = ({ tables }) => {
   }, [active]);
   return [...tables].reverse().map((data, dataIndex) => {
     const index = activeOrders.length - 1 - dataIndex;
+
+    const isActive = data.refId === active?.refId;
     return (
       <>
         <div
@@ -91,12 +91,12 @@ const ActiveOrderSelector = ({ tables }) => {
           ref={(el) => (tablesRef.current[dataIndex] = el)}
         >
           <div
-            class={`card-header ${active === index ? "bg-purple " : ""}`}
+            class={`card-header ${isActive ? "bg-purple " : ""}`}
             style={{
               padding: "10px 10px",
               ...getColor(data.orderType),
             }}
-            onClick={() => makeTableActive(index)}
+            onClick={() => makeTableActive(data.refId)}
           >
             <a
               href="javascript:void(0);"
@@ -112,7 +112,7 @@ const ActiveOrderSelector = ({ tables }) => {
                   {data.tableNumber ? (
                     <span
                       style={{
-                        color: active === index ? "white" : undefined,
+                        color: isActive ? "white" : undefined,
                       }}
                     >
                       Table Number: {data.tableNumber}
@@ -120,7 +120,7 @@ const ActiveOrderSelector = ({ tables }) => {
                   ) : (
                     <span
                       style={{
-                        color: active === index ? "white" : undefined,
+                        color: isActive ? "white" : undefined,
                       }}
                     >
                       {
@@ -132,9 +132,7 @@ const ActiveOrderSelector = ({ tables }) => {
                   )}
                 </div>
                 <div className="col-md-2">
-                  <span
-                    style={{ color: active === index ? "white" : undefined }}
-                  >
+                  <span style={{ color: isActive ? "white" : undefined }}>
                     {data.items.length} Items
                   </span>
                 </div>
@@ -146,7 +144,7 @@ const ActiveOrderSelector = ({ tables }) => {
                     >
                       <i
                         class={`mdi mdi-close-circle font-16 ${
-                          active === index ? `text-primary` : " text-danger "
+                          isActive ? `text-primary` : " text-danger "
                         }`}
                       ></i>
                     </a>
@@ -157,11 +155,9 @@ const ActiveOrderSelector = ({ tables }) => {
                 <div className="col-md-12">
                   <span
                     className={
-                      active === index
-                        ? "badge badge-dark"
-                        : "badge badge-primary"
+                      isActive ? "badge badge-dark" : "badge badge-primary"
                     }
-                    style={{ color: active === index ? "white" : undefined }}
+                    style={{ color: isActive ? "white" : undefined }}
                   >
                     # {branchCode + (lastOrderNumber + index + 1)}
                   </span>
@@ -169,7 +165,7 @@ const ActiveOrderSelector = ({ tables }) => {
               </div>
             </a>
           </div>
-          <Collapse in={active === index}>
+          <Collapse in={isActive}>
             <div class=" mt-0 pt-0 pl-1 pr-1 ">
               {data.items.length > 0 ? (
                 <table class="table table-sm mb-0 ordertable">
@@ -276,7 +272,7 @@ export default ActiveOrderSelector;
 //       >
 //         <div class="card border mb-1 shadow-none">
 //           <div
-//             class={`card-header ${active === index ? "bg-purple " : ""}`}
+//             class={`card-header ${isActive ? "bg-purple " : ""}`}
 //             style={{
 //               padding: "10px 10px",
 //             }}
@@ -294,13 +290,13 @@ export default ActiveOrderSelector;
 //                 <div className="col-md-12 d-flex justify-content-between">
 //                   {data.tableNumber ? (
 //                     <span
-//                       style={{ color: active === index ? "white" : undefined }}
+//                       style={{ color: isActive ? "white" : undefined }}
 //                     >
 //                       Table Number: {data.tableNumber}
 //                     </span>
 //                   ) : (
 //                     <span
-//                       style={{ color: active === index ? "white" : undefined }}
+//                       style={{ color: isActive ? "white" : undefined }}
 //                     >
 //                       {
 //                         TYPESOFORDERS.find((DATA, INDEX) => {
@@ -310,12 +306,12 @@ export default ActiveOrderSelector;
 //                     </span>
 //                   )}
 //                   <span
-//                     style={{ color: active === index ? "white" : undefined }}
+//                     style={{ color: isActive ? "white" : undefined }}
 //                   >
 //                     {data.items.length} Items
 //                   </span>
 //                   <span
-//                     style={{ color: active === index ? "white" : undefined }}
+//                     style={{ color: isActive ? "white" : undefined }}
 //                   >
 //                     {data.associatedPerson}
 //                   </span>
@@ -323,11 +319,11 @@ export default ActiveOrderSelector;
 //                 <div className="col-md-12">
 //                   <span
 //                     className={
-//                       active === index
+//                       isActive
 //                         ? "badge badge-dark"
 //                         : "badge badge-primary"
 //                     }
-//                     style={{ color: active === index ? "white" : undefined }}
+//                     style={{ color: isActive ? "white" : undefined }}
 //                   >
 //                     # {branchCode + (lastOrderNumber + index + 1)}
 //                   </span>

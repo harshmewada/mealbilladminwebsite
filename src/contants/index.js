@@ -1,6 +1,6 @@
 import moment from "moment";
 
-// export const BASEURL = "http://192.168.0.111:4001";
+// export const BASEURL = "http://192.168.0.111:4000";
 export const BASEURL = "https://test.mealbill.in/api";
 // export const BASEURL = "https://web.mealbill.in/api";
 
@@ -9,7 +9,8 @@ export const BASEURL = "https://test.mealbill.in/api";
 
 export const DATEFORMAT = "DD/MM/YYYY";
 
-export const DATETIMEFORMAT = "HH:mm:ss";
+export const DATETIMEFORMAT = "DD/MM/YYYY HH:mm";
+export const TIMEFORMAT = "HH:mm:ss";
 
 export const TIMEZONE = "Asia/Kolkata";
 

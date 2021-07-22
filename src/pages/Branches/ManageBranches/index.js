@@ -108,6 +108,12 @@ const ManageBranches = () => {
       },
     },
     {
+      type: "textarea",
+      name: "address",
+      label: "Address",
+      placeholder: "Type Branch Address",
+    },
+    {
       type: "select",
       name: "status",
       label: "Status",

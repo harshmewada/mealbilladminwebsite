@@ -2,8 +2,11 @@ import { orderTypes, utilTypes } from "../types";
 const initialstate = {
   spinner: false,
   enablePrinting: true,
+  enableKOT: true,
+
   isFullScreen: false,
   printData: undefined,
+  KOTprintData: undefined,
 };
 
 const utilReducer = (state = initialstate, action) => {
@@ -26,6 +29,12 @@ const utilReducer = (state = initialstate, action) => {
         enablePrinting: !state.enablePrinting,
       };
 
+    case utilTypes.TOGGLE_KOT:
+      return {
+        ...state,
+        enableKOT: !state.enableKOT,
+      };
+
     case orderTypes.CONFIRM_ORDER_SUCCESS:
       return {
         ...state,
@@ -35,6 +44,17 @@ const utilReducer = (state = initialstate, action) => {
       return {
         ...state,
         printData: action.payload,
+      };
+    case utilTypes.SET_KOT_PRINT_DATA:
+      return {
+        ...state,
+        KOTprintData: action.payload,
+      };
+
+    case utilTypes.REMOVE_KOT_PRINT_DATA:
+      return {
+        ...state,
+        KOTprintData: undefined,
       };
 
     case utilTypes.REMOVE_PRINT_DATA:

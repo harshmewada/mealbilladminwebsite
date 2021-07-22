@@ -12,50 +12,22 @@ const {
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld("api", {
   isElectron: true,
-  // printSilently: (htmldata) => {
-  //   console.log("htmldata", htmldata);
-  //   var BrowserWindow = remote.BrowserWindow;
-  //   var win = new BrowserWindow({
-  //     width: 1024,
-  //     height: 768,
-  //     show: true,
-  //     webPreferences: {
-  //       nodeIntegration: false,
-  //       webSecurity: true,
-  //       allowEval: false,
-  //       nativeWindowOpen: true,
-  //       allowRunningInsecureContent: false,
-  //       contextIsolation: true,
-  //       enableRemoteModule: true,
-  //     },
-  //     autoHideMenuBar: true,
-  //   });
-  //   var html = [
-  //     `<body>
-  //     <h1>It works</h1>
-  //      ${htmldata}
-  //     </body>`,
-  //   ].join("");
-  //   win.loadURL("data:text/html;charset=utf-8," + encodeURI(html));
-  //   win.webContents.on("did-finish-load", function () {
-  //     win.webContents.print({ silent: true });
-  //   });
-  //   new Promise((res, fail) => {
-  //   ipcRenderer.send("silent-print");
-  //   ipcRenderer.once("silent-print-result", (event, result) => {
-  //     result === "success" ? res() : fail(result);
-  //   });
-  // }),
-  // },
-  printSilently: (data, func) => {
-    // new Promise((res, fail) => {
-    ipcRenderer.send("printPage", data);
-    // ipcRenderer.send("silent-print");
-    // })
-    // ipcRenderer.sendSync("notify", {
-    //   message: "notify",
-    // });
+
+  updateOnlineStatus: () => {
+    ipcRenderer.send(
+      "online-status-changed",
+      navigator.onLine ? "online" : "offline"
+    );
   },
+
+  printBillSilently: (data, func) => {
+    ipcRenderer.send("printBill", data);
+  },
+
+  printKOTSilently: (data, func) => {
+    ipcRenderer.send("printKOT", data);
+  },
+
   saveLogo: (data, func) => {
     // new Promise((res, fail) => {
     ipcRenderer.send("saveLogo", data);
@@ -65,21 +37,37 @@ contextBridge.exposeInMainWorld("api", {
     //   message: "notify",
     // });
   },
-  send: (content, func) => {
-    // whitelist channels
-    // console.log("isElectron send", data);
+  // send: (content, func) => {
+  //   // whitelist channels
+  //   // console.log("isElectron send", data);
 
-    // ipcRenderer.send("printPage", data);
-    ipcRenderer.send("printPage", content);
-    // ipcRenderer.sendSync("notify", {
-    //   message: data,
-    // });
-  },
+  //   // ipcRenderer.send("printPage", data);
+  //   ipcRenderer.send("printPage", content);
+  //   // ipcRenderer.sendSync("notify", {
+  //   //   message: data,
+  //   // });
+  // },
   notify: (data, func) => {
     // whitelist channels
-    console.log("isElectron send", data);
+    // console.log("isElectron send", data);
+    // const newCallback = (_, data) => func();
+    // ipcRenderer.send("notify", data, newCallback);
+  },
 
-    ipcRenderer.send("notify", data);
+  sendData: (channel, data, cb) => {
+    // whitelist channels
+    let validChannels = ["toMain"];
+    if (validChannels.includes(channel)) {
+      ipcRenderer.send(channel, data);
+    }
+  },
+  receive: (channel, func) => {
+    let validChannels = ["fromMain"];
+    if (validChannels.includes(channel)) {
+      // console.log("called");
+      // Deliberately strip event as it includes `sender`
+      ipcRenderer.on(channel, (event, ...args) => func(...args));
+    }
   },
   // receive: (channel, func) => {
   //   let validChannels = ["fromMain"];

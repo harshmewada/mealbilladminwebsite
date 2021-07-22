@@ -1,7 +1,8 @@
 import moment from "moment";
 import React from "react";
 // import SmartTable from "../../Component/Common/SmartTable";
-import { TYPESOFORDERS } from "../../contants/index";
+import { DATETIMEFORMAT, TYPESOFORDERS } from "../../contants/index";
+
 import "./invoice.css";
 // const printheaders = [
 //   { title: "SKU", key: "sku", type: "text", currency: false },
@@ -43,48 +44,15 @@ import "./invoice.css";
 // ];
 const printfooters = [
   {
-    title: "Sub Total",
-    hasCurrency: true,
-    key: "itemsTotal",
-    titleClass: "subtotal",
-    valueClass: "subtotalamount",
-  },
-  {
-    // title: "Tax",
-    title: "GST",
-
-    hasCurrency: true,
-    key: "taxTotal",
-    titleClass: "discount",
-    valueClass: "discount",
-  },
-
-  {
-    title: "Discount",
-    hasCurrency: true,
-    key: "discount",
-    titleClass: "discount",
-    valueClass: "discount",
-  },
-  {
-    title: "Charges",
-    hasCurrency: true,
-    key: "otherCharges",
-    titleClass: "discount",
-    valueClass: "discount",
-  },
-
-  {
-    title: "Grand Total",
-    hasCurrency: true,
-    key: "grandTotal",
+    title: "Total",
+    hasCurrency: false,
+    key: "totalQuantity",
     titleClass: "grand",
     valueClass: "grandtotal",
   },
 ];
 
 const Header = ({
-  orderNumber,
   branchOrderNumber,
   customerName,
   resName,
@@ -103,7 +71,6 @@ const Header = ({
   return (
     <>
       <div class="centered">
-        <img src={logo} class="logo" />
         <p>{resName}</p>
         {branchAddress && <p class="gstNumber">{branchAddress}</p>}
         {gstNumber && <p class="gstNumber">GST {gstNumber}</p>}
@@ -116,16 +83,14 @@ const Header = ({
           </div>
         )}
         <div className="subinfo">
-          <p>{branchOrderNumber}</p>
           <p>{orderDate}</p>
+
+          <p>Token : {branchOrderNumber}</p>
         </div>
         <div className="subinfo">
           <p>{orderTypes.key}</p>
-          <p>{orderNumber}</p>
 
-          <p>{tableNumber}</p>
-
-          <p>{paymentType}</p>
+          {tableNumber && <p>Table : {tableNumber}</p>}
         </div>
       </div>
     </>
@@ -133,13 +98,12 @@ const Header = ({
 };
 
 const renderRow = (data, value) => {
-  console.log("data.valueClass", data.valueClass);
   return value ? (
     <tr>
-      <td colspan="3" class={data.titleClass}>
+      <td colspan="2" class={data.titleClass}>
         {data.title}
       </td>
-      <td colspan="3" class={data.valueClass}>
+      <td colspan="2" class={data.valueClass}>
         {data.hasCurrency ? "₹" : " "} {value}
       </td>
     </tr>
@@ -155,8 +119,6 @@ const renderItem = (value, index, i) => {
         <td class="sr">{i}</td>
         <td class="pro">{value.itemName}</td>
         <td class="quantity">{value.quantity}</td>
-        <td class="price">{value.itemPrice}</td>
-        <td class="amount">{value.itemTotal}</td>
       </tr>
     </React.Fragment>
   );
@@ -169,8 +131,6 @@ const ProductTable = ({ orderData }) => {
           <th class="sr">Sr.</th>
           <th class="pro">Product</th>
           <th class="quantity">Qty</th>
-          <th class="price">Price</th>
-          <th class="amount">Amt.</th>
         </tr>
       </thead>
       <tbody>
@@ -208,6 +168,8 @@ const Invoice = React.forwardRef(
       createdAt,
       tableNumber,
       orderType,
+      orderDate,
+      remarks,
     } = orderData;
     return (
       <div class="ticket" ref={ref}>
@@ -217,7 +179,7 @@ const Invoice = React.forwardRef(
           orderNumber={orderNumber}
           customerName={customerName}
           paymentType={paymentType}
-          orderDate={createdAt}
+          orderDate={orderDate}
           tableNumber={tableNumber}
           orderType={orderType}
           logo={logo}
@@ -225,14 +187,9 @@ const Invoice = React.forwardRef(
           branchAddress={branchAddress}
         />
         <ProductTable orderData={orderData} />
-
-        {receiptMessage ? (
-          <p class="centered">
-            <p>{receiptMessage}</p>
-          </p>
-        ) : (
-          <p class="centered">
-            <p>Thank you, visit us again</p>
+        {remarks && (
+          <p>
+            <p>Remarks : {remarks}</p>
           </p>
         )}
       </div>
@@ -244,7 +201,6 @@ class BillComponent extends React.Component {
   render() {
     const {
       logo,
-      customAction,
       orderData,
       count,
       restaurant,
@@ -252,7 +208,6 @@ class BillComponent extends React.Component {
       receiptMessage,
       branchAddress,
     } = this.props;
-    // console.log("orderData", orderData);
     return orderData ? (
       <Invoice
         count={count}
@@ -264,21 +219,7 @@ class BillComponent extends React.Component {
         branchAddress={branchAddress}
       />
     ) : (
-      <div className={`invoice-box invoice-box-hide" `}>
-        No Data found
-        {/* <SmartTable
-          showHeader={false}
-          headerData={tableHeaders}
-          tableData={data || []}
-          selectable={false}
-          small={true}
-          title={"title"}
-          showActions={false}
-          disablePagination
-          rowsPerPage={data.length}
-          customAction={customAction}
-        /> */}
-      </div>
+      <div className={`invoice-box invoice-box-hide" `}>No Data found</div>
     );
   }
 }
