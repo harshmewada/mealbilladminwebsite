@@ -77,6 +77,7 @@ const ManageExpense = () => {
 
   const handleEdit = (data) => {
     toggleAdd("Edit");
+    // console.log("founddata data edit", data);
     setActionData(data);
   };
 
@@ -206,7 +207,6 @@ const ManageExpense = () => {
   );
 
   const branchtableheaders = [
-    { title: "Expense Title", key: "expenseTitle" },
     {
       title: "Expense Type",
       key: "expenseType",
@@ -215,6 +215,8 @@ const ManageExpense = () => {
           ? `${row.expenseType} (${row.subExpenseType})`
           : row.expenseType,
     },
+    { title: "Expense Title", key: "expenseTitle" },
+
     {
       title: "Quantity",
       key: "quantity",
@@ -224,7 +226,17 @@ const ManageExpense = () => {
           : row.quantity,
     },
 
-    { title: "Expense Price", key: "expensePrice", isCurrency: true },
+    { title: "Expense Net Amount", key: "expensePrice", isCurrency: true },
+    { title: "CGST", key: "cgst", isCurrency: true },
+
+    { title: "SGST", key: "sgst", isCurrency: true },
+    { title: "Total Expense Amount", key: "expenseTotal", isCurrency: true },
+    {
+      title: "Attachment",
+      key: "attachment",
+      type: "image",
+      sourceUrl: RootUrl,
+    },
   ];
   const headers = branchtableheaders;
 

@@ -5,11 +5,12 @@ import {
   activateTable,
   setActiveOrder,
 } from "../../../redux/action/orderActions";
-import TableNumberSelector from "./TableNumberSelector";
+import ButtonOrderSelector from "./ButtonOrderSelector";
 import TableStatusInfo from "./TableStatusInfo";
 import TableTypeSelector from "./TableTypeSelector";
 import { Col, Row } from "react-bootstrap";
 import ShortCutList from "./ShortCutList";
+import { TYPESOFORDERS } from "../../../contants";
 
 const TopPortion = () => {
   const dispatch = useDispatch();
@@ -50,6 +51,10 @@ const TopPortion = () => {
     setTableFilterId(typeId);
   };
 
+  const handleOtherOrderClick = (data) => {
+    dispatch(setActiveOrder(data.refId));
+  };
+
   const getFilteredTables = () => {
     if (tableFilterId === "all") {
       return allTables;
@@ -60,6 +65,18 @@ const TopPortion = () => {
 
   const getOtherOrders = () => {
     return activeOrders.filter((order) => !order.tableTypeId);
+  };
+
+  const getParcelOrders = () => {
+    return activeOrders.filter(
+      (order) => order.orderType === TYPESOFORDERS[1].value
+    );
+  };
+
+  const getHomeDeliveryOrders = () => {
+    return activeOrders.filter(
+      (order) => order.orderType === TYPESOFORDERS[2].value
+    );
   };
 
   const RowRender = ({ children }) => <Row class="pb-0 mb-0 ">{children}</Row>;
@@ -107,10 +124,12 @@ const TopPortion = () => {
               </ColRender>
 
               <ColRender lg={9}>
-                <TableNumberSelector
+                <ButtonOrderSelector
                   tables={getFilteredTables()}
-                  otherOrders={getOtherOrders()}
-                  handleClick={handleTableNumberClick}
+                  parcels={getParcelOrders()}
+                  homeDeliveries={getHomeDeliveryOrders()}
+                  handleTableNumberClick={handleTableNumberClick}
+                  handleOtherOrderClick={handleOtherOrderClick}
                 />
               </ColRender>
             </RowRender>

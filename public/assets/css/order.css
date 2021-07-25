@@ -26,6 +26,22 @@
   background-color: blue;
   color: white;
 }
+.child-parcel {
+  color: black;
+}
+.child-parcel:hover {
+  color: orange !important;
+  border-color: orange;
+}
+
+.child-homeDelivery {
+  color: black;
+}
+
+.child-homeDelivery:hover {
+  color: green !important;
+  border-color: green;
+}
 .flex-container button {
   border: none;
   outline: none;

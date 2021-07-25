@@ -17,9 +17,9 @@ export const TIMEZONE = "Asia/Kolkata";
 export const CURRENCY = "₹";
 
 export const TYPESOFORDERS = [
-  { key: "Dine In", value: 0 },
-  { key: "Parcel", value: 1 },
-  { key: "Home Delivery", value: 2 },
+  { key: "Dine In", value: 0, bgColor: "#6d81f5" },
+  { key: "Parcel", value: 1, bgColor: `rgb(255, 234, 173)` },
+  { key: "Home Delivery", value: 2, bgColor: "rgb(198, 255, 186)" },
 ];
 
 export const MEASUREUNITS = [

@@ -20,14 +20,15 @@ export const createExpense = (data) => {
       },
     };
   }
-
+  const formData = new FormData();
+  Object.keys(data).forEach((key) => formData.append(key, data[key]));
   return {
     type: expenseTypes.CREATE_EXPENSE,
     payload: {
       request: {
         url: expenseApi.CREATE_EXPENSE,
         method: "post",
-        data: data,
+        data: formData,
         headers: {
           "Content-type": "application/json",
         },
@@ -52,13 +53,15 @@ export const updateExpense = (data) => {
       },
     };
   }
+  const formData = new FormData();
+  Object.keys(data).forEach((key) => formData.append(key, data[key]));
   return {
     type: expenseTypes.UPDATE_EXPENSE,
     payload: {
       request: {
         url: expenseApi.UPDATE_EXPENSE,
         method: "PUT",
-        data: data,
+        data: formData,
         headers: {
           "Content-type": "application/json",
         },

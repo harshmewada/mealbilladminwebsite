@@ -1,16 +1,42 @@
+// import React from "react";
+// import InputContainer from "./InputContainer";
+
+// const MyTextField = React.forwardRef((props, ref) => {
+//   const { label, name, placeholder, multiline, rows, error, size } = props;
+//   console.log("edi tprops", props);
+//   // delete props.defaultValue;
+//   return (
+//     <InputContainer {...props} label={" "} error={error} size={size}>
+//       <div class="mt-1" />
+//       <input
+//         ref={ref}
+//         type="file"
+//         class="form-control custom-file-input "
+//         id="customFile"
+//         name={name}
+//         placeholder={placeholder}
+//         {...props}
+//         defaultValue={undefined}
+//       />
+//       <label class="custom-file-label" for="customFile">
+//         Choose file
+//       </label>
+//     </InputContainer>
+//   );
+// });
+// export default MyTextField;
+
 import React from "react";
 import InputContainer from "./InputContainer";
-import ImagePreviewModal from "../Modals/ImagePreviewModal";
 
 import Form from "react-bootstrap/Form";
 import { RootUrl } from "../../../redux/types";
-import { setNestedObjectValues } from "formik";
 
-const MyTextField = React.forwardRef((props, ref) => {
+const Attachment = React.forwardRef((props, ref) => {
   const {
     label,
-    onChange,
     name,
+    onChange,
     placeholder,
     multiline,
     rows,
@@ -20,7 +46,6 @@ const MyTextField = React.forwardRef((props, ref) => {
   } = props;
   const [file, selectedFile] = React.useState();
   const [preview, setPreview] = React.useState();
-  const [previewModal, setPreviewModal] = React.useState();
 
   React.useEffect(() => {
     if (!file) {
@@ -30,7 +55,8 @@ const MyTextField = React.forwardRef((props, ref) => {
     // create the preview
     const objectUrl = URL.createObjectURL(file);
     setPreview(objectUrl);
-    !ref && onChange && onChange(file);
+    onChange(file);
+
     // free memory when ever this component is unmounted
     return () => URL.revokeObjectURL(objectUrl);
   }, [file]);
@@ -38,25 +64,8 @@ const MyTextField = React.forwardRef((props, ref) => {
   const value = mode === "Edit" ? "" : props.value;
   const picturePreview = preview || typeof value === "string";
   const defaultValue = props.defaultValue;
-
-  const handleOpenPreview = () => {
-    if (selectedFile) {
-      setPreviewModal(preview);
-    }
-    if (defaultValue) {
-      setPreviewModal(`${RootUrl}/${defaultValue}`);
-    }
-  };
-
   return (
     <div class={`form-group col-md-${size || "6"}`}>
-      <ImagePreviewModal
-        open={previewModal}
-        onClose={() => setPreviewModal()}
-        data={previewModal}
-        title="Preview"
-      />
-
       <label for="customFile">Choose file</label>
       <Form.File
         name={name}
@@ -118,7 +127,7 @@ const MyTextField = React.forwardRef((props, ref) => {
           <img
             src={preview}
             style={{
-              height: 35,
+              height: 40,
             }}
           />
         )}
@@ -126,32 +135,12 @@ const MyTextField = React.forwardRef((props, ref) => {
           <img
             src={`${RootUrl}/${defaultValue}`}
             style={{
-              height: 35,
+              height: 40,
             }}
           />
-        )}
-        {(selectedFile || defaultValue) && (
-          <button
-            type="button"
-            class="btn btn-gradient-primary btn-clipboard"
-            style={{
-              marginRight: file ? 0 : -12,
-              cursor: "pointer",
-              display: "block",
-              borderTopLeftRadius: 0,
-              borderBottomLeftRadius: 0,
-            }}
-            onClick={() => handleOpenPreview()}
-          >
-            <i
-              class="mdi mdi-eye mr-2
-"
-            ></i>
-            Preview
-          </button>
         )}
       </div>
     </div>
   );
 });
-export default MyTextField;
+export default Attachment;

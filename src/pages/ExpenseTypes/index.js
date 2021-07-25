@@ -105,7 +105,6 @@ const ManageExpenseTypes = () => {
           {
             ...actionData,
             ...e,
-            // ...data,
           },
           () => {
             dispatch(getAllexpenseTypes());
@@ -122,7 +121,10 @@ const ManageExpenseTypes = () => {
           {
             ...data,
           },
-          dispatch(getAllexpenseTypes())
+          () => {
+            dispatch(getAllexpenseTypes());
+            toggleAdd();
+          }
         )
       );
     }
@@ -146,6 +148,7 @@ const ManageExpenseTypes = () => {
     dispatch(
       deleteExpenseType(actionData.id, () => {
         dispatch(getAllexpenseTypes());
+        toggleAdd();
       })
     );
   };
