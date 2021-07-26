@@ -12,10 +12,15 @@ const styles = {
 };
 const RightPortion = () => {
   const [orderFilter, setTableFilterId] = React.useState({
-    type: "all",
+    type: "active",
     tableTypeId: undefined,
   });
   const activeOrders = useSelector((state) => state.order.activeOrders);
+  const activeOrderIndex = useSelector((state) => state.order.activeOrderIndex);
+
+  const active = activeOrders.find(
+    (order) => order.refId === activeOrders[activeOrderIndex]?.refId
+  );
 
   const handleTableTypeFilter = (data) => {
     console.log(data);
@@ -26,8 +31,8 @@ const RightPortion = () => {
   };
 
   const getFilteredTables = () => {
-    if (orderFilter.type === "all") {
-      return activeOrders;
+    if (orderFilter.type === "active") {
+      return active ? [active] : [];
     } else if (orderFilter.tableTypeId) {
       return activeOrders.filter(
         (tab) => tab.tableTypeId == orderFilter.tableTypeId
@@ -36,7 +41,12 @@ const RightPortion = () => {
       return activeOrders.filter((tab) => tab.orderType == orderFilter.type);
     }
   };
-
+  React.useEffect(() => {
+    setTableFilterId({
+      type: "active",
+      tableTypeId: undefined,
+    });
+  }, [activeOrderIndex]);
   return (
     <div style={{ width: 500, padding: "10px 0px", height: "100%" }}>
       <div

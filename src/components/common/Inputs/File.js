@@ -72,9 +72,9 @@ const MyTextField = React.forwardRef((props, ref) => {
             selectedFile(e.target.files[0]);
           }
         }}
-        {...{
-          ...(mode !== "Edit" && { value: value }),
-        }}
+        // {...{
+        //   ...(mode !== "Edit" && { value: value }),
+        // }}
         // value={file}
       />
 

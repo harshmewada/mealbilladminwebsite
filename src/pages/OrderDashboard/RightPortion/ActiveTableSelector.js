@@ -41,9 +41,8 @@ const ActiveOrderSelector = ({ tables }) => {
   const dispatch = useDispatch();
   const tablesRef = React.useRef([]);
 
-  const activeOrderIndex = useSelector((state) => state.order.activeOrderIndex);
-
   const { lastOrderNumber, activeOrders } = useSelector((state) => state.order);
+  const activeOrderIndex = useSelector((state) => state.order.activeOrderIndex);
 
   const active = activeOrders.find(
     (order) => order.refId === activeOrders[activeOrderIndex]?.refId
@@ -84,6 +83,7 @@ const ActiveOrderSelector = ({ tables }) => {
     const index = activeOrders.length - 1 - dataIndex;
 
     const isActive = data.refId === active?.refId;
+
     return (
       <>
         <div

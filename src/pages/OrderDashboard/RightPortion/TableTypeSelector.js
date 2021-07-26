@@ -34,10 +34,10 @@ const TableTypeSelector = ({ selected, setSelected }) => {
     >
       <button
         type="button"
-        onClick={() => handleSelectType("all")}
-        class={`btn btn-${selected.type === "all" ? "primary" : "info"}`}
+        onClick={() => handleSelectType("active")}
+        class={`btn btn-${selected.type === "active" ? "primary" : "info"}`}
       >
-        All
+        Active
       </button>
       <button
         type="button"
