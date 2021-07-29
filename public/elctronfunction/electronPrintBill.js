@@ -209,7 +209,11 @@ const electronPrintBill = async (printdata) => {
           [
             {
               type: "text",
-              value: `Name : ${printdata.printData.customerName}`,
+              value: `Name : ${printdata.printData.customerName} ${
+                printdata.printData?.customerMobile
+                  ? `(${printdata.printData?.customerMobile})`
+                  : ""
+              }`,
               style: commonBordlessTableCellStyle({ textAlign: "left" }),
             },
           ],

@@ -17,6 +17,7 @@ const BranchAdminSettings = () => {
     restaurantId,
     branchId,
     receiptMessage: customMessage,
+    token,
   } = useSelector((state) => state.user);
 
   const { enablePrinting, enableKOT } = useSelector((state) => state.util);
@@ -59,8 +60,14 @@ const BranchAdminSettings = () => {
     }
   }, [customMessage]);
 
-  const handleOfflineMode = () => {
-    window.api.sendData("toMain", "some data");
+  const handleOfflineMode = async () => {
+    // window.api.sendData("toMain", "some data");
+    // window.api.fecthOfflineData({ token: token }).then((res) => {
+    //   console.log("fetchResponse", res);
+    //   alert("hehe");
+    // });
+    const response = await window.api.fecthOfflineData({ token: token });
+    console.log("response", response);
 
     // window.api.notify("hehe", () => {
     //   console.log("i am callback");

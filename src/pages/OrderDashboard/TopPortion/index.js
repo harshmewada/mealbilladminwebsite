@@ -22,9 +22,10 @@ const TopPortion = () => {
   const activeOrders = useSelector((state) => state.order.activeOrders);
 
   const checkactive = (tableNumber) => {
-    let myIndex = activeOrders.findIndex((table) => {
+    let myIndex = activeOrders.find((table) => {
       return tableNumber === table.tableNumber;
     });
+
     if (myIndex) {
       return myIndex;
     } else {
@@ -32,8 +33,8 @@ const TopPortion = () => {
     }
   };
   const handleTableNumberClick = (data, index) => {
-    if (checkactive(data.tableNumber) >= 0) {
-      dispatch(setActiveOrder(checkactive(data.tableNumber)));
+    if (checkactive(data.tableNumber)) {
+      dispatch(setActiveOrder(checkactive(data.tableNumber).refId));
     } else {
       dispatch(
         activateTable(

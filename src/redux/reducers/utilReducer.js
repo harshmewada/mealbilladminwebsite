@@ -27,12 +27,14 @@ const utilReducer = (state = initialstate, action) => {
       return {
         ...state,
         enablePrinting: !state.enablePrinting,
+        printData: undefined,
       };
 
     case utilTypes.TOGGLE_KOT:
       return {
         ...state,
         enableKOT: !state.enableKOT,
+        KOTprintData: undefined,
       };
 
     case orderTypes.CONFIRM_ORDER_SUCCESS:

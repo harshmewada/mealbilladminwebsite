@@ -15,7 +15,9 @@ const UtilComponent = () => {
   const isLogged = useSelector((state) => state.user.isLogged);
   const isElectron = window?.api?.isElectron;
 
-  const { enablePrinting, enableKOT } = useSelector((state) => state.util);
+  const { enablePrinting, enableKOT, printData, KOTprintData } = useSelector(
+    (state) => state.util
+  );
 
   useEffect(() => {
     if (isExpired && isLogged) {
@@ -33,8 +35,8 @@ const UtilComponent = () => {
 
   return (
     <React.Fragment>
-      {enablePrinting && <PrintComponent />}
-      {enableKOT && <KOTPrintComponent />}
+      {enablePrinting && printData && <PrintComponent />}
+      {enableKOT && KOTprintData && <KOTPrintComponent />}
 
       <ToastContainer />
       <SiteAlert />

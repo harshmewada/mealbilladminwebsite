@@ -14,6 +14,7 @@ const {
 const isDev = require("electron-is-dev");
 const saveLogoFile = require("./elctronfunction/saveLogoFile");
 const electronPrintKOT = require("./elctronfunction/electronPrintKOT");
+const fetchOfflineData = require("./elctronfunction/fetchOffflineData");
 
 let win;
 function createWindow() {
@@ -56,6 +57,15 @@ function createWindow() {
   // Open the DevTools.
   // isDev && win.webContents.openDevTools();
 }
+try {
+  require("electron-reloader")(module, {
+    debug: true,
+    watchRenderer: false,
+    ignore: ["offlineImages", "offlineData"],
+  });
+} catch (_) {
+  console.log("Error");
+}
 ipcMain.on("silent-print", (event) => {
   // alert("hehe");
   // alert("silent printing", event.sender);
@@ -83,9 +93,12 @@ ipcMain.on("online-status-changed", (event, status) => {
     body: `You are ${status ? "Online" : "Offline"}`,
   }).show();
 });
+
+ipcMain.handle("fetchOfflineData", async (_, data) => {
+  return await fetchOfflineData(data);
+});
+
 ipcMain.on("notify", (_, message, cb) => {
-  console.log("underscrore", _, message, cb);
-  // alert("notify");
   // let printers = win.webContents.getPrinters(); //list the printers
   // var options = {
   //   silent: false,
@@ -109,9 +122,7 @@ ipcMain.on("notify", (_, message, cb) => {
   // });
   new Notification({ title: "Notifiatddion", body: message }).show();
 });
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
+
 app.whenReady().then(() => {
   createWindow();
 
@@ -120,9 +131,6 @@ app.whenReady().then(() => {
   });
 });
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();

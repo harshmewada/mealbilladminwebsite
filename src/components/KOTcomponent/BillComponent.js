@@ -55,6 +55,8 @@ const printfooters = [
 const Header = ({
   branchOrderNumber,
   customerName,
+  customerMobile,
+
   resName,
   orderDate,
   paymentType,
@@ -79,7 +81,10 @@ const Header = ({
       <div className="info">
         {customerName && (
           <div className="subinfo">
-            <p>Name : {customerName}</p>
+            <p>
+              Name : {customerName}{" "}
+              {customerMobile ? `(${customerMobile})` : ""}
+            </p>
           </div>
         )}
         <div className="subinfo">
@@ -163,6 +168,8 @@ const Invoice = React.forwardRef(
     const {
       branchOrderNumber,
       customerName,
+      customerMobile,
+
       orderNumber,
       paymentType,
       createdAt,
@@ -178,6 +185,7 @@ const Invoice = React.forwardRef(
           branchOrderNumber={branchOrderNumber}
           orderNumber={orderNumber}
           customerName={customerName}
+          customerMobile={customerMobile}
           paymentType={paymentType}
           orderDate={orderDate}
           tableNumber={tableNumber}

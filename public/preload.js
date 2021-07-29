@@ -8,6 +8,7 @@ const {
   remote,
   path,
 } = require("electron");
+const fetchOfflineData = require("./elctronfunction/fetchOffflineData");
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
 contextBridge.exposeInMainWorld("api", {
@@ -26,6 +27,14 @@ contextBridge.exposeInMainWorld("api", {
 
   printKOTSilently: (data, func) => {
     ipcRenderer.send("printKOT", data);
+  },
+
+  fecthOfflineData: async (data, func) => {
+    return await ipcRenderer.invoke("fetchOfflineData", data);
+    // const result = await ipcRenderer.invoke("fetchOfflineData");
+    // console.log("fetc res", result);
+    // return result;
+    // fetchOfflineData(data, func);
   },
 
   saveLogo: (data, func) => {

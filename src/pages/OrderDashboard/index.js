@@ -5,8 +5,7 @@ import getOrderNeccesaryData from "../../helpers/getOrderNeccesaryData";
 import useFullscreenStatus from "../../hooks/useFullscreenStatus";
 import BottomPortion from "./BottomPortion";
 import CenterPortion from "./CenterPortion/index";
-import LeftPortion from "./LeftPortion/index";
-import RightPortion from "./RightPortion/index";
+
 import TopPortion from "./TopPortion";
 
 const styles = {

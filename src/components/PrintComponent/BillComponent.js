@@ -87,6 +87,8 @@ const Header = ({
   orderNumber,
   branchOrderNumber,
   customerName,
+  customerMobile,
+
   resName,
   orderDate,
   paymentType,
@@ -112,7 +114,10 @@ const Header = ({
       <div className="info">
         {customerName && (
           <div className="subinfo">
-            <p>Name : {customerName}</p>
+            <p>
+              Name : {customerName}{" "}
+              {customerMobile ? `(${customerMobile})` : ""}
+            </p>
           </div>
         )}
         <div className="subinfo">
@@ -203,6 +208,8 @@ const Invoice = React.forwardRef(
     const {
       branchOrderNumber,
       customerName,
+      customerMobile,
+
       orderNumber,
       paymentType,
       createdAt,
@@ -216,6 +223,7 @@ const Invoice = React.forwardRef(
           branchOrderNumber={branchOrderNumber}
           orderNumber={orderNumber}
           customerName={customerName}
+          customerMobile={customerMobile}
           paymentType={paymentType}
           orderDate={createdAt}
           tableNumber={tableNumber}
@@ -226,13 +234,9 @@ const Invoice = React.forwardRef(
         />
         <ProductTable orderData={orderData} />
 
-        {receiptMessage ? (
+        {receiptMessage && (
           <p class="centered">
             <p>{receiptMessage}</p>
-          </p>
-        ) : (
-          <p class="centered">
-            <p>Thank you, visit us again</p>
           </p>
         )}
       </div>
