@@ -6,6 +6,7 @@ import {
   setDiscount,
   setKOTitemsData,
   setOtherCharges,
+  prePrintOrder,
 } from "../../../redux/action/orderActions";
 import { Curreny } from "../../../redux/types";
 import OrderButton from "./OrderButton";
@@ -78,6 +79,8 @@ const OrderTotalDisplay = () => {
 
   const discount = activeOrders[index]?.discount || 0;
   const otherCharges = activeOrders[index]?.otherCharges || 0;
+  const customerName = activeOrders[index]?.customerName;
+  const customerMobile = activeOrders[index]?.customerMobile;
 
   // React.useEffect(() => {
   //   setOtherCharges(0);
@@ -224,6 +227,33 @@ const OrderTotalDisplay = () => {
       grandTotal: grandTotal.toFixed(2),
     };
   };
+
+  const onPrePrint = () => {
+    const customerData = {
+      customerName,
+      customerMobile,
+    };
+    let orderdata = {
+      ...getData(),
+      otherCharges: parseFloat2Decimals(getData().otherCharges),
+      discount: parseFloat2Decimals(getData().discount),
+
+      grandTotal: parseFloat(getData().grandTotal),
+      orderItems: activeOrders[index].items,
+      orderBy: name,
+      paymentType: undefined,
+      paymentTypeId: undefined,
+      tableNumber: activeOrders[index].tableNumber,
+      tableId: activeOrders[index]._id,
+      restaurantId,
+      branchId,
+      orderNumber: lastOrderNumber + (activeOrders.length - index),
+      branchCode: branchCode,
+      orderType: activeOrders[index].orderType,
+      ...customerData,
+    };
+    dispatch(prePrintOrder(orderdata));
+  };
   const rendertableData = [
     [
       { title: "SubTotal", hasCurrency: true, value: getData().itemsTotal },
@@ -336,6 +366,7 @@ const OrderTotalDisplay = () => {
         <OrderButton
           enableKOT={enableKOT}
           onKOTButtonClick={() => handleKOTButtonClick()}
+          onPrePrint={() => onPrePrint()}
           onClick={(type) => {
             handleOpenMdoal(type);
           }}
@@ -359,6 +390,8 @@ const OrderTotalDisplay = () => {
           text={`Confirm Kot`}
           onConfirm={(customerData) => handleConfirmKOTOrder(customerData)}
           onCancel={() => toggleKOTConfirmModal()}
+          customerName={customerName}
+          customerMobile={customerMobile}
         />
       )}
     </div>

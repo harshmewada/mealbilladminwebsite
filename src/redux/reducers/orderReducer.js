@@ -6,6 +6,7 @@ import {
   orderTypes,
   tableTypes,
   userTypes,
+  utilTypes,
 } from "../types";
 import { uuid } from "uuidv4";
 const datatableTypes = [
@@ -108,6 +109,20 @@ const pushItemToActiveOrder = (
   return activeOrders;
 };
 
+const addCustomerNameOrMobileToOrder = (
+  activeOrders,
+  activeOrderIndex,
+  stateOrderId,
+  customerName,
+  customerMobile
+) => {
+  if (activeOrders[activeOrderIndex]) {
+    activeOrders[activeOrderIndex].customerName = customerName;
+    activeOrders[activeOrderIndex].customerMobile = customerMobile;
+  }
+
+  return activeOrders;
+};
 const addNewOtherOrder = (activeOrders, selectedOrderTypeId) => {
   activeOrders.push({
     tableNumber: undefined,
@@ -264,6 +279,25 @@ const orderReducer = (state = initialstate, action) => {
         activeOrderIndex: state.activeOrders.length - 1,
       };
 
+    case utilTypes.SET_KOT_PRINT_DATA:
+      if (action.payload.customerName || action.payload.customerMobile) {
+        return {
+          ...state,
+          activeOrders: [
+            ...addCustomerNameOrMobileToOrder(
+              state.activeOrders,
+              state.activeOrderIndex,
+              state.selectedOrderTypeId,
+
+              action.payload.customerName,
+              action.payload.customerMobile
+            ),
+          ],
+        };
+      }
+      return {
+        ...state,
+      };
     case orderTypes.PUSH_ITEM_TO_ORDER:
       return {
         ...state,

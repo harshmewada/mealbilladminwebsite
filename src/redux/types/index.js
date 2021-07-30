@@ -426,6 +426,8 @@ export const commonTypes = {
 };
 
 export const orderTypes = {
+  PRE_PRINT_ORDER: "PRE_PRINT_ORDER",
+
   SET_OTHER_CHARGES: "SET_OTHER_CHARGES",
   SET_DISCOUNT: "SET_DISCOUNT",
 

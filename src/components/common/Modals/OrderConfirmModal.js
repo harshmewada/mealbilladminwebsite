@@ -6,6 +6,8 @@ const OrderConfirmModal = ({
   onConfirm,
   onCancel,
   enableRemarks,
+  customerName,
+  customerMobile,
 }) => {
   // const [state, setState] = React.useState({
   //   customerName: "Jamna",
@@ -13,8 +15,8 @@ const OrderConfirmModal = ({
   //   remarks: undefined,
   // });
   const [state, setState] = React.useState({
-    customerName: undefined,
-    customerMobile: undefined,
+    customerName: customerName,
+    customerMobile: customerMobile,
     remarks: undefined,
   });
 

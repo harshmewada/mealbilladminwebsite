@@ -42,6 +42,12 @@ const utilReducer = (state = initialstate, action) => {
         ...state,
         printData: action.payload?.data?.data,
       };
+
+    case orderTypes.PRE_PRINT_ORDER:
+      return {
+        ...state,
+        printData: action.payload,
+      };
     case utilTypes.SET_PRINT_DATA:
       return {
         ...state,

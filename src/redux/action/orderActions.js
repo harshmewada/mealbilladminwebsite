@@ -105,7 +105,12 @@ export const removeItem = (index) => {
     },
   };
 };
-
+export const prePrintOrder = (data) => {
+  return {
+    type: orderTypes.PRE_PRINT_ORDER,
+    payload: data,
+  };
+};
 export const setKOTitemsData = (data) => {
   return {
     type: orderTypes.SET_KOT_ITEMS,
