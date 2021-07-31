@@ -8,6 +8,7 @@ const OrderConfirmModal = ({
   enableRemarks,
   customerName,
   customerMobile,
+  hideAllInputs,
 }) => {
   // const [state, setState] = React.useState({
   //   customerName: "Jamna",
@@ -27,7 +28,6 @@ const OrderConfirmModal = ({
       [name]: value,
     });
   };
-
   return (
     <SweetAlert
       info
@@ -41,7 +41,6 @@ const OrderConfirmModal = ({
       focusCancelBtn
     >
       {text}
-
       <input
         type="text"
         name="customerName"

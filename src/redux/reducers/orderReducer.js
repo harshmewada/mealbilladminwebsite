@@ -97,12 +97,6 @@ const pushItemToActiveOrder = (
       });
     }
   } else {
-    console.log(
-      "push else",
-      activeOrders[activeOrderIndex],
-      activeOrderIndex,
-      activeOrders
-    );
     alert("Please select order type");
   }
 
@@ -205,6 +199,17 @@ const changeMiscDetails = (activeOrders, activeOrderIndex, data, variable) => {
   }
 
   return activeOrders;
+};
+
+const updateOrderStatus = (orders, data) => {
+  const foundOrder = orders.findIndex((od) => od.refId === data.refId);
+  if (foundOrder >= 0) {
+    orders[foundOrder] = data;
+    orders[foundOrder].orderType = parseInt(data.orderType);
+    orders[foundOrder].items = data.orderItems;
+    orders[foundOrder].tablePrice = data?.tableCharges || 0;
+  }
+  return orders;
 };
 
 const orderReducer = (state = initialstate, action) => {
@@ -312,7 +317,15 @@ const orderReducer = (state = initialstate, action) => {
           ),
         ],
       };
+    case orderTypes.CONFIRM_ORDER_SUCCESS:
+      return {
+        ...state,
+        activeOrders: [
+          ...updateOrderStatus(state.activeOrders, getData().data),
+        ],
 
+        lastOrderNumber: getData().data.orderNumber,
+      };
     case orderTypes.CHANGE_ITEM_QUANTITY:
       return {
         ...state,
@@ -396,13 +409,6 @@ const orderReducer = (state = initialstate, action) => {
             "otherCharges"
           ),
         ],
-      };
-
-    case orderTypes.CONFIRM_ORDER_SUCCESS:
-      return {
-        ...state,
-
-        lastOrderNumber: getData().data.orderNumber,
       };
 
     case orderTypes.GET_PREVIOS_ORDERS_SUCCESS:

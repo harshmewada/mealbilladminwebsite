@@ -79,11 +79,32 @@ ipcMain.on("saveLogo", (_, data) => {
   saveLogoFile(data);
 });
 ipcMain.on("printBill", (_, data) => {
-  electronPrintBill(data);
+  const defaultPrinter = win.webContents
+    .getPrinters()
+    .find((item) => item.isDefault === true);
+  // if (!defaultPrinter) {
+  //   new Notification({
+  //     title: "Notification",
+  //     body: `Please select a default printer for printing`,
+  //   }).show();
+  // } else {
+  electronPrintBill(data, defaultPrinter?.displayName);
+  // }
 });
 
 ipcMain.on("printKOT", (_, data) => {
-  electronPrintKOT(data);
+  const defaultPrinter = win.webContents
+    .getPrinters()
+    .find((item) => item.isDefault === true);
+  console.log("defaultPrinter", defaultPrinter);
+  // if (!defaultPrinter) {
+  //   new Notification({
+  //     title: "Notification",
+  //     body: `Please select a default printer for printing`,
+  //   }).show();
+  // } else {
+  electronPrintKOT(data, defaultPrinter?.displayName);
+  // }
 });
 
 ipcMain.on("online-status-changed", (event, status) => {

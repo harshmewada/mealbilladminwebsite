@@ -2,7 +2,7 @@ const { PosPrinter } = require("electron-pos-printer");
 const path = require("path");
 const fs = require("fs-extra");
 const downloadFile = require("./downloadFile");
-
+const moment = require("moment");
 const insert = (arr, index, newItem) => [
   // part of the array before the specified index
   ...arr.slice(0, index),
@@ -92,12 +92,11 @@ const renderItem = (value, index) => {
     },
   ];
 };
-const electronPrintBill = async (printdata) => {
-  console.log("isElectron electronPrintBill", printdata);
+const electronPrintBill = async (printdata, printerName) => {
   const receiptMessage = printdata.receiptMessage;
 
   // const files = fs.readdirSync(filepath);
-  console.log("dir files", process.cwd());
+  // console.log("dir files", process.cwd());
   const currentOrderType = TYPESOFORDERS.find((types) => {
     return types.value == printdata.printData.orderType;
   });
@@ -106,7 +105,7 @@ const electronPrintBill = async (printdata) => {
     width: "260px", //  width of content body
     margin: "0 0 50px 0", // margin of content body
     copies: 1, // Number of copies to print
-    printerName: "pos", // printerName: string, check it at webContent.getPrinters()
+    printerName: printerName || "pos", // printerName: string, check it at webContent.getPrinters()
     timeOutPerLine: 500,
 
     silent: true,
@@ -145,81 +144,89 @@ const electronPrintBill = async (printdata) => {
       width: "auto", // width of image in px; default: auto
       height: "80px", // width of image in px; default: 50 or '50px'
     },
-    ...(printdata?.restaurant && [
-      {
-        type: "table",
-        // style the table
-        // list of the columns to be rendered in the table header
-        // multi dimensional array depicting the rows and columns of the table body
-        tableBody: [
-          [
-            {
-              type: "text",
-              value: printdata.restaurant,
-              style: `text-align:center; font-weight:500;
+    ...(printdata?.restaurant
+      ? [
+          {
+            type: "table",
+            // style the table
+            // list of the columns to be rendered in the table header
+            // multi dimensional array depicting the rows and columns of the table body
+            tableBody: [
+              [
+                {
+                  type: "text",
+                  value: printdata.restaurant,
+                  style: `text-align:center; font-weight:500;
                       font-size: 13px;
                       margin-bottom: 10px;border:1px solid transparent`,
-            },
-          ],
-        ],
-      },
-    ]),
-    ...(printdata?.branchAddress && [
-      {
-        type: "table",
-        // style the table
-        // list of the columns to be rendered in the table header
-        // multi dimensional array depicting the rows and columns of the table body
-        tableBody: [
-          [
-            {
-              type: "text",
-              value: `${printdata.branchAddress}`,
-              style: commonBordlessTableCellStyle({ textAlign: "center" }),
-            },
-          ],
-        ],
-      },
-    ]),
-    ...(printdata?.gstNumber && [
-      {
-        type: "table",
-        // style the table
-        // list of the columns to be rendered in the table header
-        // multi dimensional array depicting the rows and columns of the table body
-        tableBody: [
-          [
-            {
-              type: "text",
-              value: `GST  ${printdata.gstNumber}`,
-              style: commonBordlessTableCellStyle({ textAlign: "center" }),
-            },
-          ],
-        ],
-      },
-    ]),
-    ...(printdata.printData?.customerName && [
-      {
-        type: "table",
+                },
+              ],
+            ],
+          },
+        ]
+      : []),
+    ...(printdata?.branchAddress
+      ? [
+          {
+            type: "table",
+            // style the table
+            // list of the columns to be rendered in the table header
+            // multi dimensional array depicting the rows and columns of the table body
+            tableBody: [
+              [
+                {
+                  type: "text",
+                  value: `${printdata.branchAddress}`,
+                  style: commonBordlessTableCellStyle({ textAlign: "center" }),
+                },
+              ],
+            ],
+          },
+        ]
+      : []),
+    ...(printdata?.gstNumber
+      ? [
+          {
+            type: "table",
+            // style the table
+            // list of the columns to be rendered in the table header
+            // multi dimensional array depicting the rows and columns of the table body
+            tableBody: [
+              [
+                {
+                  type: "text",
+                  value: `GST  ${printdata.gstNumber}`,
+                  style: commonBordlessTableCellStyle({ textAlign: "center" }),
+                },
+              ],
+            ],
+          },
+        ]
+      : []),
+    ...(printdata.printData?.customerName
+      ? [
+          {
+            type: "table",
 
-        // style the table
-        // list of the columns to be rendered in the table header
-        // multi dimensional array depicting the rows and columns of the table body
-        tableBody: [
-          [
-            {
-              type: "text",
-              value: `Name : ${printdata.printData.customerName} ${
-                printdata.printData?.customerMobile
-                  ? `(${printdata.printData?.customerMobile})`
-                  : ""
-              }`,
-              style: commonBordlessTableCellStyle({ textAlign: "left" }),
-            },
-          ],
-        ],
-      },
-    ]),
+            // style the table
+            // list of the columns to be rendered in the table header
+            // multi dimensional array depicting the rows and columns of the table body
+            tableBody: [
+              [
+                {
+                  type: "text",
+                  value: `Name : ${printdata.printData.customerName} ${
+                    printdata.printData?.customerMobile
+                      ? `(${printdata.printData?.customerMobile})`
+                      : ""
+                  }`,
+                  style: commonBordlessTableCellStyle({ textAlign: "left" }),
+                },
+              ],
+            ],
+          },
+        ]
+      : []),
 
     {
       type: "table",
@@ -231,7 +238,7 @@ const electronPrintBill = async (printdata) => {
         [
           {
             type: "text",
-            value: printdata.printData.branchOrderNumber,
+            value: printdata?.printData?.branchOrderNumber || "",
             style: commonBordlessTableCellStyle({ textAlign: "left" }),
           },
           {
@@ -246,7 +253,9 @@ const electronPrintBill = async (printdata) => {
           },
           {
             type: "text",
-            value: printdata.printData.createdAt,
+            value:
+              printdata.printData.createdAt ||
+              moment().format("DD/MM/YYYY HH:mm"),
             style: commonBordlessTableCellStyle({
               textAlign: "right",
             }),
@@ -260,17 +269,17 @@ const electronPrintBill = async (printdata) => {
           },
           {
             type: "text",
-            value: printdata.printData.orderNumber,
+            value: `#${printdata.printData.orderNumber}`,
             style: commonBordlessTableCellStyle({ textAlign: "left" }),
           },
           {
             type: "text",
-            value: printdata.printData.tableNumber || "",
+            value: printdata?.printData?.tableNumber || "",
             style: commonBordlessTableCellStyle({ textAlign: "right" }),
           },
           {
             type: "text",
-            value: printdata.printData.paymentType,
+            value: printdata?.printData?.paymentType || "",
             style: commonBordlessTableCellStyle({
               textAlign: "right",
             }),

@@ -6,6 +6,7 @@ import {
   setDiscount,
   setKOTitemsData,
   setOtherCharges,
+  updateOrder,
   prePrintOrder,
 } from "../../../redux/action/orderActions";
 import { Curreny } from "../../../redux/types";
@@ -13,7 +14,7 @@ import OrderButton from "./OrderButton";
 import OrderConfirmModal from "../../../components/common/Modals/OrderConfirmModal";
 import { setKOTPrintData } from "../../../redux/action/utilActions";
 import moment from "moment";
-import { DATETIMEFORMAT } from "../../../contants";
+import { DATETIMEFORMAT, TYPESOFORDERS } from "../../../contants";
 
 function parseFloat2Decimals(value) {
   return parseFloat(parseFloat(value).toFixed(2));
@@ -62,6 +63,8 @@ const OrderTotalDisplay = () => {
   // const [discount, setDiscount] = React.useState(0);
   // const [otherCharges, setOtherCharges] = React.useState(0);
   const [orderConfirmOpen, setOrderConfirmOpen] = React.useState();
+  const [prePrintOpen, setPrePrintOpen] = React.useState();
+
   const [KOTModalOpen, setKOTModalOpen] = React.useState(false);
   const [KOTData, setKOTData] = React.useState();
 
@@ -75,7 +78,7 @@ const OrderTotalDisplay = () => {
     (state) => state.user
   );
 
-  const { enableKOT } = useSelector((state) => state.util);
+  const { enableKOT, enablePrinting } = useSelector((state) => state.util);
 
   const discount = activeOrders[index]?.discount || 0;
   const otherCharges = activeOrders[index]?.otherCharges || 0;
@@ -110,6 +113,14 @@ const OrderTotalDisplay = () => {
     // setKOTModalOpen(kotData);
     toggleKOTConfirmModal();
   };
+
+  const handlePrePrintOpen = () => {
+    if (!activeOrders[index]) {
+      return alert("No active order");
+    }
+    setPrePrintOpen(true);
+  };
+
   const handleConfirmKOTOrder = (customerData) => {
     const active = activeOrders[index];
     let kotItems = [];
@@ -135,8 +146,6 @@ const OrderTotalDisplay = () => {
       }
     });
 
-    console.log("kotItems", kotItems);
-
     let ItemsQuantity = 0;
     kotItems.map((item) => {
       ItemsQuantity = ItemsQuantity + item.quantity;
@@ -160,17 +169,21 @@ const OrderTotalDisplay = () => {
     toggleKOTConfirmModal();
   };
 
-  const handleConfirmOrder = (payment, customerData) => {
+  const handleConfirmOrder = (customerData, paymentData, others) => {
+    const currentOrderType = TYPESOFORDERS.find(
+      (data) => data.value === activeOrders[index].orderType
+    );
     let orderdata = {
       ...getData(),
       otherCharges: parseFloat2Decimals(getData().otherCharges),
       discount: parseFloat2Decimals(getData().discount),
-
+      orderTypeName: currentOrderType.key,
       grandTotal: parseFloat(getData().grandTotal),
       orderItems: activeOrders[index].items,
       orderBy: name,
-      paymentType: payment.type,
-      paymentTypeId: payment.id,
+
+      paymentType: undefined,
+      paymentTypeId: undefined,
       tableNumber: activeOrders[index].tableNumber,
       tableId: activeOrders[index]._id,
       restaurantId,
@@ -178,21 +191,69 @@ const OrderTotalDisplay = () => {
       orderNumber: lastOrderNumber + (activeOrders.length - index),
       branchCode: branchCode,
       orderType: activeOrders[index].orderType,
+      isPaid: false,
       ...customerData,
+      ...paymentData,
+      ...others,
     };
 
-    toggleOrderConfirmModal();
-
+    setPrePrintOpen(false);
     dispatch(
       confirmOrder(orderdata, () => {
         setOtherCharges(0);
         setDiscount(0);
-
-        dispatch(deleteLocalOrder(index));
+        if (!enablePrinting) {
+          dispatch(deleteLocalOrder(index));
+          toggleOrderConfirmModal();
+        }
+        //
       })
     );
   };
+  const handleUpdateOrder = (payment, customerData) => {
+    if (!enablePrinting) {
+      const paymentData = {
+        paymentType: payment.type,
+        paymentTypeId: payment.id,
+      };
+      handleConfirmOrder(customerData, paymentData, {
+        isPaid: true,
+      });
+      return null;
+    }
 
+    const currentOrder = activeOrders[index];
+
+    if (!currentOrder) {
+      toggleOrderConfirmModal();
+
+      return alert("No active order");
+    }
+    if (
+      currentOrder?.isPaid === false &&
+      currentOrder?.isOrderConfirmed === true
+    ) {
+      const updateData = {
+        refId: currentOrder.refId,
+        paymentType: payment.type,
+        paymentTypeId: payment.id,
+        restaurantId: currentOrder.restaurantId,
+
+        _id: currentOrder._id,
+        isPaid: true,
+        ...customerData,
+      };
+
+      dispatch(
+        updateOrder(updateData, () => {
+          setOtherCharges(0);
+          setDiscount(0);
+          toggleOrderConfirmModal();
+          dispatch(deleteLocalOrder(index));
+        })
+      );
+    }
+  };
   const getData = (mydiscount) => {
     let itemsTotal = 0;
     let cgstCharges = 0;
@@ -200,6 +261,8 @@ const OrderTotalDisplay = () => {
     let sgstCharges = 0;
     let grandTotal = 0;
     let tablePrice = 0;
+    let taxTotal = 0;
+
     if (activeOrders[index]) {
       activeOrders[index].items.forEach((item) => {
         itemsTotal += item.itemTotal;
@@ -217,18 +280,22 @@ const OrderTotalDisplay = () => {
       tablePrice +
       parseFloat(otherCharges || 0) -
       parseFloat(discount || 0);
+
+    taxTotal = parseFloat(cgstCharges + sgstCharges);
     return {
       itemsTotal,
       cgstCharges,
       sgstCharges,
       otherCharges,
+      taxTotal,
       discount,
       tablePrice,
+      refId: activeOrders[index]?.refId,
       grandTotal: grandTotal.toFixed(2),
     };
   };
 
-  const onPrePrint = () => {
+  const onPrePrint = (customer) => {
     const customerData = {
       customerName,
       customerMobile,
@@ -251,8 +318,12 @@ const OrderTotalDisplay = () => {
       branchCode: branchCode,
       orderType: activeOrders[index].orderType,
       ...customerData,
+      ...customer,
     };
     dispatch(prePrintOrder(orderdata));
+    setOtherCharges(0);
+    setDiscount(0);
+    setPrePrintOpen(false);
   };
   const rendertableData = [
     [
@@ -365,22 +436,36 @@ const OrderTotalDisplay = () => {
       <div className="col-md-4 mb-0">
         <OrderButton
           enableKOT={enableKOT}
+          enablePrinting={enablePrinting}
           onKOTButtonClick={() => handleKOTButtonClick()}
-          onPrePrint={() => onPrePrint()}
+          // onPrePrint={() => handlePrePrintOpen()}
+          onPrePrint={() => handlePrePrintOpen()}
           onClick={(type) => {
             handleOpenMdoal(type);
           }}
         />
       </div>
 
+      {prePrintOpen && (
+        <OrderConfirmModal
+          open={prePrintOpen}
+          text={`Grand total : ${Curreny} ${getData().grandTotal}`}
+          onConfirm={(customerData) => handleConfirmOrder(customerData)}
+          onCancel={() => setPrePrintOpen()}
+          customerName={customerName}
+          customerMobile={customerMobile}
+        />
+      )}
       {orderConfirmOpen && (
         <OrderConfirmModal
           open={orderConfirmOpen}
           text={`Grand total : ${Curreny} ${getData().grandTotal}`}
           onConfirm={(customerData) =>
-            handleConfirmOrder(orderConfirmOpen, customerData)
+            handleUpdateOrder(orderConfirmOpen, customerData)
           }
           onCancel={() => toggleOrderConfirmModal()}
+          customerName={customerName}
+          customerMobile={customerMobile}
         />
       )}
       {enableKOT && KOTModalOpen && (

@@ -1,6 +1,12 @@
 import React from "react";
 import { TYPESOFPAYMENTS } from "../../../contants/index";
-const OrderButton = ({ onClick, enableKOT, onKOTButtonClick, onPrePrint }) => {
+const OrderButton = ({
+  onClick,
+  enableKOT,
+  onKOTButtonClick,
+  onPrePrint,
+  enablePrinting,
+}) => {
   const orderTypes = TYPESOFPAYMENTS;
   return (
     <div
@@ -19,14 +25,16 @@ const OrderButton = ({ onClick, enableKOT, onKOTButtonClick, onPrePrint }) => {
           KOT
         </button>
       )}
-      <button
-        onClick={() => onPrePrint()}
-        type="button"
-        class="btn btn-outline-primary"
-      >
-        <i class={`dripicons-print mr-2`}></i>
-        Bill
-      </button>
+      {enablePrinting && (
+        <button
+          onClick={() => onPrePrint()}
+          type="button"
+          class="btn btn-outline-primary"
+        >
+          <i class={`dripicons-print mr-2`}></i>
+          Bill
+        </button>
+      )}
       {orderTypes.map((ot, otinex) => {
         return (
           <button

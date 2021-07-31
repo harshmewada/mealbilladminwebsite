@@ -24,6 +24,20 @@ export const toggleKOT = () => {
   };
 };
 
+export const setPrinting = (value) => {
+  return {
+    type: utilTypes.SET_PRINTING,
+    payload: value,
+  };
+};
+
+export const setKOT = (value) => {
+  return {
+    type: utilTypes.SET_KOT,
+    payload: value,
+  };
+};
+
 export const setPrintData = (data) => {
   return {
     type: utilTypes.SET_PRINT_DATA,

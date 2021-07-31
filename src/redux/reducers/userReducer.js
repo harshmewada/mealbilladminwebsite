@@ -46,6 +46,7 @@ const userReducer = (state = initialstate, action) => {
       setToken(getData().token);
       if (getData().user.restaurantLogo) {
         saveLocallogo(getData().user.restaurantLogo);
+        console.log("restaurantLogo", getData().user.restaurantLogo);
       }
       return {
         ...state,

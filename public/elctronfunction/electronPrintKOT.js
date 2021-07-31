@@ -12,7 +12,7 @@ const insert = (arr, index, newItem) => [
   ...arr.slice(index),
 ];
 const commonBordlessTableCellStyle = ({ style, textAlign }) => {
-  return `border:1px solid transparent;text-align:${textAlign};padding-bottom:0px;${style}`;
+  return `border:1px solid transparent;font-weight:600;text-align:${textAlign};padding-bottom:0px;${style}`;
 };
 const CURRENCY = "₹";
 
@@ -21,11 +21,11 @@ const renderCurrencyValue = (value) => {
 };
 
 const commonBodyHeaderStyle = ({ style, textAlign, width }) => {
-  return `text-align:${textAlign};width:${width}%;padding-bottom:5px;padding-top:5px;font-size:12px;text-transform:uppercase;font-weight:400; ${style}`;
+  return `text-align:${textAlign};width:${width}%;padding-bottom:5px;padding-top:5px;font-size:12px;text-transform:uppercase;font-weight:600; ${style}`;
 };
 
 const commonBodyCellStyle = ({ style, textAlign, width }) => {
-  return `text-align:${textAlign};border-bottom:0.1rem solid #aaa;font-weight:300;font-size:11px;color:#000;${style}`;
+  return `text-align:${textAlign};border-bottom:0.1rem solid #aaa;font-weight:600;font-size:11px;color:#000;${style}`;
 };
 
 const TYPESOFORDERS = [
@@ -72,20 +72,18 @@ const renderItem = (value, index) => {
     },
   ];
 };
-const electronPrintKOT = async (printdata) => {
+const electronPrintKOT = async (printdata, printerName) => {
   const remarks = printdata.printData?.remarks;
-
-  console.log("printDtat", remarks);
 
   const currentOrderType = TYPESOFORDERS.find((types) => {
     return types.value == printdata.printData.orderType;
   });
   const options = {
     preview: false, // Preview in window or print
-    width: "260px", //  width of content body
-    margin: "0 0 50px 0", // margin of content body
+    width: "250px", //  width of content body
+    margin: "0 10px 50px 0", // margin of content body
     copies: 1, // Number of copies to print
-    printerName: "pos", // printerName: string, check it at webContent.getPrinters()
+    printerName: printerName || "pos", // printerName: string, check it at webContent.getPrinters()
     timeOutPerLine: 500,
 
     silent: true,
@@ -102,7 +100,7 @@ const electronPrintKOT = async (printdata) => {
           {
             type: "text",
             value: text,
-            style: `text-align:left; font-weight:500;
+            style: `text-align:left; font-weight:600;
                       font-size: 13px;
                      border:1px solid transparent`,
           },
@@ -115,25 +113,27 @@ const electronPrintKOT = async (printdata) => {
   }
 
   const headerdata = [
-    ...(printdata?.restaurant && [
-      {
-        type: "table",
-        // style the table
-        // list of the columns to be rendered in the table header
-        // multi dimensional array depicting the rows and columns of the table body
-        tableBody: [
-          [
-            {
-              type: "text",
-              value: printdata.restaurant,
-              style: `text-align:center; font-weight:500;
+    ...(printdata?.restaurant
+      ? [
+          {
+            type: "table",
+            // style the table
+            // list of the columns to be rendered in the table header
+            // multi dimensional array depicting the rows and columns of the table body
+            tableBody: [
+              [
+                {
+                  type: "text",
+                  value: printdata.restaurant,
+                  style: `text-align:center; font-weight:600;
                       font-size: 13px;
                       margin-bottom: 10px;border:1px solid transparent`,
-            },
-          ],
-        ],
-      },
-    ]),
+                },
+              ],
+            ],
+          },
+        ]
+      : []),
     // ...(printdata.branchAddress && [
     //   {
     //     type: "table",
@@ -151,40 +151,47 @@ const electronPrintKOT = async (printdata) => {
     //     ],
     //   },
     // ]),
-    ...(printdata?.branchAddress && [
-      {
-        type: "table",
+    ...(printdata?.branchAddress
+      ? [
+          {
+            type: "table",
 
-        tableBody: [
-          [
-            {
-              type: "text",
-              value: printdata.branchAddress,
-              style: commonBordlessTableCellStyle({ textAlign: "center" }),
-            },
-          ],
-        ],
-      },
-    ]),
-    ...(printdata.printData?.customerName && [
-      {
-        type: "table",
+            tableBody: [
+              [
+                {
+                  type: "text",
+                  value: printdata.branchAddress,
+                  style: commonBordlessTableCellStyle({
+                    textAlign: "center",
+                    color: "black",
+                  }),
+                },
+              ],
+            ],
+          },
+        ]
+      : []),
+    ...(printdata.printData?.customerName
+      ? [
+          {
+            type: "table",
 
-        tableBody: [
-          [
-            {
-              type: "text",
-              value: `Name : ${printdata.printData.customerName} ${
-                printdata.printData?.customerMobile
-                  ? `(${printdata.printData?.customerMobile})`
-                  : ""
-              }`,
-              style: commonBordlessTableCellStyle({ textAlign: "left" }),
-            },
-          ],
-        ],
-      },
-    ]),
+            tableBody: [
+              [
+                {
+                  type: "text",
+                  value: `Name : ${printdata.printData.customerName} ${
+                    printdata.printData?.customerMobile
+                      ? `(${printdata.printData?.customerMobile})`
+                      : ""
+                  }`,
+                  style: commonBordlessTableCellStyle({ textAlign: "left" }),
+                },
+              ],
+            ],
+          },
+        ]
+      : []),
 
     {
       type: "table",
@@ -201,7 +208,7 @@ const electronPrintKOT = async (printdata) => {
           },
           {
             type: "text",
-            value: `Token :${printdata.printData.branchOrderNumber}`,
+            value: `Token:${printdata.printData.branchOrderNumber}`,
             style: commonBordlessTableCellStyle({ textAlign: "right" }),
           },
         ],
@@ -235,7 +242,7 @@ const electronPrintKOT = async (printdata) => {
       }),
 
       tableHeaderStyle:
-        "padding:10px 0px;border-top:1px solid #aaa;border-bottom:1px solid #aaa;",
+        "padding:10px 0px;border-top:1px solid #aaa;font-weight:600;border-bottom:1px solid #aaa;",
     },
   ];
   let footerData = [

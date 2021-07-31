@@ -189,7 +189,7 @@ const OrderHistory = () => {
           searchByField="orderNumber"
           // headAction={AddAction}
           // actions={[DeleteAction]}
-          tableData={previousOrders}
+          tableData={previousOrders.reverse()}
           headers={headers}
           sortable={true}
           paginated={true}

@@ -1,3 +1,5 @@
+import setLocalKOTPrintEnable from "../../helpers/setLocalKOTPrintEnable";
+import setLocalPrintEnable from "../../helpers/setLocalPrintEnable";
 import { orderTypes, utilTypes } from "../types";
 const initialstate = {
   spinner: false,
@@ -24,6 +26,7 @@ const utilReducer = (state = initialstate, action) => {
       };
 
     case utilTypes.TOGGLE_PRINTING:
+      setLocalPrintEnable(!state.enablePrinting);
       return {
         ...state,
         enablePrinting: !state.enablePrinting,
@@ -31,9 +34,28 @@ const utilReducer = (state = initialstate, action) => {
       };
 
     case utilTypes.TOGGLE_KOT:
+      setLocalKOTPrintEnable(!state.enableKOT);
       return {
         ...state,
         enableKOT: !state.enableKOT,
+        KOTprintData: undefined,
+      };
+
+    case utilTypes.SET_PRINTING:
+      const booleanValue = action.payload === "false" ? false : true;
+      setLocalPrintEnable(booleanValue);
+      return {
+        ...state,
+        enablePrinting: booleanValue,
+        printData: undefined,
+      };
+
+    case utilTypes.SET_KOT:
+      const kotbooleanValue = action.payload === "false" ? false : true;
+      setLocalKOTPrintEnable(kotbooleanValue);
+      return {
+        ...state,
+        enableKOT: kotbooleanValue,
         KOTprintData: undefined,
       };
 
@@ -41,6 +63,12 @@ const utilReducer = (state = initialstate, action) => {
       return {
         ...state,
         printData: action.payload?.data?.data,
+      };
+
+    case orderTypes.UPDATE_ORDER_SUCCESS:
+      return {
+        ...state,
+        // printData: action.payload?.data?.data,
       };
 
     case orderTypes.PRE_PRINT_ORDER:

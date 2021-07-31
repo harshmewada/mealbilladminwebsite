@@ -123,6 +123,8 @@ export const confirmOrder = (data, cb, errorCb) => {
     checkIfAsyncReqSuccess(dispatch, {
       successMessage: "Order Successfull",
       errorMessage: "Failed To Order",
+      enableMessage: true,
+
       cb: cb,
       errorCb: errorCb,
       type: orderTypes.CONFIRM_ORDER,
@@ -130,6 +132,28 @@ export const confirmOrder = (data, cb, errorCb) => {
         request: {
           url: orderApi.CREATE_ORDER,
           method: "post",
+          data: data,
+          headers: {
+            "Content-type": "application/json",
+          },
+        },
+      },
+    });
+};
+
+export const updateOrder = (data, cb, errorCb) => {
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: "Order Payment Received",
+      errorMessage: "Failed To Add Payment",
+      enableMessage: false,
+      cb: cb,
+      errorCb: errorCb,
+      type: orderTypes.UPDATE_ORDER,
+      payload: {
+        request: {
+          url: orderApi.UPDATE_ORDER,
+          method: "PUT",
           data: data,
           headers: {
             "Content-type": "application/json",

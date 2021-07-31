@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { getUserDetails } from "../redux/action/userActions";
+import { setKOT, setPrinting } from "../redux/action/utilActions";
+import getLocalKOTPrintEnable from "./getLocalKOTPrintEnable";
+import getLocalPrintEnable from "./getLocalPrintEnable";
 import getToken from "./getToken";
 
 function useFriendStatus(friendID) {
@@ -10,6 +13,19 @@ function useFriendStatus(friendID) {
   const delayReady = () => {
     setReady(true);
   };
+
+  function handlePrintingServices() {
+    const enablePrinting = getLocalPrintEnable();
+    const enableKOT = getLocalKOTPrintEnable();
+
+    if (enablePrinting) {
+      dispatch(setPrinting(enablePrinting));
+    }
+
+    if (enableKOT) {
+      dispatch(setKOT(enableKOT));
+    }
+  }
   function handleCheckToken() {
     const tkn = getToken();
     console.log("handleCheckToken", tkn);
@@ -27,6 +43,7 @@ function useFriendStatus(friendID) {
   }
   useEffect(() => {
     handleCheckToken();
+    handlePrintingServices();
   }, []);
 
   return ready;
