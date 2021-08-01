@@ -9,6 +9,8 @@ import {
   utilTypes,
 } from "../types";
 import { uuid } from "uuidv4";
+import setLocalPrintEnable from "../../helpers/setLocalPrintEnable";
+import setLocalKOTPrintEnable from "../../helpers/setLocalKOTPrintEnable";
 const datatableTypes = [
   {
     tableTypeName: "Ac",
@@ -326,6 +328,13 @@ const orderReducer = (state = initialstate, action) => {
 
         lastOrderNumber: getData().data.orderNumber,
       };
+
+    case orderTypes.UPDATE_ORDER_SUCCESS:
+      return {
+        ...state,
+
+        lastOrderNumber: getData().data.orderNumber,
+      };
     case orderTypes.CHANGE_ITEM_QUANTITY:
       return {
         ...state,
@@ -417,6 +426,36 @@ const orderReducer = (state = initialstate, action) => {
 
         previousOrders: getData().data,
       };
+
+    // case utilTypes.TOGGLE_PRINTING:
+    //   setLocalPrintEnable(!state.enablePrinting);
+    //   return {
+    //     ...state,
+    //     enablePrinting: !state.enablePrinting,
+    //   };
+
+    // case utilTypes.TOGGLE_KOT:
+    //   setLocalKOTPrintEnable(!state.enableKOT);
+    //   return {
+    //     ...state,
+    //     enableKOT: !state.enableKOT,
+    //   };
+
+    // case utilTypes.SET_PRINTING:
+    //   const booleanValue = action.payload === "false" ? false : true;
+    //   setLocalPrintEnable(booleanValue);
+    //   return {
+    //     ...state,
+    //     enablePrinting: booleanValue,
+    //   };
+
+    // case utilTypes.SET_KOT:
+    //   const kotbooleanValue = action.payload === "false" ? false : true;
+    //   setLocalKOTPrintEnable(kotbooleanValue);
+    //   return {
+    //     ...state,
+    //     enableKOT: kotbooleanValue,
+    //   };
 
     case userTypes.LOGOUT_USER:
       return initialstate;

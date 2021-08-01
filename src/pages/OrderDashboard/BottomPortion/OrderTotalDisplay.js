@@ -169,7 +169,7 @@ const OrderTotalDisplay = () => {
     toggleKOTConfirmModal();
   };
 
-  const handleConfirmOrder = (customerData, paymentData, others) => {
+  const handleConfirmOrder = (customerData, paymentData, others, cb) => {
     const currentOrderType = TYPESOFORDERS.find(
       (data) => data.value === activeOrders[index].orderType
     );
@@ -198,24 +198,29 @@ const OrderTotalDisplay = () => {
     };
 
     setPrePrintOpen(false);
+
     dispatch(
-      confirmOrder(orderdata, () => {
+      confirmOrder(orderdata, (data) => {
         setOtherCharges(0);
         setDiscount(0);
         if (!enablePrinting) {
-          dispatch(deleteLocalOrder(index));
           toggleOrderConfirmModal();
+
+          // console.log("confirmdata", data);
+          dispatch(deleteLocalOrder(index));
         }
+        cb && cb();
         //
       })
     );
   };
   const handleUpdateOrder = (payment, customerData) => {
+    console.log("if");
+    const paymentData = {
+      paymentType: payment.type,
+      paymentTypeId: payment.id,
+    };
     if (!enablePrinting) {
-      const paymentData = {
-        paymentType: payment.type,
-        paymentTypeId: payment.id,
-      };
       handleConfirmOrder(customerData, paymentData, {
         isPaid: true,
       });
@@ -251,6 +256,19 @@ const OrderTotalDisplay = () => {
           toggleOrderConfirmModal();
           dispatch(deleteLocalOrder(index));
         })
+      );
+    } else {
+      handleConfirmOrder(
+        customerData,
+        paymentData,
+        {
+          isPaid: true,
+        },
+        () => {
+          toggleOrderConfirmModal();
+
+          dispatch(deleteLocalOrder(index));
+        }
       );
     }
   };

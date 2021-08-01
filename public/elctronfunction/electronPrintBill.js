@@ -19,13 +19,12 @@ const CURRENCY = "₹";
 const renderCurrencyValue = (value) => {
   return `${CURRENCY} ${value}`;
 };
-
 const commonBodyHeaderStyle = ({ style, textAlign, width }) => {
-  return `text-align:${textAlign};width:${width}%;padding-bottom:5px;padding-top:5px;font-size:12px;text-transform:uppercase;font-weight:400; ${style}`;
+  return `text-align:${textAlign};width:${width}%;padding-bottom:5px;padding-top:5px;font-size:12px;text-transform:uppercase;font-weight:600; ${style}`;
 };
 
 const commonBodyCellStyle = ({ style, textAlign, width }) => {
-  return `text-align:${textAlign};border-bottom:0.1rem solid #aaa;font-weight:300;font-size:11px;color:#000;${style}`;
+  return `text-align:${textAlign};border-bottom:0.1rem solid #aaa;font-size:11px;color:#000;${style}`;
 };
 
 const TYPESOFORDERS = [
@@ -102,8 +101,8 @@ const electronPrintBill = async (printdata, printerName) => {
   });
   const options = {
     preview: false, // Preview in window or print
-    width: "260px", //  width of content body
-    margin: "0 0 50px 0", // margin of content body
+    width: "250px", //  width of content body
+    margin: "0 10px 50px 0", // margin of content body
     copies: 1, // Number of copies to print
     printerName: printerName || "pos", // printerName: string, check it at webContent.getPrinters()
     timeOutPerLine: 500,
@@ -122,7 +121,7 @@ const electronPrintBill = async (printdata, printerName) => {
           {
             type: "text",
             value: text,
-            style: `text-align:center; font-weight:500;
+            style: `text-align:center; font-weight:600;
                       font-size: 13px;
                      border:1px solid transparent`,
           },
@@ -156,7 +155,7 @@ const electronPrintBill = async (printdata, printerName) => {
                 {
                   type: "text",
                   value: printdata.restaurant,
-                  style: `text-align:center; font-weight:500;
+                  style: `text-align:center; font-weight:600;
                       font-size: 13px;
                       margin-bottom: 10px;border:1px solid transparent`,
                 },
@@ -300,7 +299,7 @@ const electronPrintBill = async (printdata, printerName) => {
       }),
 
       tableHeaderStyle:
-        "padding:10px 0px;border-top:1px solid #aaa;border-bottom:1px solid #aaa;",
+        "padding:10px 0px;border-top:1px solid #aaa;font-weight:600;border-bottom:1px solid #aaa;",
     },
   ];
   let footerData = [
@@ -315,29 +314,31 @@ const electronPrintBill = async (printdata, printerName) => {
             type: "text",
             value: "SUB TOTAL",
             style:
-              "width:60%;text-align:right;border:1px solid transparent;padding:5px 0px",
+              "width:60%;text-align:right;border:1px solid transparent;font-weight:600;padding:5px 0px",
           },
           {
             type: "text",
             value: renderCurrencyValue(printdata.printData.itemsTotal),
             style:
-              "width:40%;text-align:right;border:1px solid transparent;padding:5px 0px",
+              "width:40%;text-align:right;border:1px solid transparent;font-weight:600;padding:5px 0px",
           },
         ],
-        [
-          {
-            type: "text",
-            value: "GST",
-            style:
-              "width:60%;text-align:right;border:1px solid transparent;padding:5px 0px",
-          },
-          {
-            type: "text",
-            value: renderCurrencyValue(printdata.printData.taxTotal),
-            style:
-              "width:40%;text-align:right;border:1px solid transparent;padding:5px 0px",
-          },
-        ],
+        ...(printdata?.printData?.taxTotal
+          ? [
+              {
+                type: "text",
+                value: "GST",
+                style:
+                  "width:60%;text-align:right;border:1px solid transparent;font-weight:600;padding:5px 0px",
+              },
+              {
+                type: "text",
+                value: renderCurrencyValue(printdata.printData.taxTotal),
+                style:
+                  "width:40%;text-align:right;border:1px solid transparent;font-weight:600;padding:5px 0px",
+              },
+            ]
+          : []),
 
         [
           {
@@ -370,13 +371,13 @@ const electronPrintBill = async (printdata, printerName) => {
         type: "text",
         value: "OTHER CHARGES",
         style:
-          "width:60%;text-align:right;border:1px solid transparent;padding:5px 0px",
+          "width:60%;text-align:right;border:1px solid transparent;font-weight:600;padding:5px 0px",
       },
       {
         type: "text",
         value: renderCurrencyValue(printdata.printData.otherCharges),
         style:
-          "width:40%;text-align:right;border:1px solid transparent;padding:5px 0px",
+          "width:40%;text-align:right;border:1px solid transparent;font-weight:600;padding:5px 0px",
       },
     ]);
   }
@@ -386,13 +387,13 @@ const electronPrintBill = async (printdata, printerName) => {
         type: "text",
         value: "DISCOUNT",
         style:
-          "width:60%;text-align:right;border:1px solid transparent;padding:5px 0px",
+          "width:60%;text-align:right;border:1px solid transparent;font-weight:600;padding:5px 0px",
       },
       {
         type: "text",
         value: renderCurrencyValue(printdata.printData.discount),
         style:
-          "width:40%;text-align:right;border:1px solid transparent;padding:5px 0px",
+          "width:40%;text-align:right;border:1px solid transparent;font-weight:600;padding:5px 0px",
       },
     ]);
   }

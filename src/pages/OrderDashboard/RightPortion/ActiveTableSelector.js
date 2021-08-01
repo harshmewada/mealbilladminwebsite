@@ -159,21 +159,23 @@ const ActiveOrderSelector = ({ tables }) => {
                     }
                     style={{ color: isActive ? "white" : undefined }}
                   >
-                    {active?.branchOrderNumber
+                    {isActive && active?.branchOrderNumber
                       ? `#${active?.branchOrderNumber}`
                       : ` # ${branchCode + (lastOrderNumber + index + 1)}`}
                   </span>
                 </div>
-                {active?.branchOrderNumber && active?.isOrderConfirmed && (
-                  <div className="col-md-4">
-                    <span
-                      className={"badge badge-warning"}
-                      style={{ color: "black" }}
-                    >
-                      Confirmed
-                    </span>
-                  </div>
-                )}
+                {isActive &&
+                  active?.branchOrderNumber &&
+                  active?.isOrderConfirmed && (
+                    <div className="col-md-4">
+                      <span
+                        className={"badge badge-warning"}
+                        style={{ color: "black" }}
+                      >
+                        Confirmed
+                      </span>
+                    </div>
+                  )}
               </div>
             </a>
           </div>
