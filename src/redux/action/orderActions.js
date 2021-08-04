@@ -87,12 +87,11 @@ export const setActiveOrder = (refId) => {
   };
 };
 
-export const deleteLocalOrder = (activeOrderIndex, tableNumber) => {
+export const deleteLocalOrder = (refId) => {
   return {
     type: orderTypes.DELETE_LOCAL_ORDER,
     payload: {
-      activeOrderIndex,
-      tableNumber: tableNumber,
+      refId,
     },
   };
 };

@@ -15,7 +15,12 @@ const styles = {
     padding: "0 10px",
   },
 };
-const ItemQuantitySelector = ({ quantity, setQuantity, deleteItem }) => {
+const ItemQuantitySelector = ({
+  quantity,
+  setQuantity,
+  deleteItem,
+  isOrderConfirmed,
+}) => {
   const incrementQuantity = () => {
     setQuantity(quantity + 1);
   };
@@ -49,6 +54,7 @@ const ItemQuantitySelector = ({ quantity, setQuantity, deleteItem }) => {
             type="button"
             class="btn btn-outline-light shadow-none"
             onClick={decrementQuantity}
+            disabled={isOrderConfirmed}
           >
             <i class="mdi mdi-minus "></i>
           </button>
@@ -70,6 +76,7 @@ const ItemQuantitySelector = ({ quantity, setQuantity, deleteItem }) => {
             type="button"
             class="btn btn-outline-light shadow-none"
             onClick={incrementQuantity}
+            disabled={isOrderConfirmed}
           >
             <i class="mdi mdi-plus"></i>
           </button>

@@ -30,6 +30,12 @@ const ButtonOrderSelector = ({
       0
     );
   };
+  const sortfunction = function (a, b) {
+    return a.tableNumber.localeCompare(b.name, undefined, {
+      numeric: true,
+      sensitivity: "base",
+    });
+  };
 
   return (
     <div class="flex-container" style={{ maxHeight: 80, overflow: "auto" }}>

@@ -174,21 +174,26 @@ const setKOTITEMSDATA = (activeOrders, activeOrderIndex, data) => {
   return activeOrders;
 };
 
-const deleteLocalOrder = (activeOrders, allTables, orderIndex, tableNumber) => {
-  let filteredTables = activeOrders.filter((table, tabindex) => {
-    return tabindex !== orderIndex;
-  });
+const deleteLocalOrder = (activeOrders, allTables, refId) => {
+  const foundIndex = activeOrders.findIndex((or) => or.refId === refId);
 
-  if (tableNumber) {
-    let mytable = allTables.findIndex((table) => {
-      return table.tableNumber == tableNumber;
-    });
-    if (mytable >= 0) {
-      allTables[mytable].active = false;
+  if (foundIndex >= 0) {
+    const foundOrder = activeOrders[foundIndex];
+
+    if (foundOrder.tableNumber) {
+      let mytable = allTables.findIndex((table) => {
+        return table.tableNumber == foundOrder.tableNumber;
+      });
+      if (mytable >= 0) {
+        allTables[mytable].active = false;
+      }
     }
   }
+  let filteredOrders = activeOrders.filter((table, tabindex) => {
+    return tabindex !== foundIndex;
+  });
   return {
-    activeOrders: filteredTables,
+    activeOrders: filteredOrders,
     allTables: allTables,
   };
 };
@@ -380,8 +385,7 @@ const orderReducer = (state = initialstate, action) => {
           ...deleteLocalOrder(
             state.activeOrders,
             state.allTables,
-            action.payload.activeOrderIndex,
-            action.payload.tableNumber
+            action.payload.refId
           ).activeOrders,
         ],
         allTables: [

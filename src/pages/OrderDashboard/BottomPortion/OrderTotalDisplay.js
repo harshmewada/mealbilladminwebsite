@@ -74,6 +74,8 @@ const OrderTotalDisplay = () => {
     lastOrderNumber,
   } = useSelector((state) => state.order);
 
+  const currentOrders = activeOrders[index];
+
   const { name, restaurantId, branchId, branchCode, cgst, sgst } = useSelector(
     (state) => state.user
   );
@@ -207,7 +209,7 @@ const OrderTotalDisplay = () => {
           toggleOrderConfirmModal();
 
           // console.log("confirmdata", data);
-          dispatch(deleteLocalOrder(index));
+          dispatch(deleteLocalOrder(orderdata.refId));
         }
         cb && cb();
         //
@@ -254,7 +256,7 @@ const OrderTotalDisplay = () => {
           setOtherCharges(0);
           setDiscount(0);
           toggleOrderConfirmModal();
-          dispatch(deleteLocalOrder(index));
+          dispatch(deleteLocalOrder(currentOrder.refId));
         })
       );
     } else {
@@ -267,7 +269,7 @@ const OrderTotalDisplay = () => {
         () => {
           toggleOrderConfirmModal();
 
-          dispatch(deleteLocalOrder(index));
+          dispatch(deleteLocalOrder(currentOrder.refId));
         }
       );
     }
@@ -278,6 +280,8 @@ const OrderTotalDisplay = () => {
 
     let sgstCharges = 0;
     let grandTotal = 0;
+    let grandTotalWithoutDiscount = 0;
+
     let tablePrice = 0;
     let taxTotal = 0;
 
@@ -299,6 +303,13 @@ const OrderTotalDisplay = () => {
       parseFloat(otherCharges || 0) -
       parseFloat(discount || 0);
 
+    grandTotalWithoutDiscount =
+      itemsTotal +
+      cgstCharges +
+      sgstCharges +
+      tablePrice +
+      parseFloat(otherCharges || 0);
+
     taxTotal = parseFloat(cgstCharges + sgstCharges);
     return {
       itemsTotal,
@@ -310,6 +321,7 @@ const OrderTotalDisplay = () => {
       tablePrice,
       refId: activeOrders[index]?.refId,
       grandTotal: grandTotal.toFixed(2),
+      grandTotalWithoutDiscount: grandTotalWithoutDiscount.toFixed(2),
     };
   };
 
@@ -343,6 +355,7 @@ const OrderTotalDisplay = () => {
     setDiscount(0);
     setPrePrintOpen(false);
   };
+  const grandTotal = getData().grandTotal;
   const rendertableData = [
     [
       { title: "SubTotal", hasCurrency: true, value: getData().itemsTotal },
@@ -360,6 +373,7 @@ const OrderTotalDisplay = () => {
         hasCurrency: true,
         input: () => (
           <input
+            disabled={currentOrders?.isOrderConfirmed}
             className={"form-control"}
             maxLength="6"
             style={styles.input}
@@ -379,6 +393,7 @@ const OrderTotalDisplay = () => {
         hasCurrency: true,
         input: () => (
           <input
+            disabled={currentOrders?.isOrderConfirmed}
             maxLength="6"
             min="0"
             max={"100"}
@@ -386,8 +401,13 @@ const OrderTotalDisplay = () => {
             style={styles.input}
             value={discount}
             onChange={(e) => {
+              console.log(
+                "discount",
+                parseFloat(getData().grandTotalWithoutDiscount)
+              );
               if (
-                parseFloat(e.target.value) >= parseFloat(getData().grandTotal)
+                parseFloat(e.target.value) >=
+                parseFloat(getData().grandTotalWithoutDiscount)
               ) {
                 alert("Maximum Discount Reached");
                 dispatch(

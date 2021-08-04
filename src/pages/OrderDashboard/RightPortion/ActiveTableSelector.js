@@ -55,8 +55,8 @@ const ActiveOrderSelector = ({ tables }) => {
     dispatch(removeItem(index));
   };
 
-  const deleteOrder = (index) => {
-    dispatch(deleteLocalOrder(index));
+  const deleteOrder = (refId) => {
+    dispatch(deleteLocalOrder(refId));
   };
 
   const makeTableActive = (refId) => {
@@ -136,20 +136,22 @@ const ActiveOrderSelector = ({ tables }) => {
                     {data.items.length} Items
                   </span>
                 </div>
-                <div className="col-md-2 d-flex justify-content-end">
-                  <span>
-                    <a
-                      href="javascript:void(0);"
-                      onClick={() => deleteOrder(index)}
-                    >
-                      <i
-                        class={`mdi mdi-close-circle font-16 ${
-                          isActive ? `text-primary` : " text-danger "
-                        }`}
-                      ></i>
-                    </a>
-                  </span>
-                </div>
+                {!data.isOrderConfirmed && (
+                  <div className="col-md-2 d-flex justify-content-end">
+                    <span>
+                      <a
+                        href="javascript:void(0);"
+                        onClick={() => deleteOrder(data.refId)}
+                      >
+                        <i
+                          class={`mdi mdi-close-circle font-16 ${
+                            isActive ? `text-primary` : " text-danger "
+                          }`}
+                        ></i>
+                      </a>
+                    </span>
+                  </div>
+                )}
 
                 {/* </div> */}
                 <div className="col-md-8">
@@ -199,6 +201,7 @@ const ActiveOrderSelector = ({ tables }) => {
                                 handleItemQuantity(quantity, index)
                               }
                               deleteItem={() => deleteItem(index)}
+                              isOrderConfirmed={data?.isOrderConfirmed}
                             />
                           </td>
 
