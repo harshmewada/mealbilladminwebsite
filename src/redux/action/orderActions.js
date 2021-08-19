@@ -60,12 +60,13 @@ export const addNewOtherOrder = (selectedOrderTypeId) => {
   };
 };
 
-export const pushItemToActiveOrder = (item, selectedOrderTypeId) => {
+export const pushItemToActiveOrder = (item, selectedOrderTypeId, isVariant) => {
   return {
     type: orderTypes.PUSH_ITEM_TO_ORDER,
     payload: {
       item,
       selectedOrderTypeId,
+      isVariant,
     },
   };
 };

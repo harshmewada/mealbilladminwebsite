@@ -251,7 +251,7 @@ export default Data;
 //         <SmartTable
 //           title={PageTitle}
 //           headerComponents={headerComponents[role]}
-//           headAction={AddAction}
+//           headActions={[AddAction]}
 //           actions={[EditAction, DeleteAction]}
 //           tableData={hotkeys}
 //           headers={headers}

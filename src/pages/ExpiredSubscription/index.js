@@ -41,7 +41,7 @@ const ExpiredSubscription = () => {
                       </a>
                     </div>
                     <img
-                      src="http://metrica.laravel.themesbrand.com/assets/images/404.png"
+                      src="/images/expiredsubscription.png"
                       alt=""
                       class="d-block mx-auto mt-4"
                       height="250"

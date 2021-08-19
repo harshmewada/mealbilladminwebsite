@@ -236,7 +236,7 @@ const ManageTableTypes = () => {
         <SmartTable
           headerComponents={headerComponents[role]}
           title={PageTitle}
-          headAction={AddAction}
+          headActions={[AddAction]}
           actions={[EditAction, DeleteAction]}
           tableData={tableTypes}
           headers={headers}

@@ -295,7 +295,7 @@ const ManageExpense = () => {
         <SmartTable
           title={PageTitle}
           headerComponents={headerComponents[role]}
-          headAction={AddAction}
+          headActions={[AddAction]}
           actions={[EditAction, DeleteAction]}
           tableData={expenses}
           headers={headers}

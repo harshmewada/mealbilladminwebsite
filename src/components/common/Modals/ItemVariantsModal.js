@@ -8,6 +8,7 @@ import TableTitle from "../SmartTable/TableTitle";
 import { useSelector } from "react-redux";
 import { Formik, Field, Form, ErrorMessage, FieldArray } from "formik";
 import { MEASUREUNITS } from "../../../contants";
+import { RootUrl } from "../../../redux/types";
 
 const Nodata = () => (
   <td colSpan={"8"} className="text-center">
@@ -16,25 +17,50 @@ const Nodata = () => (
 );
 
 const emptyRow = {
-  subExpenseType: "",
+  itemName: "",
 
-  includeQuantity: false,
+  itemImage: undefined,
 
-  measureUnit: undefined,
+  isNonVeg: false,
 
+  itemPrice: undefined,
+  onlinePrice: undefined,
+
+  description: undefined,
+
+  hotKey: undefined,
   status: true,
 };
 
 const headers = [
-  { title: "Sub Expense name", key: "subExpenseType" },
+  { title: "Variant Name", key: "itemName" },
 
-  { title: "Include Quantity", key: "includeQuantity" },
-  { title: "Measure Unit", key: "measureUnit", isCurrency: true },
+  // {
+  //   title: "Item Image",
+  //   key: "itemImage",
+  //   type: "image",
+  //   sourceUrl: RootUrl,
+  // },
+  // { title: "Hotkey", key: "hotKey" },
+
+  { title: "Price", key: "itemPrice" },
+
+  { title: "OnlinePrice", key: "onlinePrice" },
+
+  { title: "Description", key: "description", type: "textarea" },
+
+  {
+    title: "Item Type",
+    key: "isNonVeg",
+    renderRow: (row) => (row.isNonVeg ? `Non veg` : "Veg"),
+  },
+
+  { title: "isFeatured", key: "isFeatured", type: "boolean" },
 
   { title: "Status", key: "status" },
 ];
 
-const SubExpensesModal = ({ open, onClose, data, onSubmit }) => {
+const ItemVariantsModal = ({ open, onClose, data, onSubmit }) => {
   const [rows, setRows] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -42,7 +68,7 @@ const SubExpensesModal = ({ open, onClose, data, onSubmit }) => {
 
   const isLoading = useSelector((state) => state.util.spinner);
   const initialValues = {
-    subExpenseTypes: data?.subExpenseTypes || [],
+    variants: data?.variants || [],
   };
 
   return (
@@ -54,37 +80,35 @@ const SubExpensesModal = ({ open, onClose, data, onSubmit }) => {
           // setFormErrors();
           // reset();
         }}
-        title={`${data?.expenseType}`}
+        title={`${data?.itemName} variants`}
         // title={`${mode} ${title}`}
       >
         <Formik
           initialValues={initialValues}
           onSubmit={async (values) => {
             onSubmit({
-              subExpenseTypes: values.subExpenseTypes.filter(
-                (val) => val.subExpenseType !== ""
-              ),
+              variants: values.variants.filter((val) => val.itemName !== ""),
             });
           }}
         >
           {({ values }) => (
             <Form>
-              <FieldArray name="subExpenseTypes">
+              <FieldArray name="variants">
                 {({ insert, remove, push }) => (
                   <div class="row">
                     <div class="col-12">
                       <TableTitle
-                        title={"Sub Expenses"}
+                        title={"Variants"}
                         endAction={() => (
                           <AddCommonAction
-                            title="New Sub Expense Type"
+                            title="New Item Variant"
                             onClick={() => push(emptyRow)}
                           />
                         )}
                       />
                       <div class="d-flex justify-content-between align-items-center mb-4">
                         <label style={styles.paginated}>
-                          Total {values.subExpenseTypes.length} entries
+                          Total {values.variants.length} entries
                         </label>
                       </div>
                       <div class={"table-responsive "}>
@@ -102,15 +126,15 @@ const SubExpensesModal = ({ open, onClose, data, onSubmit }) => {
                             order={order}
                           />
                           <tbody>
-                            {values.subExpenseTypes.length === 0 && <Nodata />}
-                            {values.subExpenseTypes.map((item, childindex) => {
+                            {values.variants.length === 0 && <Nodata />}
+                            {values.variants.map((item, childindex) => {
                               return (
                                 <tr key={childindex}>
                                   <td>
                                     <Field
                                       disabled={isLoading}
-                                      name={`subExpenseTypes.${childindex}.subExpenseType`}
-                                      placeholder="Enter Sub Expense Name"
+                                      name={`variants.${childindex}.itemName`}
+                                      placeholder="Enter Item Variant Name"
                                       type="text"
                                       className="form-control"
                                     />
@@ -118,7 +142,52 @@ const SubExpensesModal = ({ open, onClose, data, onSubmit }) => {
                                   <td>
                                     <Field
                                       disabled={isLoading}
-                                      name={`subExpenseTypes.${childindex}.includeQuantity`}
+                                      name={`variants.${childindex}.itemPrice`}
+                                      placeholder="Enter Item Price"
+                                      type="number"
+                                      steps="0.0"
+                                      className="form-control"
+                                    />
+                                  </td>
+
+                                  <td>
+                                    <Field
+                                      disabled={isLoading}
+                                      name={`variants.${childindex}.onlinePrice`}
+                                      placeholder="Enter Online Price"
+                                      type="number"
+                                      steps="0.0"
+                                      className="form-control"
+                                    />
+                                  </td>
+                                  <td>
+                                    <Field
+                                      disabled={isLoading}
+                                      name={`variants.${childindex}.description`}
+                                      placeholder="Enter Description"
+                                      type="textarea"
+                                      className="form-control"
+                                    />
+                                  </td>
+                                  <td>
+                                    <Field
+                                      disabled={isLoading}
+                                      as="select"
+                                      className="form-control"
+                                      name={`variants.${childindex}.isNonVeg`}
+                                    >
+                                      <option selected value="false">
+                                        Veg
+                                      </option>
+                                      <option selected value="true">
+                                        Non veg
+                                      </option>
+                                    </Field>
+                                  </td>
+                                  <td>
+                                    <Field
+                                      disabled={isLoading}
+                                      name={`variants.${childindex}.isFeatured`}
                                     >
                                       {({
                                         field, // { name, value, onChange, onBlur }
@@ -153,27 +222,7 @@ const SubExpensesModal = ({ open, onClose, data, onSubmit }) => {
                                       disabled={isLoading}
                                       as="select"
                                       className="form-control"
-                                      name={`subExpenseTypes.${childindex}.measureUnit`}
-                                    >
-                                      <option selected disabled>
-                                        Choose measure unit
-                                      </option>
-                                      {MEASUREUNITS.map((unit) => (
-                                        <option value={unit.value}>
-                                          {unit.title}
-                                        </option>
-                                      ))}
-                                      <option selected value="other">
-                                        Other
-                                      </option>
-                                    </Field>
-                                  </td>
-                                  <td>
-                                    <Field
-                                      disabled={isLoading}
-                                      as="select"
-                                      className="form-control"
-                                      name={`subExpenseTypes.${childindex}.status`}
+                                      name={`variants.${childindex}.status`}
                                     >
                                       <option value="true">Active</option>
                                       <option value="false">inactive</option>
@@ -198,7 +247,7 @@ const SubExpensesModal = ({ open, onClose, data, onSubmit }) => {
                                   {/* <td>
                             <Controller
                               render={({ field }) => <input {...field} />}
-                              name={`subExpenseTypes.${childindex}.measureUnit`}
+                              name={`variants.${childindex}.measureUnit`}
                               control={control}
                               defaultValue={item.measureUnit} // make sure to set up defaultValue
                             />
@@ -260,7 +309,7 @@ const SubExpensesModal = ({ open, onClose, data, onSubmit }) => {
   );
 };
 
-export default SubExpensesModal;
+export default ItemVariantsModal;
 
 const styles = {
   paginated: {

@@ -6,6 +6,7 @@ import {
   restaurantTypes,
 } from "../types";
 import itemsApi from "../api/itemsApi";
+import checkIfAsyncReqSuccess from "./checkIfAsyncReqSuccess";
 export const createItem = (data) => {
   const formData = new FormData();
   Object.keys(data).forEach((key) => formData.append(key, data[key]));
@@ -40,6 +41,67 @@ export const updateItem = (data) => {
       },
     },
   };
+};
+
+export const bulkUploadItems = (data, cb, errorCb) => {
+  const formData = new FormData();
+  Object.keys(data).forEach((key) => formData.append(key, data[key]));
+
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: "Items uploaded successfully",
+      errorMessage: "Failed upload items",
+      enableMessage: true,
+      cb: cb,
+      type: itemTypes.BULK_UPLOAD_ITEMS,
+      payload: {
+        request: {
+          url: itemsApi.BULK_UPLOAD_ITEMS,
+          method: "POST",
+          data: formData,
+          headers: {
+            "Content-type": "application/json",
+          },
+        },
+      },
+    });
+};
+
+export const updateItemVariants = (data, cb, errorCb) => {
+  // const formData = new FormData();
+
+  // Object.keys(data).forEach((key) => {
+  //   if (Array.isArray(data[key])) {
+  //     console.log("formData if", key);
+  //     formData.append(key, JSON.stringify(data[key]));
+  //   } else {
+  //     console.log("formData else", key, data[key], typeof data[key]);
+
+  //     formData.append(key, data[key]);
+  //   }
+  // });
+
+  // console.log("formData if hehe", formData);
+
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: "Item variants updated successfully",
+      errorMessage: "Failed to update item variants Message",
+      cb: cb,
+      errorCb: errorCb,
+      type: itemTypes.UPDATE_ITEM,
+      enableMessage: true,
+      payload: {
+        request: {
+          url: itemsApi.UPDATE_ITEM_VARIANT,
+          method: "PUT",
+          data: data,
+          headers: {
+            "Content-type": "application/json",
+          },
+        },
+      },
+    });
 };
 
 export const deleteItem = (data) => {

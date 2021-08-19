@@ -210,14 +210,16 @@ const ActiveOrderSelector = ({ tables }) => {
                             {item.itemTotal}
                           </td>
 
-                          <td>
-                            <a
-                              href="javascript:void(0);"
-                              onClick={() => deleteItem(index)}
-                            >
-                              <i class="mdi mdi-close-circle-outline text-danger font-16"></i>
-                            </a>
-                          </td>
+                          {!data?.isOrderConfirmed && (
+                            <td>
+                              <a
+                                href="javascript:void(0);"
+                                onClick={() => deleteItem(index)}
+                              >
+                                <i class="mdi mdi-close-circle-outline text-danger font-16"></i>
+                              </a>
+                            </td>
+                          )}
                         </tr>
                       );
                     })}

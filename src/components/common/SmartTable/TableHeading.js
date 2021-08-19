@@ -50,7 +50,13 @@ const TableHeading = ({
         {data?.map((child, index) => {
           const isCurrency = child.isCurrency;
           return (
-            <th class="sorting" style={styles.th}>
+            <th
+              class="sorting"
+              style={{
+                ...styles.th,
+                ...(child?.width && { width: child.width }),
+              }}
+            >
               {sortable && (
                 <i
                   class={`mdi mdi-arrow-expand-${

@@ -133,7 +133,7 @@ const ManageThemes = () => {
 
         <SmartTable
           title={PageTitle}
-          headAction={AddAction}
+          headActions={[AddAction]}
           actions={[EditAction, DeleteAction]}
           tableData={themes}
           headers={headers}

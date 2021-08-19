@@ -196,13 +196,6 @@ export const branchadmin = [
     title: "Setting",
     icon: "mdi mdi-cog-outline",
     link: "/settings",
-
-    // children: [
-    //   {
-    //     title: "Printer Setting",
-    //     link: "/manageprinters",
-    //   },
-    // ],
   },
   // {
   //   title: "Manage Hotkeys",
@@ -240,6 +233,11 @@ export const branchuser = [
     title: "Expenses",
     icon: "mdi mdi-wallet",
     link: "/manageexpense",
+  },
+  {
+    title: "Setting",
+    icon: "mdi mdi-cog-outline",
+    link: "/settings",
   },
 ];
 export default {

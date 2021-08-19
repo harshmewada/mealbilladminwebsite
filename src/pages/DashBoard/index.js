@@ -7,8 +7,11 @@ import reportData from "./ReportLayoutData";
 import { Card } from "react-bootstrap";
 import { getAllBranches } from "../../redux/action/branchActions";
 import { getDashboard } from "../../redux/action/dashboardActions";
+import SubscriptionExpireWarning from "./SubscriptionExpireWarning";
 const Reports = () => {
-  const { role, restaurantId, branchId } = useSelector((state) => state.user);
+  const { role, restaurantId, branchId, remainingDays } = useSelector(
+    (state) => state.user
+  );
   const dispatch = useDispatch();
 
   const { data, isLoading } = useSelector((state) => state.dashboard);
@@ -29,6 +32,9 @@ const Reports = () => {
 
   return (
     <div>
+      {remainingDays && (
+        <SubscriptionExpireWarning remainingDays={remainingDays} />
+      )}
       {CurrentReportData ? (
         <DashboardCreator
           reportInfo={CurrentReportData}

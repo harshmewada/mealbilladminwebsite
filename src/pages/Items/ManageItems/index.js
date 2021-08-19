@@ -20,16 +20,22 @@ import {
   importItems,
   updateItem,
   clearItems,
+  updateItemVariants,
+  bulkUploadItems,
 } from "../../../redux/action/itemActions";
 import { RootUrl } from "../../../redux/types";
 import { getAllBranches } from "../../../redux/action/branchActions";
 import getErrorMessage from "../../../helpers/getErrorMessage";
 import CommonImportModal from "../../../components/common/Modals/CommonImportModal";
 import ImportCommonAction from "../../../components/common/Actions/ImportCommonAction";
+import ItemVariantsModal from "../../../components/common/Modals/ItemVariantsModal";
+import VariantCommonAction from "../../../components/common/Actions/VariantCommonAction";
+import BulkUploadCommonAction from "../../../components/common/Actions/BulkUploadCommonAction";
 
 const PageTitle = "Items";
 
 const ManageItems = () => {
+  const isLoading = useSelector((state) => state.util.spinner);
   const {
     categories: arraycategories,
     restaurantCategories,
@@ -47,7 +53,11 @@ const ManageItems = () => {
   const isRestaurantAdmin = ["restaurantadmin"].includes(role);
   const isBranchAdmin = ["branchadmin"].includes(role);
   const isSuperAdmin = ["superadmin"].includes(role);
-  const categories = isRestaurantAdmin ? restaurantCategories : arraycategories;
+  const categories = isRestaurantAdmin
+    ? selectedBranch
+      ? arraycategories
+      : restaurantCategories
+    : arraycategories;
 
   const restaurantItems = isRestaurantAdmin
     ? selectedBranch
@@ -79,6 +89,10 @@ const ManageItems = () => {
 
   const getAllCategories = () => {
     if (isRestaurantAdmin) {
+      if (selectedBranch) {
+        dispatch(getBranchCategories(restaurantId, selectedBranch, "true"));
+        return;
+      }
       dispatch(getRestaurantCategories(restaurantId, "true"));
     }
     if (isBranchAdmin) {
@@ -171,6 +185,15 @@ const ManageItems = () => {
       },
     },
     {
+      type: "text",
+      name: "onlinePrice",
+      size: 3,
+
+      label: "Item Online Price",
+      placeholder: "Type Item  Online Price",
+      required: false,
+    },
+    {
       type: "number",
       name: "hotKey",
       size: 3,
@@ -193,7 +216,21 @@ const ManageItems = () => {
         </option>
       ),
     },
-
+    {
+      type: "textarea",
+      name: "description",
+      label: "Item Description",
+      size: 12,
+      rows: "2",
+      placeholder: "Type a short description about the item",
+      required: false,
+    },
+    {
+      type: "switch",
+      name: "isFeatured",
+      label: "Is Item Featured",
+      placeholder: "Enter Is Item Featured",
+    },
     {
       type: "select",
       name: "status",
@@ -243,6 +280,11 @@ const ManageItems = () => {
 
   const handleDelete = (data) => {
     toggleAdd("Delete");
+    setActionData(data);
+  };
+
+  const handleAddVariants = (data) => {
+    toggleAdd("sub");
     setActionData(data);
   };
 
@@ -384,6 +426,23 @@ const ManageItems = () => {
       });
   };
 
+  const onAddNewItemVariants = (e) => {
+    if (open === "sub") {
+      let itemData = {
+        id: actionData.id,
+        variants: e.variants,
+        restaurantId: actionData.restaurantId,
+        ...(actionData.branchId && { branchId: actionData.branchId }),
+      };
+      dispatch(
+        updateItemVariants(itemData, () => {
+          getAllData();
+          toggleAdd();
+        })
+      );
+    }
+  };
+
   const ImportAction = () => {
     return (
       <ImportCommonAction
@@ -402,6 +461,25 @@ const ManageItems = () => {
       <AddCommonAction onClick={() => toggleAdd("Add")} title={PageTitle} />
     );
   };
+  const handleBulkUpload = (file) => {
+    const uploadData = {
+      restaurantId,
+      branchId,
+      items: file,
+    };
+    // console.log("uploadData", uploadData);
+    dispatch(bulkUploadItems(uploadData));
+  };
+
+  const BulkUploadAction = () => {
+    return (
+      <BulkUploadCommonAction
+        onClick={(file) => handleBulkUpload(file)}
+        title={PageTitle}
+        isLoading={isLoading}
+      />
+    );
+  };
 
   const EditAction = (action) => (
     <EditCommonAction onClick={() => handleEdit(action.data)} />
@@ -410,6 +488,15 @@ const ManageItems = () => {
   const DeleteAction = (action) => (
     <DeleteCommonAction onClick={() => handleDelete(action.data)} />
   );
+
+  const VariantAction = (action) => {
+    return (
+      <VariantCommonAction
+        onClick={() => handleAddVariants(action.data)}
+        title={"Variants"}
+      />
+    );
+  };
 
   const headers = [
     { title: "Item Name", key: "itemName" },
@@ -420,9 +507,40 @@ const ManageItems = () => {
       type: "image",
       sourceUrl: RootUrl,
     },
-    { title: "Price", key: "itemPrice" },
-    { title: "Category", key: "categoryName" },
     { title: "Hotkey", key: "hotKey" },
+
+    { title: "Price", key: "itemPrice" },
+
+    { title: "OnlinePrice", key: "onlinePrice" },
+
+    { title: "Description", key: "description", type: "textarea" },
+
+    {
+      title: "Type",
+      key: "isNonVeg",
+      renderRow: (row) => (row.isNonVeg ? `Non veg` : "Veg"),
+      // width: "50px",
+    },
+    {
+      title: "Category",
+      key: "categoryName",
+      // width: "50px",
+    },
+
+    {
+      title: "Featured",
+      key: "isFeatured",
+      // width: "50px",
+
+      renderRow: (row) => (row.isFeatured ? `True` : "False"),
+    },
+    {
+      title: "Variants",
+      renderRow: (row) =>
+        row?.variants && row?.variants?.length > 0
+          ? row?.variants?.length
+          : "N/A",
+    },
 
     { title: "Status", key: "status" },
   ];
@@ -469,6 +587,13 @@ const ManageItems = () => {
   return (
     <>
       <div class="page-content-tab">
+        {/* <ItemVariantsModal
+          open={open === "sub" || open === "subEdit"}
+          onClose={() => toggleAdd()}
+          mode={open}
+          data={actionData}
+          onSubmit={(e) => onAddNewItemVariants(e)}
+        /> */}
         {!isSuperAdmin && (
           <CommonImportModal
             headers={headers}
@@ -504,8 +629,8 @@ const ManageItems = () => {
         <SmartTable
           headerComponents={headerComponents[role]}
           title={PageTitle}
-          headAction={AddAction}
-          actions={[EditAction, DeleteAction]}
+          headActions={[BulkUploadAction, AddAction]}
+          actions={[VariantAction, EditAction, DeleteAction]}
           tableData={isRestaurantAdmin ? restaurantItems : items}
           headers={headers}
           sortable={true}
@@ -1044,7 +1169,7 @@ export default ManageItems;
 //         <SmartTable
 //           headerComponents={headerComponents[role]}
 //           title={PageTitle}
-//           headAction={AddAction}
+//           headActions={[AddAction]}
 //           actions={[EditAction, DeleteAction]}
 //           tableData={isRestaurantAdmin ? restaurantItems : items}
 //           headers={headers}

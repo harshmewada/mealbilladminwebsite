@@ -29,7 +29,8 @@ import RestaurantExpenseTypes from "../pages/ExpenseTypes/RestaurantExpenseTypes
 import OrderHistory from "../pages/OrderHistory";
 
 import ExpiredSubscription from "../pages/ExpiredSubscription";
-import BranchAdminSettings from "../pages/Settings/BranchAdminSettings";
+// import BranchAdminSettings from "../pages/Settings/BranchAdminSettings";
+import Settings from "../pages/Settings";
 
 const DashBoardRoutes = () => {
   const role = useSelector((state) => state.user.role);
@@ -155,7 +156,7 @@ const DashBoardRoutes = () => {
           <ProtectedRoute
             roles={[branchadmin, branchuser]}
             path="/settings"
-            component={BranchAdminSettings}
+            component={Settings}
           />
           {/* 
           <ProtectedRoute

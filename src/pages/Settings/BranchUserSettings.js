@@ -1,10 +1,10 @@
 import React from "react";
 import { Card, Col, Row, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  deleteReceiptMessage,
-  updateReceiptMessage,
-} from "../../redux/action/branchActions";
+// import {
+//   deleteReceiptMessage,
+//   updateReceiptMessage,
+// } from "../../redux/action/branchActions";
 import { toggleKOT, togglePrinting } from "../../redux/action/utilActions";
 
 const BranchAdminSettings = () => {
@@ -27,30 +27,30 @@ const BranchAdminSettings = () => {
   };
 
   const clearLoading = () => setLoading();
-  const updateMessage = (e) => {
-    setLoading("update");
-    dispatch(
-      updateReceiptMessage({
-        message: receiptMessage,
-        resId: restaurantId,
-        branchId: branchId,
-        cb: () => clearLoading(),
-        errorCb: () => clearLoading(),
-      })
-    );
-  };
+  // const updateMessage = (e) => {
+  //   setLoading("update");
+  //   dispatch(
+  //     updateReceiptMessage({
+  //       message: receiptMessage,
+  //       resId: restaurantId,
+  //       branchId: branchId,
+  //       cb: () => clearLoading(),
+  //       errorCb: () => clearLoading(),
+  //     })
+  //   );
+  // };
 
-  const deleteMessage = (e) => {
-    dispatch(
-      deleteReceiptMessage({
-        message: receiptMessage,
-        resId: restaurantId,
-        branchId: branchId,
-        cb: () => clearLoading(),
-        errorCb: () => clearLoading(),
-      })
-    );
-  };
+  // const deleteMessage = (e) => {
+  //   dispatch(
+  //     deleteReceiptMessage({
+  //       message: receiptMessage,
+  //       resId: restaurantId,
+  //       branchId: branchId,
+  //       cb: () => clearLoading(),
+  //       errorCb: () => clearLoading(),
+  //     })
+  //   );
+  // };
 
   React.useEffect(() => {
     if (customMessage || customMessage !== null) {
@@ -114,7 +114,7 @@ const BranchAdminSettings = () => {
           </div>
         </Card.Body>
       </Card>
-      <Card>
+      {/* <Card>
         <Card.Header class="card-header bg-primary">
           <h5 class="text-white">Receipt message</h5>
         </Card.Header>
@@ -165,7 +165,7 @@ const BranchAdminSettings = () => {
             </Col>
           </Row>
         </Card.Body>
-      </Card>
+      </Card> */}
 
       {/* <Card>
         <Card.Header class="card-header bg-primary">

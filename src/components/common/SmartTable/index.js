@@ -28,7 +28,7 @@ const styles = {
 
 const SmartTable = ({
   title,
-  headAction,
+  headActions,
   headers,
   actions,
   tableData,
@@ -139,7 +139,7 @@ const SmartTable = ({
               <TableTitle
                 headerComponents={headerComponents}
                 title={title}
-                endAction={headAction}
+                endActions={headActions}
               />
             )}
 

@@ -14,22 +14,27 @@ const styles = {
     maxWidth: "15vw",
   },
 };
-const TableTitle = ({ title, endAction: EndAction, headerComponents }) => {
+const TableTitle = ({ title, endActions: EndAction, headerComponents }) => {
   return (
     title && (
       <div class="d-flex justify-content-between align-items-center mb-4">
-        <div class="d-flex justify-content-between align-items-center">
-          <h4 class="">{title}</h4>
-          {headerComponents && headerComponents?.map((Comp, index) => {
-            return (
-              <div class="ml-4">
-                <Comp />
-              </div>
-            );
-          })}
+        <div class="d-flex justify-content-between align-items-center flex-grow-1">
+          <div class="d-flex justify-content-between align-items-center">
+            <h4 class="">{title}</h4>
+            {headerComponents &&
+              headerComponents?.map((Comp, index) => {
+                return (
+                  <div class="ml-4">
+                    <Comp />
+                  </div>
+                );
+              })}
+          </div>
         </div>
-
-        {EndAction && <EndAction />}
+        {EndAction &&
+          EndAction.map((ACC, Accindex) => {
+            return <ACC />;
+          })}
         {/* <button
               type="button"
               onClick={() => toggleAdd()}

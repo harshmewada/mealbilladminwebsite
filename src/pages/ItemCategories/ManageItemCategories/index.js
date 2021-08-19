@@ -51,8 +51,8 @@ const ManageItemCategories = () => {
   const categories = isBranchAdmin
     ? arraycat
     : isRestaurantAdmin
-      ? restaurantCategories
-      : arraycat;
+    ? restaurantCategories
+    : arraycat;
 
   const formData = [
     // {
@@ -295,7 +295,7 @@ const ManageItemCategories = () => {
         restaurantId: restaurantId,
         ...(currBranchId && { branchId: branchId }),
         data: data.map((item) => {
-          item.restaurantCateId = item._id || item.id
+          item.restaurantCateId = item._id || item.id;
           delete item.id;
           delete item._id;
           return {
@@ -462,7 +462,7 @@ const ManageItemCategories = () => {
         <SmartTable
           title={PageTitle}
           headerComponents={headerComponents[role]}
-          headAction={AddAction}
+          headActions={[AddAction]}
           actions={[EditAction, DeleteAction]}
           tableData={categories}
           headers={headers}

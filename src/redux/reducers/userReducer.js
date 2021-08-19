@@ -1,4 +1,4 @@
-import { branchTypes, RootUrl, userTypes } from "../types";
+import { branchTypes, Curreny, RootUrl, userTypes } from "../types";
 import setToken from "../../helpers/setToken";
 import removeToken from "../../helpers/removeToken";
 
@@ -17,6 +17,7 @@ const initialstate = {
   sgst: 0,
   hasSubscriptionExpired: false,
   receiptMessage: null,
+  currency: Curreny,
 };
 
 const saveLocallogo = (path) => {

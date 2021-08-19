@@ -93,6 +93,7 @@ const OrderTotalDisplay = () => {
   // }, [index]);
 
   const toggleOrderConfirmModal = () => {
+    console.log("tole called");
     setOrderConfirmOpen(!orderConfirmOpen);
   };
 
@@ -101,6 +102,7 @@ const OrderTotalDisplay = () => {
   };
 
   const handleOpenMdoal = (type) => {
+    console.log("handleOpenMdoal", type);
     if (activeOrders[index].items.length > 0) setOrderConfirmOpen(type);
     else {
       alert("No Items selected");
@@ -180,7 +182,7 @@ const OrderTotalDisplay = () => {
       otherCharges: parseFloat2Decimals(getData().otherCharges),
       discount: parseFloat2Decimals(getData().discount),
       orderTypeName: currentOrderType.key,
-      grandTotal: parseFloat(getData().grandTotal),
+      grandTotal: Math.ceil(getData().grandTotal),
       orderItems: activeOrders[index].items,
       orderBy: name,
 
@@ -217,7 +219,6 @@ const OrderTotalDisplay = () => {
     );
   };
   const handleUpdateOrder = (payment, customerData) => {
-    console.log("if");
     const paymentData = {
       paymentType: payment.type,
       paymentTypeId: payment.id,
@@ -260,6 +261,8 @@ const OrderTotalDisplay = () => {
         })
       );
     } else {
+      toggleOrderConfirmModal();
+
       handleConfirmOrder(
         customerData,
         paymentData,
@@ -267,8 +270,6 @@ const OrderTotalDisplay = () => {
           isPaid: true,
         },
         () => {
-          toggleOrderConfirmModal();
-
           dispatch(deleteLocalOrder(currentOrder.refId));
         }
       );
@@ -320,7 +321,7 @@ const OrderTotalDisplay = () => {
       discount,
       tablePrice,
       refId: activeOrders[index]?.refId,
-      grandTotal: grandTotal.toFixed(2),
+      grandTotal: Math.ceil(grandTotal),
       grandTotalWithoutDiscount: grandTotalWithoutDiscount.toFixed(2),
     };
   };
@@ -335,7 +336,7 @@ const OrderTotalDisplay = () => {
       otherCharges: parseFloat2Decimals(getData().otherCharges),
       discount: parseFloat2Decimals(getData().discount),
 
-      grandTotal: parseFloat(getData().grandTotal),
+      grandTotal: Math.ceil(getData().grandTotal),
       orderItems: activeOrders[index].items,
       orderBy: name,
       paymentType: undefined,
@@ -566,7 +567,7 @@ export default OrderTotalDisplay;
 //   const handleConfirmOrder = (payment) => {
 //     let orderdata = {
 //       ...getData(),
-//       grandTotal: parseFloat(getData().grandTotal),
+//       grandTotal: Math.ceil(getData().grandTotal),
 //       orderItems: activeOrders[index].items,
 //       orderBy: name,
 //       paymentType: payment.type,

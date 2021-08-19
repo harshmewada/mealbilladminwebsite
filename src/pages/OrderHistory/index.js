@@ -187,7 +187,7 @@ const OrderHistory = () => {
           title={PageTitle}
           searchByLabel="Order Number"
           searchByField="orderNumber"
-          // headAction={AddAction}
+          // headActions={[AddAction]}
           // actions={[DeleteAction]}
           tableData={previousOrders.reverse()}
           headers={headers}

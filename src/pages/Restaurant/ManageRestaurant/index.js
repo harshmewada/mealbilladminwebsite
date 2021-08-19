@@ -485,7 +485,7 @@ const AddRestaurant = () => {
 
       <SmartTable
         title={PageTitle}
-        headAction={AddAction}
+        headActions={[AddAction]}
         actions={[
           RemoveSubscriptionActionAssignAction,
           AssignAction,

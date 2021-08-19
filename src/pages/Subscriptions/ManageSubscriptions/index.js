@@ -255,7 +255,7 @@ const ManageSubscriptions = () => {
 
         <SmartTable
           title={PageTitle}
-          headAction={AddAction}
+          headActions={[AddAction]}
           // actions={[EditAction, DeleteAction]}
           tableData={subscriptions}
           headers={headers}

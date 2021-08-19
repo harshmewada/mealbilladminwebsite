@@ -284,7 +284,7 @@ const ManageTables = () => {
           headerComponents={headerComponents[role]}
           title={PageTitle}
           paginated={true}
-          headAction={AddAction}
+          headActions={[AddAction]}
           actions={[EditAction, DeleteAction]}
           tableData={tables}
           headers={headers}

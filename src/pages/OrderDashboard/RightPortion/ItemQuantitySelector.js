@@ -48,17 +48,19 @@ const ItemQuantitySelector = ({
   return (
     <div class="form-group mb-0 orderquantitybtns ">
       <div class="input-group" style={styles.container}>
-        <span class="input-group-prepend ">
-          <button
-            style={styles.button}
-            type="button"
-            class="btn btn-outline-light shadow-none"
-            onClick={decrementQuantity}
-            disabled={isOrderConfirmed}
-          >
-            <i class="mdi mdi-minus "></i>
-          </button>
-        </span>
+        {!isOrderConfirmed && (
+          <span class="input-group-prepend ">
+            <button
+              style={styles.button}
+              type="button"
+              class="btn btn-outline-light shadow-none"
+              onClick={decrementQuantity}
+              disabled={isOrderConfirmed}
+            >
+              <i class="mdi mdi-minus "></i>
+            </button>
+          </span>
+        )}
         <input
           style={styles.input}
           type="text"
@@ -66,21 +68,24 @@ const ItemQuantitySelector = ({
           name="example-input3-group2"
           class="form-control"
           value={quantity}
+          disabled={isOrderConfirmed}
           onChange={(e) => {
             handleChange(e);
           }}
         />
-        <span class="input-group-append">
-          <button
-            style={styles.button}
-            type="button"
-            class="btn btn-outline-light shadow-none"
-            onClick={incrementQuantity}
-            disabled={isOrderConfirmed}
-          >
-            <i class="mdi mdi-plus"></i>
-          </button>
-        </span>
+        {!isOrderConfirmed && (
+          <span class="input-group-append">
+            <button
+              style={styles.button}
+              type="button"
+              class="btn btn-outline-light shadow-none"
+              onClick={incrementQuantity}
+              disabled={isOrderConfirmed}
+            >
+              <i class="mdi mdi-plus"></i>
+            </button>
+          </span>
+        )}
       </div>
     </div>
   );

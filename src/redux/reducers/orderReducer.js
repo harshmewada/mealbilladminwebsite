@@ -81,25 +81,51 @@ const pushItemToActiveOrder = (
   activeOrderIndex,
   stateOrderId,
   item,
-  selectedOrderTypeId
+  selectedOrderTypeId,
+  isVariant
 ) => {
-  if (activeOrders[activeOrderIndex]) {
-    const iteminde = activeOrders[activeOrderIndex].items.findIndex((data) => {
-      return data.id === item.id;
-    });
-    if (iteminde >= 0) {
-      activeOrders[activeOrderIndex].items[iteminde].quantity++;
-      activeOrders[activeOrderIndex].items[iteminde].itemTotal +=
-        activeOrders[activeOrderIndex].items[iteminde].itemPrice;
+  if (isVariant) {
+    if (activeOrders[activeOrderIndex]) {
+      const iteminde = activeOrders[activeOrderIndex].items.findIndex(
+        (data) => {
+          return data.variantId === item.variantId;
+        }
+      );
+      if (iteminde >= 0) {
+        activeOrders[activeOrderIndex].items[iteminde].quantity++;
+        activeOrders[activeOrderIndex].items[iteminde].itemTotal +=
+          activeOrders[activeOrderIndex].items[iteminde].itemPrice;
+      } else {
+        activeOrders[activeOrderIndex].items.push({
+          ...item,
+          quantity: 1,
+          itemTotal: 1 * item.itemPrice,
+        });
+      }
     } else {
-      activeOrders[activeOrderIndex].items.push({
-        ...item,
-        quantity: 1,
-        itemTotal: 1 * item.itemPrice,
-      });
+      alert("Please select order type");
     }
   } else {
-    alert("Please select order type");
+    if (activeOrders[activeOrderIndex]) {
+      const iteminde = activeOrders[activeOrderIndex].items.findIndex(
+        (data) => {
+          return data.id === item.id;
+        }
+      );
+      if (iteminde >= 0) {
+        activeOrders[activeOrderIndex].items[iteminde].quantity++;
+        activeOrders[activeOrderIndex].items[iteminde].itemTotal +=
+          activeOrders[activeOrderIndex].items[iteminde].itemPrice;
+      } else {
+        activeOrders[activeOrderIndex].items.push({
+          ...item,
+          quantity: 1,
+          itemTotal: 1 * item.itemPrice,
+        });
+      }
+    } else {
+      alert("Please select order type");
+    }
   }
 
   return activeOrders;
@@ -320,7 +346,8 @@ const orderReducer = (state = initialstate, action) => {
             state.selectedOrderTypeId,
 
             action.payload.item,
-            action.payload.selectedOrderTypeId
+            action.payload.selectedOrderTypeId,
+            action.payload.isVariant
           ),
         ],
       };

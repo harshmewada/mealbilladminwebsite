@@ -10,6 +10,17 @@ const OrderConfirmModal = ({
   customerMobile,
   hideAllInputs,
 }) => {
+  // console.log(
+  //   "rendere",
+  //   open,
+  //   text,
+  //   onConfirm,
+  //   onCancel,
+  //   enableRemarks,
+  //   customerName,
+  //   customerMobile,
+  //   hideAllInputs
+  // );
   // const [state, setState] = React.useState({
   //   customerName: "Jamna",
   //   customerMobile: "89888888888",
@@ -82,4 +93,4 @@ const OrderConfirmModal = ({
   );
 };
 
-export default OrderConfirmModal;
+export default React.memo(OrderConfirmModal);

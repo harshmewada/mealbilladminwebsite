@@ -85,16 +85,19 @@ const CenterPortion = () => {
     setSearchItemQuery(value);
   };
 
-  const handleItemClick = (item, index) => {
+  const handleItemClick = (item, isVariant) => {
     if (selectedOrderTypeId === 0) {
       if (activeOrderIndex || activeOrderIndex === 0) {
-        dispatch(pushItemToActiveOrder(item, selectedOrderTypeId));
+        dispatch(pushItemToActiveOrder(item, selectedOrderTypeId, isVariant));
       } else {
         alert("No Tables Active");
       }
     } else {
-      dispatch(pushItemToActiveOrder(item, selectedOrderTypeId));
+      dispatch(pushItemToActiveOrder(item, selectedOrderTypeId, isVariant));
     }
+  };
+  const handleVariantClick = (item) => {
+    handleItemClick(item, true);
   };
   // console.log("all items", allItems);
   return (
@@ -118,6 +121,7 @@ const CenterPortion = () => {
         <AvailableItemsList
           items={getFilteredCategoryItems()}
           onItemClick={handleItemClick}
+          onVariantClick={handleVariantClick}
         />
       </div>
       <RightPortion />
