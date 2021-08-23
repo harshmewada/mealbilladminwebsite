@@ -76,12 +76,10 @@ const activateTable = (allTables, index) => {
   return allTables;
 };
 
-const pushItemToActiveOrder = (
+export const pushItemToActiveOrderRedux = (
   activeOrders,
   activeOrderIndex,
-  stateOrderId,
   item,
-  selectedOrderTypeId,
   isVariant
 ) => {
   if (isVariant) {
@@ -161,7 +159,12 @@ const addNewOtherOrder = (activeOrders, selectedOrderTypeId) => {
   return activeOrders;
 };
 
-const changeItemQuantity = (allTables, activeOrderIndex, quantity, index) => {
+export const changeItemQuantityRedux = (
+  allTables,
+  activeOrderIndex,
+  quantity,
+  index
+) => {
   if (activeOrderIndex || activeOrderIndex === 0)
     allTables[activeOrderIndex].items[index].quantity = quantity;
 
@@ -170,7 +173,7 @@ const changeItemQuantity = (allTables, activeOrderIndex, quantity, index) => {
   return allTables;
 };
 
-const removeItem = (allTables, activeOrderIndex, index) => {
+export const removeItemRedux = (allTables, activeOrderIndex, index) => {
   if (activeOrderIndex || activeOrderIndex === 0) {
     allTables[activeOrderIndex].items = allTables[
       activeOrderIndex
@@ -340,13 +343,11 @@ const orderReducer = (state = initialstate, action) => {
       return {
         ...state,
         activeOrders: [
-          ...pushItemToActiveOrder(
+          ...pushItemToActiveOrderRedux(
             state.activeOrders,
             state.activeOrderIndex,
-            state.selectedOrderTypeId,
 
             action.payload.item,
-            action.payload.selectedOrderTypeId,
             action.payload.isVariant
           ),
         ],
@@ -371,7 +372,7 @@ const orderReducer = (state = initialstate, action) => {
       return {
         ...state,
         activeOrders: [
-          ...changeItemQuantity(
+          ...changeItemQuantityRedux(
             state.activeOrders,
             state.activeOrderIndex,
             action.payload.quantity,
@@ -396,12 +397,20 @@ const orderReducer = (state = initialstate, action) => {
       return {
         ...state,
         activeOrders: [
-          ...removeItem(
+          ...removeItemRedux(
             state.activeOrders,
             state.activeOrderIndex,
             action.payload.index
           ),
         ],
+      };
+
+    case orderTypes.SET_ORDER_TO_EDIT:
+      return {
+        ...state,
+
+        activeOrders: [action.payload],
+        activeOrderIndex: 0,
       };
 
     case orderTypes.DELETE_LOCAL_ORDER:
@@ -497,7 +506,7 @@ const orderReducer = (state = initialstate, action) => {
 
 export default orderReducer;
 
-// const pushItemToActiveOrder = (
+// const pushItemToActiveOrderRedux = (
 //   activeOrders,
 //   activeOrderIndex,
 //   stateOrderId,
@@ -623,7 +632,7 @@ export default orderReducer;
 //   return allTables;
 // };
 
-// const pushItemToActiveOrder = (
+// const pushItemToActiveOrderRedux = (
 //   activeOrders,
 //   activeTable,
 //   item,
@@ -646,7 +655,7 @@ export default orderReducer;
 //   return activeOrders;
 // };
 
-// const changeItemQuantity = (allTables, activeTable, quantity, index) => {
+// const changeItemQuantityRedux = (allTables, activeTable, quantity, index) => {
 //   if (activeTable || activeTable === 0)
 //     allTables[activeTable].items[index].quantity = quantity;
 
@@ -655,7 +664,7 @@ export default orderReducer;
 //   return allTables;
 // };
 
-// const removeItem = (allTables, activeTable, index) => {
+// const removeItemRedux = (allTables, activeTable, index) => {
 //   if (activeTable || activeTable === 0) {
 //     allTables[activeTable].items = allTables[activeTable].items.filter(
 //       (ite, itemindex) => {
@@ -766,7 +775,7 @@ export default orderReducer;
 //   return {
 //     ...state,
 //     activeOrders: [
-//       ...pushItemToActiveOrder(
+//       ...pushItemToActiveOrderRedux(
 //         state.activeOrders,
 //         state.activeTable,
 //         action.payload.item,
@@ -779,7 +788,7 @@ export default orderReducer;
 //   return {
 //     ...state,
 //     activeOrders: [
-//       ...changeItemQuantity(
+//       ...changeItemQuantityRedux(
 //         state.activeOrders,
 //         state.activeTable,
 //         action.payload.quantity,
@@ -792,7 +801,7 @@ export default orderReducer;
 //   return {
 //     ...state,
 //     activeOrders: [
-//       ...removeItem(
+//       ...removeItemRedux(
 //         state.activeOrders,
 //         state.activeTable,
 //         action.payload.index

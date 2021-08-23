@@ -5,35 +5,27 @@ import SmartTable from "../../components/common/SmartTable";
 
 import DeleteModal from "../../components/common/Modals/DeleteModal";
 import EditCommonAction from "../../components/common/Actions/EditAction";
-import AddCommonAction from "../../components/common/Actions/AddCommonAction";
-import DeleteCommonAction from "../../components/common/Actions/DeleteCommonAction";
-import CommonAddModal from "../../components/common/Modals/CommonAddModal";
-import {
-  getBranchCategories,
-  getRestaurantCategories,
-} from "../../redux/action/categoryActions";
-import {
-  createItem,
-  deleteItem,
-  getRestaurantItems,
-  getBranchItems,
-  importItems,
-  updateItem,
-} from "../../redux/action/itemActions";
-import { RootUrl } from "../../redux/types";
-import { getAllBranches } from "../../redux/action/branchActions";
-import getErrorMessage from "../../helpers/getErrorMessage";
+
+import CommonConfirmModal from "../../components/common/Modals/CommonConfirmModal";
 
 import DateRangePicker from "react-bootstrap-daterangepicker";
 import "bootstrap-daterangepicker/daterangepicker.css";
 import moment from "moment";
 import { DATEFORMAT, dateRanges } from "../../contants";
-import { getPreviosOrders } from "../../redux/action/orderActions";
+import {
+  getPreviosOrders,
+  setOrderToEdit,
+  updateOrder,
+} from "../../redux/action/orderActions";
+import { useHistory } from "react-router-dom";
+import EditOrderModal from "../../components/common/Modals/EditOrderModal";
+import ViewCommonAction from "../../components/common/Actions/ViewCommonAction";
 
 const PageTitle = "Order History";
 
 const OrderHistory = () => {
-  const { previousOrders } = useSelector((state) => state.order);
+  const history = useHistory();
+  const { previousOrders, activeOrders } = useSelector((state) => state.order);
   const { role, restaurantId, branchId } = useSelector((state) => state.user);
   const [open, setOpen] = React.useState();
 
@@ -71,35 +63,67 @@ const OrderHistory = () => {
   };
 
   const toggleAdd = (mode) => {
-    setOpen(mode);
     if (mode === undefined) {
       setActionData({});
     }
+    setOpen(mode);
   };
 
-  const handleDelete = (data) => {
-    toggleAdd("Delete");
-    setActionData(data);
+  const handleEdit = (data, mode) => {
+    const orderItems = data.orderItems;
+    // delete data.orderItems;
+
+    toggleAdd(mode || "EditOrder");
+    setActionData({
+      ...data,
+      tablePrice: data?.tablePrice || 0,
+      items: orderItems,
+      orderType: parseInt(data.orderType),
+      ...(mode === "EditOrder" && { isEdited: true }),
+    });
   };
 
-  const confirmDelete = (data) => {
-    dispatch(deleteItem({ role, id: actionData.id || actionData._id })).then(
-      (res) => {
-        if (res.payload.status === 200) {
+  const handleUpdateOrder = (data) => {
+    dispatch(
+      updateOrder(
+        {
+          ...data,
+
+          grandTotal: Math.ceil(data.grandTotal),
+          orderItems: data.items,
+        },
+        () => {
           toggleAdd();
-          dispatch(showSnackBar("Item Deleted succesfully"));
           getAllData();
-        }
-      }
+        },
+        () => {},
+        "Order Updated",
+        "Failed To Update Order"
+      )
     );
   };
 
-  const DeleteAction = (action) => (
-    <DeleteCommonAction onClick={() => handleDelete(action.data)} />
+  const EditAction = (action) => (
+    <EditCommonAction onClick={() => handleEdit(action.data, "EditOrder")} />
+  );
+  const ViewAction = (action) => (
+    <ViewCommonAction onClick={() => handleEdit(action.data, "View")} />
   );
 
   const headers = [
-    { title: "Order Number", key: "branchOrderNumber" },
+    {
+      title: "Order Number",
+      key: "branchOrderNumber",
+
+      renderRow: (child) => (
+        <>
+          {child.branchOrderNumber}
+          {child.isEdited && (
+            <div className="badge badge-orange ml-2">Edited</div>
+          )}
+        </>
+      ),
+    },
     {
       title: "Items",
       key: "itemsLength",
@@ -171,16 +195,28 @@ const OrderHistory = () => {
     restaurantadmin: [BranchFilter, DatePicker],
     branchadmin: [DatePicker],
   };
+
+  const showEditModal =
+    actionData?.refId || open === "EditOrder" || open === "View";
   return (
     <>
       <div class="page-content-tab">
-        <DeleteModal
+        {/* <CommonConfirmModal
           size="md"
-          open={open === "Delete"}
-          title={actionData?.name}
+          open={open === "Edit"}
+          title={"Please complete all active orders before editing."}
           onClose={() => toggleAdd()}
-          onConfirm={() => confirmDelete()}
-        />
+          onConfirm={() => handleEditConfirm()}
+        /> */}
+        {showEditModal && (
+          <EditOrderModal
+            data={actionData}
+            open={showEditModal}
+            mode={open}
+            onClose={() => toggleAdd()}
+            onSubmit={(data) => handleUpdateOrder(data)}
+          />
+        )}
 
         <SmartTable
           headerComponents={headerComponents[role]}
@@ -188,7 +224,7 @@ const OrderHistory = () => {
           searchByLabel="Order Number"
           searchByField="orderNumber"
           // headActions={[AddAction]}
-          // actions={[DeleteAction]}
+          actions={[EditAction, ViewAction]}
           tableData={previousOrders.reverse()}
           headers={headers}
           sortable={true}

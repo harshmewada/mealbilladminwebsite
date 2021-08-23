@@ -175,7 +175,7 @@ const AddRestaurant = () => {
       // },
     },
     {
-      type: "number",
+      type: "float",
       name: "cgst",
       label: "CGST",
       size: 3,
@@ -190,7 +190,7 @@ const AddRestaurant = () => {
       },
     },
     {
-      type: "number",
+      type: "float",
       name: "sgst",
       label: "SGST",
       size: 3,
@@ -265,8 +265,9 @@ const AddRestaurant = () => {
 
   const handleEdit = (data) => {
     toggleAdd("Edit");
-    if (data.balance) {
-      data.balance = data.balance.toFixed(2);
+
+    if (typeof data?.balance === "number") {
+      data.balance = data?.balance?.toFixed(2) || 0;
     }
     setActionData(data);
   };

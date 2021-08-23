@@ -15,6 +15,7 @@ import OrderConfirmModal from "../../../components/common/Modals/OrderConfirmMod
 import { setKOTPrintData } from "../../../redux/action/utilActions";
 import moment from "moment";
 import { DATETIMEFORMAT, TYPESOFORDERS } from "../../../contants";
+import calculateOrderTotals from "../../../helpers/calculateOrderTotals";
 
 function parseFloat2Decimals(value) {
   return parseFloat(parseFloat(value).toFixed(2));
@@ -196,13 +197,19 @@ const OrderTotalDisplay = () => {
       branchCode: branchCode,
       orderType: activeOrders[index].orderType,
       isPaid: false,
+
       ...customerData,
       ...paymentData,
       ...others,
+      ...(activeOrders[index]?.isEdited && {
+        isEdited: true,
+        isOrderConfirmed: true,
+        isPaid: true,
+        _id: activeOrders[index].id || activeOrders[index]._id,
+      }),
     };
 
     setPrePrintOpen(false);
-
     dispatch(
       confirmOrder(orderdata, (data) => {
         setOtherCharges(0);
@@ -275,55 +282,14 @@ const OrderTotalDisplay = () => {
       );
     }
   };
-  const getData = (mydiscount) => {
-    let itemsTotal = 0;
-    let cgstCharges = 0;
-
-    let sgstCharges = 0;
-    let grandTotal = 0;
-    let grandTotalWithoutDiscount = 0;
-
-    let tablePrice = 0;
-    let taxTotal = 0;
-
-    if (activeOrders[index]) {
-      activeOrders[index].items.forEach((item) => {
-        itemsTotal += item.itemTotal;
-      });
-
-      cgstCharges = (itemsTotal * cgst) / 100;
-
-      sgstCharges = (itemsTotal * sgst) / 100;
-      tablePrice = activeOrders[index].tablePrice;
-    }
-    grandTotal =
-      itemsTotal +
-      cgstCharges +
-      sgstCharges +
-      tablePrice +
-      parseFloat(otherCharges || 0) -
-      parseFloat(discount || 0);
-
-    grandTotalWithoutDiscount =
-      itemsTotal +
-      cgstCharges +
-      sgstCharges +
-      tablePrice +
-      parseFloat(otherCharges || 0);
-
-    taxTotal = parseFloat(cgstCharges + sgstCharges);
-    return {
-      itemsTotal,
-      cgstCharges,
-      sgstCharges,
+  const getData = () => {
+    return calculateOrderTotals(
+      activeOrders[index],
+      cgst,
+      sgst,
       otherCharges,
-      taxTotal,
-      discount,
-      tablePrice,
-      refId: activeOrders[index]?.refId,
-      grandTotal: Math.ceil(grandTotal),
-      grandTotalWithoutDiscount: grandTotalWithoutDiscount.toFixed(2),
-    };
+      discount
+    );
   };
 
   const onPrePrint = (customer) => {
@@ -348,6 +314,7 @@ const OrderTotalDisplay = () => {
       orderNumber: lastOrderNumber + (activeOrders.length - index),
       branchCode: branchCode,
       orderType: activeOrders[index].orderType,
+
       ...customerData,
       ...customer,
     };

@@ -37,34 +37,34 @@ const styles = {
   },
 };
 
-const ActiveOrderSelector = ({ tables }) => {
+const ActiveOrderSelector = ({
+  tables,
+  lastOrderNumber,
+  activeOrders,
+  activeOrdersLength,
+  active,
+  branchCode,
+  handleItemQuantity,
+
+  deleteItem,
+  makeTableActive,
+  deletable,
+
+  scrollable,
+  deleteOrder,
+  allItems,
+  clearCount,
+  handleSearchAndAddItem,
+  orderDeletable,
+  disabled,
+  hideSearch,
+}) => {
   const dispatch = useDispatch();
   const tablesRef = React.useRef([]);
 
-  const { lastOrderNumber, activeOrders } = useSelector((state) => state.order);
-  const activeOrderIndex = useSelector((state) => state.order.activeOrderIndex);
-
-  const active = activeOrders.find(
-    (order) => order.refId === activeOrders[activeOrderIndex]?.refId
-  );
-  const branchCode = useSelector((state) => state.user.branchCode);
-  const handleItemQuantity = (quantity, itemindex) => {
-    dispatch(changeItemQuantity(parseInt(quantity), itemindex));
-  };
-  const deleteItem = (index) => {
-    dispatch(removeItem(index));
-  };
-
-  const deleteOrder = (refId) => {
-    dispatch(deleteLocalOrder(refId));
-  };
-
-  const makeTableActive = (refId) => {
-    dispatch(setActiveOrder(refId));
-  };
-
   React.useEffect(() => {
-    tablesRef.current = tablesRef.current.slice(0, tables.length);
+    if (scrollable)
+      tablesRef.current = tablesRef.current.slice(0, tables.length);
   }, [tables]);
   const executeScroll = (index) => {
     index &&
@@ -77,14 +77,18 @@ const ActiveOrderSelector = ({ tables }) => {
   };
 
   React.useEffect(() => {
-    executeScroll(active);
+    scrollable && executeScroll(active);
   }, [active]);
   return [...tables].reverse().map((data, dataIndex) => {
-    const index = activeOrders.length - 1 - dataIndex;
+    const index = activeOrdersLength - 1 - dataIndex;
 
     const isActive = data.refId === active?.refId;
 
-    const disableEverything = data?.isEdited ? false : data.isOrderConfirmed;
+    const disableEverything = disabled
+      ? true
+      : data?.isEdited
+      ? false
+      : data.isOrderConfirmed;
 
     return (
       <>
@@ -135,10 +139,10 @@ const ActiveOrderSelector = ({ tables }) => {
                 </div>
                 <div className="col-md-2">
                   <span style={{ color: isActive ? "white" : undefined }}>
-                    {data.items.length} Items
+                    {data?.items?.length} Items
                   </span>
                 </div>
-                {!disableEverything && (
+                {orderDeletable && (
                   <div className="col-md-2 d-flex justify-content-end">
                     <span>
                       <a
@@ -192,7 +196,7 @@ const ActiveOrderSelector = ({ tables }) => {
                       className={"badge badge-light"}
                       style={{ color: "black" }}
                     >
-                      Edited
+                      Editing
                     </span>
                   )}
                 </div>
@@ -201,7 +205,7 @@ const ActiveOrderSelector = ({ tables }) => {
           </div>
           <Collapse in={isActive}>
             <div class=" mt-0 pt-0 pl-1 pr-1 ">
-              {data.items.length > 0 ? (
+              {data?.items?.length > 0 ? (
                 <table class="table table-sm mb-0 ordertable">
                   <tbody>
                     {data.items.map((item, index) => {
@@ -246,7 +250,13 @@ const ActiveOrderSelector = ({ tables }) => {
               ) : (
                 <p class="mb-0 text-muted p-2">No Items Selected</p>
               )}
-              <ListItemSelector />
+              {!hideSearch && (
+                <ListItemSelector
+                  allItems={allItems}
+                  clearCount={clearCount}
+                  handleSearchAndAddItem={handleSearchAndAddItem}
+                />
+              )}
             </div>
           </Collapse>
         </div>

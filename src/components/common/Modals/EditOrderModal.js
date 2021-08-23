@@ -1,0 +1,576 @@
+import React from "react";
+
+import ModalContainer from "../ModalContainer";
+
+import { useDispatch, useSelector } from "react-redux";
+import ActiveTableSelector from "../../../pages/OrderDashboard/RightPortion/ActiveTableSelector2";
+
+import {
+  changeItemQuantityRedux,
+  pushItemToActiveOrderRedux,
+  removeItemRedux,
+} from "../../../redux/reducers/orderReducer";
+
+import getOrderNeccesaryData from "../../../helpers/getOrderNeccesaryData";
+import moment from "moment";
+import { CURRENCY, DATETIMEFORMAT } from "../../../contants";
+import calculateOrderTotals from "../../../helpers/calculateOrderTotals";
+import flattentItemsArray from "../../../helpers/flattenItemsArray";
+
+const EditOrderModal = ({ open, onClose, data, onSubmit, mode }) => {
+  const isViewMode = mode === "View";
+  const ready = getOrderNeccesaryData();
+
+  const isLoading = useSelector((state) => state.util.spinner);
+  const [activeOrders, setActiveOrders] = React.useState([]);
+  const { allItems } = useSelector((state) => state.order);
+
+  const handleItemQuantity = (quantity, itemindex) => {
+    // dispatch(changeItemQuantity(parseInt(quantity), itemindex));
+
+    setActiveOrders([
+      ...changeItemQuantityRedux(
+        activeOrders,
+        0,
+        parseInt(quantity),
+        itemindex
+      ),
+    ]);
+  };
+  const deleteItem = (index) => {
+    // dispatch(removeItem(index));
+    setActiveOrders([...removeItemRedux(activeOrders, 0, index)]);
+  };
+
+  const handleSearchAndAddItem = (selected) => {
+    if (selected.length > 0) {
+      const item = selected[0];
+
+      const isVariant = item?.variantId ? true : false;
+
+      setActiveOrders([
+        ...pushItemToActiveOrderRedux(
+          activeOrders,
+          0,
+
+          item,
+          isVariant
+        ),
+      ]);
+    }
+  };
+
+  React.useEffect(() => {
+    if (open) {
+      setActiveOrders([data]);
+    }
+  }, [open]);
+
+  const getData = () => {
+    return data
+      ? calculateOrderTotals(
+          data,
+          data?.cgst,
+          data?.sgst,
+          data?.otherCharges,
+          data?.discount
+        )
+      : {};
+  };
+
+  const bottomTableData = [
+    [
+      {
+        value: "Order Date : ",
+      },
+      {
+        value: moment(data?.createdAt).format(DATETIMEFORMAT),
+      },
+      {
+        value: "Sub Total : ",
+      },
+      {
+        value: getData().itemsTotal,
+        isCurrency: true,
+      },
+    ],
+    [
+      {
+        value: "User : ",
+      },
+      {
+        value: data?.orderBy,
+      },
+      {
+        value: "GST(if any) : ",
+      },
+      {
+        renderTd: (row) => (
+          <td>
+            {CURRENCY}
+            {getData().sgstCharges + getData().cgstCharges}
+          </td>
+        ),
+        isCurrency: true,
+      },
+    ],
+    [
+      {
+        value: "Payment : ",
+      },
+      {
+        value: data?.paymentType,
+      },
+      {
+        value: "Charges(if any) : ",
+      },
+      {
+        value: getData()?.otherCharges,
+        isCurrency: true,
+      },
+    ],
+    [
+      {
+        value: "Customer Name : ",
+      },
+      {
+        value: data?.customerName,
+      },
+      {
+        value: "Discount(if any) : ",
+      },
+      {
+        value: data?.discount,
+        isCurrency: true,
+      },
+    ],
+    [
+      {
+        value: "Mobile Number : ",
+      },
+      {
+        value: data?.customerMobile,
+      },
+      {
+        value: "Grand Total : ",
+        renderTd: (row) => (
+          <td>
+            <strong>Grand Total : </strong>
+          </td>
+        ),
+      },
+      {
+        renderTd: (row) => (
+          <td>
+            <strong>
+              {CURRENCY}
+              {getData()?.grandTotal}
+            </strong>
+          </td>
+        ),
+
+        isCurrency: true,
+      },
+    ],
+  ];
+
+  return (
+    <div>
+      <ModalContainer
+        open={open}
+        onClose={() => {
+          onClose();
+          // setFormErrors();
+          // reset();
+        }}
+        title={`Edit Order : # ${data?.branchOrderNumber}`}
+        // title={`${mode} ${title}`}
+        size="md"
+      >
+        {activeOrders.length > 0 && (
+          <>
+            <ActiveTableSelector
+              tables={activeOrders}
+              activeOrdersLength={1}
+              scrollable
+              orderDeletable={false}
+              active={data}
+              handleItemQuantity={handleItemQuantity}
+              deleteItem={deleteItem}
+              handleSearchAndAddItem={handleSearchAndAddItem}
+              allItems={flattentItemsArray(allItems)}
+              disabled={isViewMode}
+              hideSearch={isViewMode}
+              makeTableActive={() => {}}
+            />
+            <BottomTable tableData={bottomTableData} />
+          </>
+        )}
+
+        <div class="form-group mb-0 mt-3">
+          {!isViewMode && (
+            <button
+              type="submit"
+              disabled={isLoading}
+              class="btn btn-gradient-primary waves-effect waves-light"
+              onClick={() => {
+                onSubmit({ ...activeOrders[0], ...getData() });
+              }}
+            >
+              {isLoading && (
+                <span
+                  class="spinner-border spinner-border-sm"
+                  role="status"
+                  aria-hidden="true"
+                ></span>
+              )}
+              Submit
+            </button>
+          )}
+          <button
+            type="reset"
+            class="btn btn-gradient-danger waves-effect ml-3"
+            onClick={() => onClose()}
+          >
+            Cancel
+          </button>
+        </div>
+      </ModalContainer>
+    </div>
+  );
+};
+
+export default EditOrderModal;
+
+const BottomTable = ({ tableData }) => {
+  return (
+    <div>
+      <div class="table-responsive-sm">
+        <table class="table table-sm mb-0">
+          <tbody>
+            {tableData.map((row, rowIndex) => {
+              return (
+                <tr>
+                  {row.map((td) => {
+                    if (td.renderTd) {
+                      return td.renderTd();
+                    }
+                    return (
+                      <td>
+                        {" "}
+                        {td.isCurrency ? CURRENCY : ""}
+                        {td.value}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+const styles = {
+  paginated: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    margin: "0px 1vw",
+    maxWidth: "20vw",
+  },
+  select: {
+    margin: "0px 0.5vw",
+  },
+  searchGroup: {
+    maxWidth: "15vw",
+  },
+};
+// import React from "react";
+// import { useDispatch, useSelector } from "react-redux";
+// import { showSnackBar } from "../../redux/action/snackActions";
+// import SmartTable from "../../components/common/SmartTable";
+
+// import DeleteModal from "../../components/common/Modals/DeleteModal";
+// import AddCommonAction from "../../components/common/Actions/AddCommonAction";
+// import EditCommonAction from "../../components/common/Actions/EditAction";
+// import DeleteCommonAction from "../../components/common/Actions/DeleteCommonAction";
+// import CommonAddModal from "../../components/common/Modals/ExpenseAddModal";
+// import {
+//   createExpense,
+//   deleteExpense,
+//   getAllexpenseTypes,
+//   updateExpense,
+//   importExpenseTypes,
+//   getAllExpenses,
+//   getRestaurantExpenseType,
+// } from "../../redux/action/expenseActions";
+// import { RootUrl } from "../../redux/types";
+// import { getAllBranches } from "../../redux/action/branchActions";
+// import getErrorMessage from "../../helpers/getErrorMessage";
+// import CommonImportModal from "../../components/common/Modals/CommonImportModal";
+// import ImportCommonAction from "../../components/common/Actions/ImportCommonAction";
+
+// //date
+// import DateRangePicker from "react-bootstrap-daterangepicker";
+// import "bootstrap-daterangepicker/daterangepicker.css";
+// import moment from "moment";
+// import { DATEFORMAT, dateRanges } from "../../contants";
+
+// const SubExpensesModal = () => {
+//   const { expenses: arraycat, restaurantExpenseTypes } = useSelector(
+//     (state) => state.branch
+//   );
+//   const { role, restaurantId, branchId } = useSelector((state) => state.user);
+
+//   const isBranchAdmin = ["branchadmin"].includes(role);
+
+//   const isBranchUser = ["branchuser"].includes(role);
+
+//   const PageTitle = "Expenses";
+
+//   const [open, setOpen] = React.useState();
+
+//   const [importOpen, setImportOpen] = React.useState();
+
+//   const currRestaurantId = restaurantId || undefined;
+
+//   const currBranchId = branchId;
+//   const expenses = arraycat;
+
+//   const [state, setState] = React.useState({
+//     start: moment(),
+//     end: moment(),
+//   });
+//   const { start, end } = state;
+
+//   const handleCallback = (start, end) => {
+//     // props.setValue({ start, end });
+//     // onChange(setState({ start, end }));
+//     setState({ start, end });
+//   };
+
+//   const dispatch = useDispatch();
+//   // const Cateogrys = useSelector((state) => state.common.Cateogrys);
+
+//   const [actionData, setActionData] = React.useState();
+
+//   const toggleAdd = (mode) => {
+//     setOpen(mode);
+//     if (mode === undefined) {
+//       setActionData({});
+//     }
+//   };
+
+//   const handleEdit = (data) => {
+//     toggleAdd("Edit");
+//     setActionData(data);
+//   };
+
+//   const handleDelete = (data) => {
+//     toggleAdd("Delete");
+//     setActionData(data);
+//   };
+
+//   const confirmDelete = (data) => {
+//     dispatch(deleteExpense({ ...actionData, role: role }))
+//       .then((res) => {
+//         if (res.payload.status === 200) {
+//           toggleAdd();
+//           dispatch(showSnackBar("Deleted succesfully"));
+//           getAllData();
+//         } else {
+//           dispatch(
+//             showSnackBar(
+//               getErrorMessage(res) || "Failed to Delete Cateogry",
+//               "error"
+//             )
+//           );
+//         }
+//       })
+//       .catch((err) => {
+//         console.log("err", err);
+//         dispatch(
+//           showSnackBar(
+//             getErrorMessage(err) || "Failed to Delete Cateogry",
+//             "error"
+//           )
+//         );
+//       });
+//   };
+
+//   const getAllData = (selectedBranch) => {
+//     if (isBranchAdmin || isBranchUser) {
+//       dispatch(getRestaurantExpenseType(restaurantId));
+//       dispatch(getAllExpenses(state));
+//     }
+//   };
+
+//   console.log("restaurantExpenseTypes", restaurantExpenseTypes);
+
+//   const onAdd = (data) => {
+//     if (open === "Add") {
+//       dispatch(
+//         createExpense({
+//           ...data,
+//           role: role,
+//           // branchId: branchId || data.branchId,
+
+//           ...(currRestaurantId && { restaurantId: restaurantId }),
+//           ...(currBranchId && { branchId: currBranchId }),
+//         })
+//       )
+//         .then((res) => {
+//           if (res.payload.status === 200) {
+//             toggleAdd();
+//             dispatch(showSnackBar("Expense created successfully"));
+//             getAllData();
+//           } else {
+//             dispatch(
+//               showSnackBar(
+//                 getErrorMessage(res) || "Failed to Add Cateogry",
+//                 "error"
+//               )
+//             );
+//           }
+//         })
+//         .catch((err) => {
+//           dispatch(
+//             showSnackBar(
+//               getErrorMessage(err) || "Failed to Add Cateogry",
+//               "error"
+//             )
+//           );
+//         });
+//     }
+//     if (open === "Edit") {
+//       dispatch(
+//         updateExpense({
+//           ...actionData,
+//           ...data,
+//           role: role,
+//         })
+//       )
+//         .then((res) => {
+//           if (res.payload.status === 200) {
+//             dispatch(showSnackBar("Cateogry Updated Successfully", "success"));
+//             getAllData();
+
+//             toggleAdd();
+//           } else {
+//             dispatch(
+//               showSnackBar(
+//                 getErrorMessage(res) || "Failed to Update Cateogry",
+//                 "error"
+//               )
+//             );
+//           }
+//         })
+//         .catch((err) => {
+//           console.log("err", err);
+//           dispatch(
+//             showSnackBar(
+//               getErrorMessage(err) || "Failed to Update Cateogry",
+//               "error"
+//             )
+//           );
+//         });
+//     }
+//   };
+
+//   const AddAction = () => {
+//     return (
+//       <AddCommonAction onClick={() => toggleAdd("Add")} title={PageTitle} />
+//     );
+//   };
+
+//   const EditAction = (action) => (
+//     <EditCommonAction onClick={() => handleEdit(action.data)} />
+//   );
+
+//   const DeleteAction = (action) => (
+//     <DeleteCommonAction onClick={() => handleDelete(action.data)} />
+//   );
+
+//   const branchtableheaders = [
+//     { title: "Expense Title", key: "expenseTitle" },
+//     { title: "Expense Type", key: "expenseType" },
+//     { title: "Quantity", key: "quantity" },
+
+//     { title: "Expense Price", key: "expensePrice", isCurrency: true },
+//   ];
+//   const headers = branchtableheaders;
+
+//   const defaultValues = {
+//     restaurantId: restaurantId,
+//   };
+
+//   const DatePicker = (action) => (
+//     <div class="">
+//       <DateRangePicker
+//         initialSettings={{
+//           startDate: start.toDate(),
+//           endDate: end.toDate(),
+
+//           locale: {
+//             format: DATEFORMAT,
+//           },
+//           maxDate: new Date(),
+
+//           ranges: dateRanges,
+//         }}
+//         onCallback={handleCallback}
+//       >
+//         <input type="text" class="form-control" />
+//       </DateRangePicker>
+//     </div>
+//   );
+
+//   const headerComponents = {
+//     branchadmin: [DatePicker],
+//   };
+//   React.useEffect(() => {
+//     getAllData();
+//   }, [state]);
+
+//   return (
+//     <>
+//       <div class="page-content-tab">
+//         <CommonAddModal
+//           title={PageTitle}
+//           open={open === "Add" || open === "Edit"}
+//           onClose={() => toggleAdd()}
+//           mode={open}
+//           onSubmit={(e) => onAdd(e)}
+//           data={actionData}
+//           restaurantExpenseTypes={restaurantExpenseTypes}
+//           defaultValue={defaultValues}
+//         />
+//         <DeleteModal
+//           size="md"
+//           open={open === "Delete"}
+//           title={actionData?.name}
+//           onClose={() => toggleAdd()}
+//           onConfirm={() => confirmDelete()}
+//         />
+//         <SmartTable
+//           title={PageTitle}
+//           headerComponents={headerComponents[role]}
+//           headActions={[AddAction]}
+//           actions={[EditAction, DeleteAction]}
+//           tableData={expenses}
+//           headers={headers}
+//           sortable={true}
+//           paginated={true}
+//           searchByLabel={"Expense Title"}
+//           searchByField={"expenseTitle"}
+//           rowsPerPage={5}
+//         />
+//       </div>
+//     </>
+//   );
+// };
+
+// export default SubExpensesModal;

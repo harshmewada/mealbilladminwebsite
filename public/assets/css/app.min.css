@@ -4479,6 +4479,7 @@ dt {
   align-self: center;
   font-weight: 600;
   margin-top: 0;
+  margin-bottom: 0;
 }
 
 .modal-content .modal-header .close,
@@ -11438,4 +11439,8 @@ input:-webkit-autofill:focus {
 .paginate_button {
   cursor: pointer;
   user-select: none;
+}
+.variant-row:hover {
+  /* color: #7286a2; */
+  background-color: #b8c3e3;
 }

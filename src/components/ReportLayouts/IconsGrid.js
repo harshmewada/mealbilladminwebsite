@@ -21,7 +21,7 @@ const IconsGrid = ({ headers, data, headerVariable, isCurrency }) => {
                           >
                             {head}
                           </p>
-                          <h3 class="my-2">
+                          <h3 class="my-2 font-22">
                             {isCurrency ? Curreny : ""}
                             {head.isCurrency && Curreny}
                             {data[head] || 0}
@@ -56,7 +56,7 @@ const IconsGrid = ({ headers, data, headerVariable, isCurrency }) => {
                           >
                             {head.title}
                           </p>
-                          <h3 class="my-2">
+                          <h3 class="my-2 font-22">
                             {head.isCurrency && Curreny}
 
                             {data[head.key] || 0}

@@ -9,6 +9,12 @@ const styles = {
     justifyContent: "flex-start",
     alignItems: "flex-start",
   },
+  rowStyle: {
+    flex: 3,
+  },
+  rowContainerStyle: {
+    cursor: "cell",
+  },
 };
 
 const VariantSelectorModal = ({
@@ -36,14 +42,12 @@ const VariantSelectorModal = ({
         {variants.map((vars, varIndex) => {
           return (
             <div
-              className="d-flex flex-direction-row align-items-center border p-2 w-100"
-              style={{
-                cursor: "cell",
-              }}
+              className="d-flex flex-direction-row align-items-center border p-2 w-100 variant-row"
+              style={styles.rowContainerStyle}
               onClick={() => onVariantClick(vars)}
             >
               <div
-                style={{ flex: 3 }}
+                style={styles.rowStyle}
                 className="text-primary font-weight-bold text-capitalize"
               >
                 {vars.itemName}
@@ -71,6 +75,15 @@ const VariantSelectorModal = ({
             </div>
           );
         })}
+      </div>
+      <div class="form-group mt-3 mb-3 d-flex justify-content-center">
+        <button
+          type="submit"
+          onClick={() => onClose()}
+          class="btn btn-gradient-primary waves-effect waves-light"
+        >
+          OK
+        </button>
       </div>
     </ModalContainer>
   );

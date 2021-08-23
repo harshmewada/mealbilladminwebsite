@@ -4,76 +4,76 @@ import { Curreny } from "../../redux/types";
 export default {
   superadmin: {},
   restaurantadmin: {
+    // dailyreport: {
+    //   title: "Daily Report",
+    //   dataVariable: "table",
+    //   dataType: "order",
+    //   noPadding: true,
+    //   selectorFormData: [
+    //     {
+    //       type: "select",
+    //       name: "branchId",
+
+    //       optionLabelProp: "branchName",
+    //       optionValueProp: "_id",
+    //       hasOptions: true,
+    //       hideAt: ["branchadmin"],
+    //       required: true,
+    //       //   option: branches,
+    //       getOptionLabel: (opt) => opt.branchName,
+    //       defaultOption: () => (
+    //         <option selected value="all">
+    //           All Branches
+    //         </option>
+    //       ),
+    //       size: 4,
+    //       rules: {
+    //         required: {
+    //           value: true,
+    //           message: "Branch Name is required",
+    //         },
+    //       },
+    //     },
+
+    //     {
+    //       type: "dateRange",
+    //       name: "date",
+    //       size: 4,
+    //       placeholder: "Type Table Number",
+    //       required: true,
+    //       options: {
+    //         singleDatePicker: true,
+    //         hideRanges: true,
+    //       },
+    //       rules: {
+    //         required: {
+    //           value: true,
+    //           message: "Date is required",
+    //         },
+    //       },
+    //     },
+    //   ],
+    //   layouts: [
+    //     {
+    //       type: "table",
+    //       dataVariable: "table",
+    //       width: 12,
+
+    //       headers: [
+    //         { title: "Order Number", key: "branchOrderNumber" },
+    //         { title: "Items", key: "itemsLength" },
+    //         { title: "Amount", key: "grandTotal", isCurrency: true },
+    //         { title: "SGST", key: "sgstCharges", isCurrency: true },
+    //         { title: "CGST", key: "cgstCharges", isCurrency: true },
+    //         { title: "Other Charges", key: "otherCharges", isCurrency: true },
+    //       ],
+    //     },
+    //   ],
+    // },
+
     dailyreport: {
       title: "Daily Report",
-      dataVariable: "table",
-      dataType: "order",
-      noPadding: true,
-      selectorFormData: [
-        {
-          type: "select",
-          name: "branchId",
-
-          optionLabelProp: "branchName",
-          optionValueProp: "_id",
-          hasOptions: true,
-          hideAt: ["branchadmin"],
-          required: true,
-          //   option: branches,
-          getOptionLabel: (opt) => opt.branchName,
-          defaultOption: () => (
-            <option selected value="all">
-              All Branches
-            </option>
-          ),
-          size: 4,
-          rules: {
-            required: {
-              value: true,
-              message: "Branch Name is required",
-            },
-          },
-        },
-
-        {
-          type: "dateRange",
-          name: "date",
-          size: 4,
-          placeholder: "Type Table Number",
-          required: true,
-          options: {
-            singleDatePicker: true,
-            hideRanges: true,
-          },
-          rules: {
-            required: {
-              value: true,
-              message: "Date is required",
-            },
-          },
-        },
-      ],
-      layouts: [
-        {
-          type: "table",
-          dataVariable: "table",
-          width: 12,
-
-          headers: [
-            { title: "Order Number", key: "branchOrderNumber" },
-            { title: "Items", key: "itemsLength" },
-            { title: "Amount", key: "grandTotal", isCurrency: true },
-            { title: "SGST", key: "sgstCharges", isCurrency: true },
-            { title: "CGST", key: "cgstCharges", isCurrency: true },
-            { title: "Other Charges", key: "otherCharges", isCurrency: true },
-          ],
-        },
-      ],
-    },
-
-    cashbook: {
-      title: "Cash Book",
-      dataVariable: "cashbook",
+      dataVariable: "dailyreport",
       noPadding: true,
       selectorFormData: [
         {

@@ -31,6 +31,10 @@ import ImportCommonAction from "../../../components/common/Actions/ImportCommonA
 import ItemVariantsModal from "../../../components/common/Modals/ItemVariantsModal";
 import VariantCommonAction from "../../../components/common/Actions/VariantCommonAction";
 import BulkUploadCommonAction from "../../../components/common/Actions/BulkUploadCommonAction";
+import DownloadButtonAction from "../../../components/common/Actions/DownloadButtonAction";
+
+//sample excel
+import SampleXLS from "../../../assets/bulkuploaditemssample.xlsx";
 
 const PageTitle = "Items";
 
@@ -289,15 +293,18 @@ const ManageItems = () => {
   };
 
   const confirmDelete = (data) => {
-    dispatch(deleteItem({ role, id: actionData.id || actionData._id })).then(
-      (res) => {
-        if (res.payload.status === 200) {
-          toggleAdd();
-          dispatch(showSnackBar("Item Deleted succesfully"));
-          getAllData();
-        }
+    dispatch(
+      deleteItem({
+        id: actionData.id || actionData._id,
+        ...(currBranchId && { branchId: currBranchId }),
+      })
+    ).then((res) => {
+      if (res.payload.status === 200) {
+        toggleAdd();
+        dispatch(showSnackBar("Item Deleted succesfully"));
+        getAllData();
       }
-    );
+    });
   };
 
   const onAdd = (data) => {
@@ -310,7 +317,7 @@ const ManageItems = () => {
         createItem({
           ...data,
           restaurantId: restaurantId,
-          ...(isBranchAdmin && { branchId: branchId }),
+          ...(currBranchId && { branchId: currBranchId }),
           role: role,
           ...(data?.itemImage[0] &&
             typeof data?.itemImage[0] !== "string" && {
@@ -464,11 +471,16 @@ const ManageItems = () => {
   const handleBulkUpload = (file) => {
     const uploadData = {
       restaurantId,
-      branchId,
+
       items: file,
+      ...(currBranchId && { branchId: currBranchId }),
     };
     // console.log("uploadData", uploadData);
-    dispatch(bulkUploadItems(uploadData));
+    dispatch(
+      bulkUploadItems(uploadData, () => {
+        getAllData();
+      })
+    );
   };
 
   const BulkUploadAction = () => {
@@ -498,6 +510,29 @@ const ManageItems = () => {
     );
   };
 
+  const DownloadSampleAction = (action) => {
+    return (
+      <a href={SampleXLS} download="bulkuploaditemssample" target="_blank">
+        <DownloadButtonAction
+          onClick={() => {}}
+          title={"Download Sample File"}
+          tooltipTitle="Download Sample Excel File for bulk upload"
+        />
+      </a>
+    );
+  };
+  //   Item Name
+  // Item Image
+  // Hot Key
+  // Price
+  // Online Price
+  // Category
+  // Variants
+  // Quantity
+  // Average Rating
+  // Status
+  // Actions
+
   const headers = [
     { title: "Item Name", key: "itemName" },
 
@@ -512,27 +547,10 @@ const ManageItems = () => {
     { title: "Price", key: "itemPrice" },
 
     { title: "OnlinePrice", key: "onlinePrice" },
-
-    { title: "Description", key: "description", type: "textarea" },
-
-    {
-      title: "Type",
-      key: "isNonVeg",
-      renderRow: (row) => (row.isNonVeg ? `Non veg` : "Veg"),
-      // width: "50px",
-    },
     {
       title: "Category",
       key: "categoryName",
       // width: "50px",
-    },
-
-    {
-      title: "Featured",
-      key: "isFeatured",
-      // width: "50px",
-
-      renderRow: (row) => (row.isFeatured ? `True` : "False"),
     },
     {
       title: "Variants",
@@ -541,6 +559,30 @@ const ManageItems = () => {
           ? row?.variants?.length
           : "N/A",
     },
+    {
+      title: "Quantity",
+      key: "currentStock",
+    },
+    {
+      title: "Average Rating",
+      key: "averageRating",
+    },
+    // { title: "Description", key: "description", type: "textarea" },
+
+    // {
+    //   title: "Type",
+    //   key: "isNonVeg",
+    //   renderRow: (row) => (row.isNonVeg ? `Non veg` : "Veg"),
+    //   // width: "50px",
+    // },
+
+    // {
+    //   title: "Featured",
+    //   key: "isFeatured",
+    //   // width: "50px",
+
+    //   renderRow: (row) => (row.isFeatured ? `True` : "False"),
+    // },
 
     { title: "Status", key: "status" },
   ];
@@ -587,13 +629,13 @@ const ManageItems = () => {
   return (
     <>
       <div class="page-content-tab">
-        {/* <ItemVariantsModal
+        <ItemVariantsModal
           open={open === "sub" || open === "subEdit"}
           onClose={() => toggleAdd()}
           mode={open}
           data={actionData}
           onSubmit={(e) => onAddNewItemVariants(e)}
-        /> */}
+        />
         {!isSuperAdmin && (
           <CommonImportModal
             headers={headers}
@@ -629,7 +671,7 @@ const ManageItems = () => {
         <SmartTable
           headerComponents={headerComponents[role]}
           title={PageTitle}
-          headActions={[BulkUploadAction, AddAction]}
+          headActions={[DownloadSampleAction, BulkUploadAction, AddAction]}
           actions={[VariantAction, EditAction, DeleteAction]}
           tableData={isRestaurantAdmin ? restaurantItems : items}
           headers={headers}

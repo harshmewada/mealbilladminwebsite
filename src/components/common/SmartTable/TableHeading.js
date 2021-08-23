@@ -66,7 +66,10 @@ const TableHeading = ({
               )}
               <button
                 style={styles.button}
-                onClick={createSortHandler(child.key)}
+                disabled={!sortable}
+                onClick={() => {
+                  sortable && createSortHandler(child.key);
+                }}
               >
                 {isCurrency && `(${CURRENCY})`} {child.title}
               </button>

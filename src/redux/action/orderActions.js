@@ -71,6 +71,13 @@ export const pushItemToActiveOrder = (item, selectedOrderTypeId, isVariant) => {
   };
 };
 
+export const setOrderToEdit = (order) => {
+  return {
+    type: orderTypes.SET_ORDER_TO_EDIT,
+    payload: order,
+  };
+};
+
 export const changeItemQuantity = (quantity, index) => {
   return {
     type: orderTypes.CHANGE_ITEM_QUANTITY,
@@ -130,8 +137,8 @@ export const confirmOrder = (data, cb, errorCb) => {
       type: orderTypes.CONFIRM_ORDER,
       payload: {
         request: {
-          url: orderApi.CREATE_ORDER,
-          method: "post",
+          url: data.isEdited ? orderApi.UPDATE_ORDER : orderApi.CREATE_ORDER,
+          method: data.isEdited ? "put" : "post",
           data: data,
           headers: {
             "Content-type": "application/json",
@@ -141,11 +148,17 @@ export const confirmOrder = (data, cb, errorCb) => {
     });
 };
 
-export const updateOrder = (data, cb, errorCb) => {
+export const updateOrder = (
+  data,
+  cb,
+  errorCb,
+  successMessage,
+  errorMessage
+) => {
   return (dispatch) =>
     checkIfAsyncReqSuccess(dispatch, {
-      successMessage: "Order Payment Received",
-      errorMessage: "Failed To Add Payment",
+      successMessage: successMessage || "Order Payment Received",
+      errorMessage: errorMessage || "Failed To Add Payment",
       enableMessage: false,
       cb: cb,
       errorCb: errorCb,

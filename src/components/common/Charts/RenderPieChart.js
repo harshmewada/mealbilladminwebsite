@@ -18,7 +18,7 @@ const RenderPieChart = ({ data, showCards }) => {
         {data?.series.length > 0 ? (
           <ReactApexChart
             options={data?.options}
-            series={data?.series.map((ser) => parseFloat(ser) * 100)}
+            series={data?.series.map((ser) => parseFloat(ser))}
             type="donut"
           />
         ) : (

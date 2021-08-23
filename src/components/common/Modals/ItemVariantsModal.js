@@ -99,12 +99,14 @@ const ItemVariantsModal = ({ open, onClose, data, onSubmit }) => {
                     <div class="col-12">
                       <TableTitle
                         title={"Variants"}
-                        endAction={() => (
-                          <AddCommonAction
-                            title="New Item Variant"
-                            onClick={() => push(emptyRow)}
-                          />
-                        )}
+                        endActions={[
+                          () => (
+                            <AddCommonAction
+                              title="New Item Variant"
+                              onClick={() => push(emptyRow)}
+                            />
+                          ),
+                        ]}
                       />
                       <div class="d-flex justify-content-between align-items-center mb-4">
                         <label style={styles.paginated}>

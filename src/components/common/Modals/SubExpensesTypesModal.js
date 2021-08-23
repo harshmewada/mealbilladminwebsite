@@ -75,12 +75,14 @@ const SubExpensesModal = ({ open, onClose, data, onSubmit }) => {
                     <div class="col-12">
                       <TableTitle
                         title={"Sub Expenses"}
-                        endAction={() => (
-                          <AddCommonAction
-                            title="New Sub Expense Type"
-                            onClick={() => push(emptyRow)}
-                          />
-                        )}
+                        endAction={[
+                          () => (
+                            <AddCommonAction
+                              title="New Sub Expense Type"
+                              onClick={() => push(emptyRow)}
+                            />
+                          ),
+                        ]}
                       />
                       <div class="d-flex justify-content-between align-items-center mb-4">
                         <label style={styles.paginated}>

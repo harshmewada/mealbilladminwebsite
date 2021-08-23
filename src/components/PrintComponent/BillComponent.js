@@ -138,7 +138,6 @@ const Header = ({
 };
 
 const renderRow = (data, value) => {
-  console.log("data.valueClass", data.valueClass);
   return value ? (
     <tr>
       <td colspan="3" class={data.titleClass}>

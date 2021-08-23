@@ -22,7 +22,6 @@ const AddModal = ({
     console.log(e.target.files[0]);
     setFile(e.target.files[0]);
   };
-  // console.log("data", data);
   const disabled = mode === "Edit";
   return (
     <ModalContainer
