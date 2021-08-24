@@ -9,12 +9,11 @@ import {
   updateOrder,
   prePrintOrder,
 } from "../../../redux/action/orderActions";
-import { Curreny } from "../../../redux/types";
 import OrderButton from "./OrderButton";
 import OrderConfirmModal from "../../../components/common/Modals/OrderConfirmModal";
 import { setKOTPrintData } from "../../../redux/action/utilActions";
 import moment from "moment";
-import { DATETIMEFORMAT, TYPESOFORDERS } from "../../../contants";
+import { CURRENCY, DATETIMEFORMAT, TYPESOFORDERS } from "../../../contants";
 import calculateOrderTotals from "../../../helpers/calculateOrderTotals";
 
 function parseFloat2Decimals(value) {
@@ -455,7 +454,7 @@ const OrderTotalDisplay = () => {
       {prePrintOpen && (
         <OrderConfirmModal
           open={prePrintOpen}
-          text={`Grand total : ${Curreny} ${getData().grandTotal}`}
+          text={`Grand total : ${CURRENCY} ${getData().grandTotal}`}
           onConfirm={(customerData) => handleConfirmOrder(customerData)}
           onCancel={() => setPrePrintOpen()}
           customerName={customerName}
@@ -465,7 +464,7 @@ const OrderTotalDisplay = () => {
       {orderConfirmOpen && (
         <OrderConfirmModal
           open={orderConfirmOpen}
-          text={`Grand total : ${Curreny} ${getData().grandTotal}`}
+          text={`Grand total : ${CURRENCY} ${getData().grandTotal}`}
           onConfirm={(customerData) =>
             handleUpdateOrder(orderConfirmOpen, customerData)
           }
@@ -495,7 +494,7 @@ export default OrderTotalDisplay;
 // import { useDispatch, useSelector } from "react-redux";
 // import { confirmOrder } from "../../../redux/action/orderActions";
 // import { showSnackBar } from "../../../redux/action/snackActions";
-// import { Curreny } from "../../../redux/types";
+// import { CURRENCY } from "../../../redux/types";
 // import OrderButton from "./OrderButton";
 // import OrderConfirmModal from "./OrderConfirmModal";
 // const styles = {
@@ -611,26 +610,26 @@ export default OrderTotalDisplay;
 //               <tr>
 //                 <td>SubTotal</td>
 //                 <td style={styles.rightContent}>
-//                   {Curreny} {getData().itemsTotal}
+//                   {CURRENCY} {getData().itemsTotal}
 //                 </td>
 //               </tr>
 //               <tr>
 //                 <td>CGST</td>
 //                 <td style={styles.rightContent}>
-//                   {Curreny} {getData().cgstCharges}
+//                   {CURRENCY} {getData().cgstCharges}
 //                 </td>
 //               </tr>
 //               <tr>
 //                 <td>SGST</td>
 //                 <td style={styles.rightContent}>
 //                   {" "}
-//                   {Curreny} {getData().sgstCharges}
+//                   {CURRENCY} {getData().sgstCharges}
 //                 </td>
 //               </tr>
 //               <tr>
 //                 <td>Table Charges</td>
 //                 <td style={styles.rightContent}>
-//                   {Curreny} {getData().tablePrice}
+//                   {CURRENCY} {getData().tablePrice}
 //                 </td>
 //               </tr>
 //               <tr>
@@ -659,7 +658,7 @@ export default OrderTotalDisplay;
 //               <tr>
 //                 <td>Grand Total</td>
 //                 <td style={styles.rightContent}>
-//                   {Curreny} {getData().grandTotal}
+//                   {CURRENCY} {getData().grandTotal}
 //                 </td>
 //               </tr>
 //             </tbody>
@@ -678,7 +677,7 @@ export default OrderTotalDisplay;
 
 //       {orderConfirmOpen && (
 //         <OrderConfirmModal
-//           text={`Grand total : ${Curreny} ${getData().grandTotal}`}
+//           text={`Grand total : ${CURRENCY} ${getData().grandTotal}`}
 //           onConfirm={() => handleConfirmOrder(orderConfirmOpen)}
 //           onCancel={() => toggleOrderConfirmModal()}
 //         />

@@ -29,6 +29,7 @@ import { RootUrl } from "../../../redux/types";
 import CommonAddModal from "../../../components/common/Modals/CommonAddModal";
 import { emailRegex, mobileRegex } from "../../../helpers/regex";
 import TableRowCommonAction from "../../../components/common/Actions/TableRowCommonAction";
+import { CURRENCYOPTIONS } from "../../../contants";
 
 const PageTitle = "Restaurants";
 
@@ -230,6 +231,22 @@ const AddRestaurant = () => {
       options: themes,
       optionLabelProp: "themeName",
       optionValueProp: "id",
+      // disabled: disabled,
+    },
+    {
+      type: "select",
+      name: "currency",
+      size: 3,
+
+      label: "Currency",
+      options: CURRENCYOPTIONS,
+      defaultOption: () => (
+        <option selected disabled value={CURRENCYOPTIONS[0].value}>
+          {CURRENCYOPTIONS[0].title}
+        </option>
+      ),
+      optionLabelProp: "title",
+      optionValueProp: "value",
       // disabled: disabled,
     },
     {

@@ -1,4 +1,6 @@
 export { default as table } from "./Table";
+export { default as cashbooktable } from "./CashBookTable";
+
 // export { default as searchText } from "./SearchText";
 
 export { default as iconsgrid } from "./IconsGrid";

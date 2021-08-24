@@ -1,6 +1,8 @@
-import { branchTypes, Curreny, RootUrl, userTypes } from "../types";
+import { branchTypes, RootUrl, userTypes } from "../types";
 import setToken from "../../helpers/setToken";
 import removeToken from "../../helpers/removeToken";
+import { CURRENCY } from "../../contants";
+import setCurrency from "../../helpers/setCurrency";
 
 const superadmin = "superadmin";
 const restaurantadmin = "restaurantadmin";
@@ -17,7 +19,7 @@ const initialstate = {
   sgst: 0,
   hasSubscriptionExpired: false,
   receiptMessage: null,
-  currency: Curreny,
+  currency: CURRENCY,
 };
 
 const saveLocallogo = (path) => {
@@ -49,6 +51,9 @@ const userReducer = (state = initialstate, action) => {
         saveLocallogo(getData().user.restaurantLogo);
         console.log("restaurantLogo", getData().user.restaurantLogo);
       }
+      if (getData()?.user?.currency) {
+        setCurrency(getData().user.currency);
+      }
       return {
         ...state,
         isLoading: false,
@@ -67,6 +72,9 @@ const userReducer = (state = initialstate, action) => {
     case userTypes.GET_USER_DETAILS_SUCCESS:
       if (getData().user.restaurantLogo) {
         saveLocallogo(getData().user.restaurantLogo);
+      }
+      if (getData()?.user?.currency) {
+        setCurrency(getData().user.currency);
       }
       return {
         ...state,

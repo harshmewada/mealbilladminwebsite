@@ -17,7 +17,7 @@ const ListItemSelector = ({ allItems, clearCount, handleSearchAndAddItem }) => {
         <tr>
           {/*  <th scope="row">{index + 1}</th> */}
           <td>Search item here : </td>
-          <td>{/* {Curreny} {item.itemPrice} */}</td>
+          <td>{/* {item.itemPrice} */}</td>
           <td>
             <React.Fragment>
               <Typeahead
@@ -92,7 +92,7 @@ export default ListItemSelector;
 //         <tr>
 //           {/*  <th scope="row">{index + 1}</th> */}
 //           <td>Search item here : </td>
-//           <td>{/* {Curreny} {item.itemPrice} */}</td>
+//           <td>{/*  {item.itemPrice} */}</td>
 //           <td>
 //             <React.Fragment>
 //               <Typeahead

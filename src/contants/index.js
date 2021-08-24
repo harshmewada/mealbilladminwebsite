@@ -1,4 +1,5 @@
 import moment from "moment";
+import getCurrency from "../helpers/getCurrency";
 
 //ips
 //web  -  3.108.102.23:443
@@ -20,7 +21,18 @@ export const TIMEFORMAT = "HH:mm:ss";
 
 export const TIMEZONE = "Asia/Kolkata";
 
-export const CURRENCY = "₹";
+export const CURRENCY = getCurrency() || "₹";
+
+export const CURRENCYOPTIONS = [
+  { title: "Rupee", value: "₹" },
+
+  { title: "Dollar", value: "$" },
+  { title: "Euro", value: "€" },
+  { title: "Pound", value: "£" },
+  { title: "Riyal", value: "س" },
+  { title: "Dirham", value: "د.إ" },
+  { title: "Yuan", value: "¥" },
+];
 
 export const TYPESOFORDERS = [
   { key: "Dine In", value: 0, bgColor: "#6d81f5" },

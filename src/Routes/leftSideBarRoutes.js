@@ -97,10 +97,10 @@ export const restaurantadmin = [
         title: "Daily Report",
         link: "/reports/dailyreport",
       },
-      // {
-      //   title: "Cash Book",
-      //   link: "/reports/cashbook",
-      // },
+      {
+        title: "Cash Book",
+        link: "/reports/cashbook",
+      },
       {
         title: "Orders Report",
         link: "/reports/orderreport",

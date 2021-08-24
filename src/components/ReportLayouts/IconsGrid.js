@@ -1,5 +1,5 @@
 import React from "react";
-import { Curreny } from "../../redux/types";
+import { CURRENCY } from "../../contants";
 
 const IconsGrid = ({ headers, data, headerVariable, isCurrency }) => {
   console.log("iconsgrid ", data);
@@ -22,8 +22,8 @@ const IconsGrid = ({ headers, data, headerVariable, isCurrency }) => {
                             {head}
                           </p>
                           <h3 class="my-2 font-22">
-                            {isCurrency ? Curreny : ""}
-                            {head.isCurrency && Curreny}
+                            {isCurrency ? CURRENCY : ""}
+                            {head.isCurrency && CURRENCY}
                             {data[head] || 0}
                           </h3>
                         </div>
@@ -57,7 +57,7 @@ const IconsGrid = ({ headers, data, headerVariable, isCurrency }) => {
                             {head.title}
                           </p>
                           <h3 class="my-2 font-22">
-                            {head.isCurrency && Curreny}
+                            {head.isCurrency && CURRENCY}
 
                             {data[head.key] || 0}
                           </h3>

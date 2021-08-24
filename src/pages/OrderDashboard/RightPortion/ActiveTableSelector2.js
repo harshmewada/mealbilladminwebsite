@@ -1,14 +1,7 @@
 import React from "react";
-import { Accordion } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { TYPESOFORDERS } from "../../../contants";
-import {
-  changeItemQuantity,
-  deleteLocalOrder,
-  removeItem,
-  setActiveOrder,
-} from "../../../redux/action/orderActions";
-import { Curreny } from "../../../redux/types";
+import { CURRENCY, TYPESOFORDERS } from "../../../contants";
+
 import ItemQuantitySelector from "./ItemQuantitySelector";
 import { Button, Collapse } from "react-bootstrap";
 import ListItemSelector from "./ListItemSelector";
@@ -214,7 +207,7 @@ const ActiveOrderSelector = ({
                           {/* <th scope="row">{index + 1}</th> */}
                           <td>{item.itemName}</td>
                           <td>
-                            {Curreny} {item.itemPrice}
+                            {CURRENCY} {item.itemPrice}
                           </td>
                           <td>
                             <ItemQuantitySelector
@@ -228,7 +221,7 @@ const ActiveOrderSelector = ({
                           </td>
 
                           <td className="text-right">
-                            {Curreny}
+                            {CURRENCY}
                             {item.itemTotal}
                           </td>
 
@@ -275,7 +268,7 @@ export default ActiveOrderSelector;
 //   removeItem,
 //   setActiveOrder,
 // } from "../../../redux/action/orderActions";
-// import { Curreny } from "../../../redux/types";
+// import { CURRENCY } from "../../../redux/types";
 // import ItemQuantitySelector from "./ItemQuantitySelector";
 
 // const styles = {
@@ -394,7 +387,7 @@ export default ActiveOrderSelector;
 //                           {/* <th scope="row">{index + 1}</th> */}
 //                           <td>{item.itemName}</td>
 //                           <td>
-//                             {Curreny} {item.itemPrice}
+//                             {CURRENCY} {item.itemPrice}
 //                           </td>
 //                           <td>
 //                             <ItemQuantitySelector
@@ -407,7 +400,7 @@ export default ActiveOrderSelector;
 //                           </td>
 
 //                           <td className="text-right">
-//                             {Curreny}
+//                             {CURRENCY}
 //                             {item.itemTotal}
 //                           </td>
 

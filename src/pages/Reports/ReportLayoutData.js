@@ -1,75 +1,75 @@
-import { TYPESOFPAYMENTS, MONTHSARRAY } from "../../contants";
-import { Curreny } from "../../redux/types";
+import { TYPESOFPAYMENTS, MONTHSARRAY, CURRENCY } from "../../contants";
+
+import CustomCashRow from "../../components/ReportLayouts/CustomCashRow";
 
 export default {
   superadmin: {},
   restaurantadmin: {
-    // dailyreport: {
-    //   title: "Daily Report",
-    //   dataVariable: "table",
-    //   dataType: "order",
-    //   noPadding: true,
-    //   selectorFormData: [
-    //     {
-    //       type: "select",
-    //       name: "branchId",
+    cashbook: {
+      title: "Cash Book",
+      dataVariable: "cashbook",
+      dataType: "order",
+      noPadding: true,
+      selectorFormData: [
+        {
+          type: "dateRange",
+          name: "date",
+          size: 4,
+          placeholder: "Type Table Number",
+          required: true,
+          options: {
+            singleDatePicker: true,
+            hideRanges: true,
+          },
+          rules: {
+            required: {
+              value: true,
+              message: "Date is required",
+            },
+          },
+        },
+      ],
+      layouts: [
+        {
+          type: "table",
+          dataVariable: "cashbook",
+          width: 12,
 
-    //       optionLabelProp: "branchName",
-    //       optionValueProp: "_id",
-    //       hasOptions: true,
-    //       hideAt: ["branchadmin"],
-    //       required: true,
-    //       //   option: branches,
-    //       getOptionLabel: (opt) => opt.branchName,
-    //       defaultOption: () => (
-    //         <option selected value="all">
-    //           All Branches
-    //         </option>
-    //       ),
-    //       size: 4,
-    //       rules: {
-    //         required: {
-    //           value: true,
-    //           message: "Branch Name is required",
-    //         },
-    //       },
-    //     },
+          headers: [
+            {
+              title: "Particulars",
+              key: "particulars",
+              width: "300px",
+              renderRow: (row) => (
+                <CustomCashRow
+                  row={row}
+                  datakey="particulars"
+                  textAlign="left"
+                />
+              ),
+            },
+            {
+              title: "Credit",
+              key: "credit",
+              isCurrency: true,
 
-    //     {
-    //       type: "dateRange",
-    //       name: "date",
-    //       size: 4,
-    //       placeholder: "Type Table Number",
-    //       required: true,
-    //       options: {
-    //         singleDatePicker: true,
-    //         hideRanges: true,
-    //       },
-    //       rules: {
-    //         required: {
-    //           value: true,
-    //           message: "Date is required",
-    //         },
-    //       },
-    //     },
-    //   ],
-    //   layouts: [
-    //     {
-    //       type: "table",
-    //       dataVariable: "table",
-    //       width: 12,
+              renderRow: (row) => (
+                <CustomCashRow row={row} datakey="credit" textAlign="right" />
+              ),
+            },
+            {
+              title: "Debit",
+              key: "debit",
+              isCurrency: true,
 
-    //       headers: [
-    //         { title: "Order Number", key: "branchOrderNumber" },
-    //         { title: "Items", key: "itemsLength" },
-    //         { title: "Amount", key: "grandTotal", isCurrency: true },
-    //         { title: "SGST", key: "sgstCharges", isCurrency: true },
-    //         { title: "CGST", key: "cgstCharges", isCurrency: true },
-    //         { title: "Other Charges", key: "otherCharges", isCurrency: true },
-    //       ],
-    //     },
-    //   ],
-    // },
+              renderRow: (row) => (
+                <CustomCashRow row={row} datakey="debit" textAlign="right" />
+              ),
+            },
+          ],
+        },
+      ],
+    },
 
     dailyreport: {
       title: "Daily Report",
@@ -581,7 +581,7 @@ export default {
               },
               yaxis: {
                 title: {
-                  text: `${Curreny} Rupees`,
+                  text: `${CURRENCY} Rupees`,
                 },
               },
               fill: {
@@ -590,7 +590,7 @@ export default {
               tooltip: {
                 y: {
                   formatter: function (val) {
-                    return Curreny + " " + val;
+                    return CURRENCY + " " + val;
                   },
                 },
               },

@@ -1,5 +1,5 @@
 import React from "react";
-import { Curreny } from "../../../redux/types";
+import { CURRENCY } from "../../../contants";
 import ModalContainer from "../ModalContainer";
 
 const styles = {
@@ -69,7 +69,7 @@ const VariantSelectorModal = ({
               >
                 <div>
                   {" "}
-                  {Curreny} {vars.itemPrice}
+                  {CURRENCY} {vars.itemPrice}
                 </div>
               </div>
             </div>

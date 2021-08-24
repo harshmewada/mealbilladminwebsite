@@ -1,5 +1,4 @@
 import { MONTHSARRAY, TYPESOFPAYMENTS } from "../../contants";
-import { Curreny } from "../../redux/types";
 
 export default {
   superadmin: {

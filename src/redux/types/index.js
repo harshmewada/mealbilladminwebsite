@@ -12,7 +12,6 @@ export const RootUrl = BASEURL;
 // export const RootUrl = "http://localhost:4000";
 // export const RootUrl = "https://mealbill.in/api";
 
-export const Curreny = CURRENCY;
 let primary = {
   light: "#FFB2A4",
   main: "#F0583C",

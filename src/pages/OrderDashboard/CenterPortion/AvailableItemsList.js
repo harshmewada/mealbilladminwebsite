@@ -1,7 +1,8 @@
 import React from "react";
 import VariantSelectorModal from "../../../components/common/Modals/VariantSelectorModal";
 import NoDataContainer from "../../../components/common/NoDataContainer";
-import { Curreny, RootUrl } from "../../../redux/types";
+import { CURRENCY } from "../../../contants";
+import { RootUrl } from "../../../redux/types";
 
 const styles = {
   root: { height: "100%", overflowY: "auto", overflowX: "hidden" },
@@ -84,7 +85,7 @@ const AvailableItemsList = ({ items, onItemClick, onVariantClick }) => {
                       }}
                     >
                       <p class="card-text" style={styles.paragraph}>
-                        {variant.itemName} {Curreny}
+                        {variant.itemName} {CURRENCY}
                         {variant.itemPrice}
                       </p>
                     </div>
@@ -113,7 +114,7 @@ const AvailableItemsList = ({ items, onItemClick, onVariantClick }) => {
           <div style={styles.body}>
             <h6 class="card-title mb-0">{item.itemName}</h6>
             <p class="card-text">
-              Price : {Curreny}
+              Price : {CURRENCY}
               {item.itemPrice}
             </p>
           </div>
