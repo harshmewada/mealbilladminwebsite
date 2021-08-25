@@ -11,5 +11,7 @@ const userApi = {
   UPDATE_USER: `/api/restaurant/users/update`,
 
   DELETE_USER: `/api/restaurant/users/delete`,
+
+  TOGGLE_PRINT_SETTING: `/api/restaurant/setting/updateprintsetting`,
 };
 export default userApi;

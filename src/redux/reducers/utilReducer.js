@@ -1,17 +1,35 @@
 import setLocalKOTPrintEnable from "../../helpers/setLocalKOTPrintEnable";
 import setLocalPrintEnable from "../../helpers/setLocalPrintEnable";
-import { orderTypes, utilTypes } from "../types";
-const initialstate = {
-  spinner: false,
+import { orderTypes, userTypes, utilTypes } from "../types";
+
+const initPrintSetting = {
   enablePrinting: true,
   enableKOT: true,
+  enableLogo: true,
+  enableAddress: true,
+  enableGSTNumber: true,
+  enableCustomer: true,
+};
+
+const initialstate = {
+  spinner: false,
 
   isFullScreen: false,
   printData: undefined,
   KOTprintData: undefined,
+  enablePrinting: true,
+  enableKOT: true,
+  enableLogo: true,
+  enableBranchName: true,
+
+  enableAddress: true,
+  enableGSTNumber: true,
+  enableCustomer: true,
 };
 
 const utilReducer = (state = initialstate, action) => {
+  const getData = () => action.payload.data.user;
+
   switch (action.type) {
     case utilTypes.TOGGLE_FULL_SCREEN:
       return {
@@ -25,38 +43,38 @@ const utilReducer = (state = initialstate, action) => {
         drawerOpen: !state.drawerOpen,
       };
 
-    case utilTypes.TOGGLE_PRINTING:
-      setLocalPrintEnable(!state.enablePrinting);
+    // case utilTypes.TOGGLE_PRINTING:
+    //   setLocalPrintEnable(!state.enablePrinting);
+    //   return {
+    //     ...state,
+    //     enablePrinting: !state.enablePrinting,
+    //     printData: undefined,
+    //   };
+
+    // case utilTypes.TOGGLE_KOT:
+    //   setLocalKOTPrintEnable(!state.enableKOT);
+    //   return {
+    //     ...state,
+    //     enableKOT: !state.enableKOT,
+    //     KOTprintData: undefined,
+    //   };
+    case userTypes.LOGIN_USER_SUCCESS:
       return {
         ...state,
-        enablePrinting: !state.enablePrinting,
+        ...getData()?.printSetting,
+      };
+    case userTypes.GET_USER_DETAILS_SUCCESS:
+      return {
+        ...state,
+        ...getData()?.printSetting,
+      };
+    case utilTypes.TOGGLE_PRINTING_SETTING_SUCCESS:
+      return {
+        ...state,
+
         printData: undefined,
-      };
-
-    case utilTypes.TOGGLE_KOT:
-      setLocalKOTPrintEnable(!state.enableKOT);
-      return {
-        ...state,
-        enableKOT: !state.enableKOT,
         KOTprintData: undefined,
-      };
-
-    case utilTypes.SET_PRINTING:
-      const booleanValue = action.payload === "false" ? false : true;
-      setLocalPrintEnable(booleanValue);
-      return {
-        ...state,
-        enablePrinting: booleanValue,
-        printData: undefined,
-      };
-
-    case utilTypes.SET_KOT:
-      const kotbooleanValue = action.payload === "false" ? false : true;
-      setLocalKOTPrintEnable(kotbooleanValue);
-      return {
-        ...state,
-        enableKOT: kotbooleanValue,
-        KOTprintData: undefined,
+        ...action.payload.data.data,
       };
 
     case orderTypes.CONFIRM_ORDER_SUCCESS:

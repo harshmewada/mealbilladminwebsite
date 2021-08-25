@@ -74,7 +74,14 @@ const renderItem = (value, index) => {
 };
 const electronPrintKOT = async (printdata, printerName) => {
   const remarks = printdata.printData?.remarks;
+  const {
+    enableLogo,
+    enableBranchName,
 
+    enableAddress,
+    enableGSTNumber,
+    enableCustomer,
+  } = printdata?.printSetting;
   const currentOrderType = TYPESOFORDERS.find((types) => {
     return types.value == printdata.printData.orderType;
   });
@@ -134,24 +141,8 @@ const electronPrintKOT = async (printdata, printerName) => {
           },
         ]
       : []),
-    // ...(printdata.branchAddress && [
-    //   {
-    //     type: "table",
-    //     // style the table
-    //     // list of the columns to be rendered in the table header
-    //     // multi dimensional array depicting the rows and columns of the table body
-    //     tableBody: [
-    //       [
-    //         {
-    //           type: "text",
-    //           value: `${printdata.branchAddress}`,
-    //           style: commonBordlessTableCellStyle({ textAlign: "center" }),
-    //         },
-    //       ],
-    //     ],
-    //   },
-    // ]),
-    ...(printdata?.branchAddress
+
+    ...(enableAddress && printdata?.branchAddress
       ? [
           {
             type: "table",
@@ -171,7 +162,7 @@ const electronPrintKOT = async (printdata, printerName) => {
           },
         ]
       : []),
-    ...(printdata.printData?.customerName
+    ...(enableCustomer && printdata.printData?.customerName
       ? [
           {
             type: "table",

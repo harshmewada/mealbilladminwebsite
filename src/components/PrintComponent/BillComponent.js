@@ -105,7 +105,7 @@ const Header = ({
   return (
     <>
       <div class="centered">
-        <img src={logo} class="logo" />
+        {logo && <img src={logo} class="logo" />}
         <p>{resName}</p>
         {branchAddress && <p class="gstNumber">{branchAddress}</p>}
         {gstNumber && <p class="gstNumber">GST {gstNumber}</p>}
@@ -201,6 +201,7 @@ const Invoice = React.forwardRef(
       gstNumber,
       receiptMessage,
       branchAddress,
+      printSetting,
     },
     ref
   ) => {
@@ -221,7 +222,7 @@ const Invoice = React.forwardRef(
           resName={restaurant}
           branchOrderNumber={branchOrderNumber}
           orderNumber={orderNumber}
-          customerName={customerName}
+          customerName={printSetting.enableCustomer && customerName}
           customerMobile={customerMobile}
           paymentType={paymentType}
           orderDate={createdAt}
@@ -254,6 +255,7 @@ class BillComponent extends React.Component {
       gstNumber,
       receiptMessage,
       branchAddress,
+      printSetting,
     } = this.props;
     // console.log("orderData", orderData);
     return orderData ? (
@@ -265,6 +267,7 @@ class BillComponent extends React.Component {
         gstNumber={gstNumber}
         receiptMessage={receiptMessage}
         branchAddress={branchAddress}
+        printSetting={printSetting}
       />
     ) : (
       <div className={`invoice-box invoice-box-hide" `}>

@@ -1,5 +1,6 @@
 import userApi from "../api/userApi";
-import { userTypes } from "../types";
+import utilApi from "../api/utilApi";
+import { userTypes, utilTypes } from "../types";
 import checkIfAsyncReqSuccess from "./checkIfAsyncReqSuccess";
 
 export const loginUser = (data) => {
@@ -169,4 +170,22 @@ export const deleteUser = (data) => {
       },
     },
   };
+};
+
+export const togglePrintSetting = (data, cb, errorCb) => {
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: `Print Setting updated successfully`,
+      errorMessage: `Failed to update Print Setting`,
+      cb: cb,
+      errorCb: errorCb,
+      type: utilTypes.TOGGLE_PRINTING_SETTING,
+      payload: {
+        request: {
+          url: userApi.TOGGLE_PRINT_SETTING,
+          method: "put",
+          data: data,
+        },
+      },
+    });
 };

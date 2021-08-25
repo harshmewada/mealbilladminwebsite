@@ -6,7 +6,25 @@ import { RootUrl } from "../../redux/types";
 const PrintComponent = (props) => {
   const isElectron = window?.api?.isElectron;
 
-  const { printData, enablePrinting } = useSelector((state) => state.util);
+  const {
+    printData,
+    enablePrinting,
+    enableLogo,
+    enableBranchName,
+
+    enableAddress,
+    enableGSTNumber,
+    enableCustomer,
+  } = useSelector((state) => state.util);
+
+  const printSetting = {
+    enableLogo,
+    enableBranchName,
+
+    enableAddress,
+    enableGSTNumber,
+    enableCustomer,
+  };
   const logo =
     RootUrl + "/" + useSelector((state) => state.user.restaurantLogo);
 
@@ -18,7 +36,9 @@ const PrintComponent = (props) => {
     receiptMessage: currReceiptMessage,
   } = useSelector((state) => state.user);
 
-  const restaurant = `${restaurantName}${branchName ? `(${branchName})` : ""}`;
+  const restaurant = `${restaurantName}${
+    branchName && enableBranchName ? `(${branchName})` : ""
+  }`;
 
   const receiptMessage =
     currReceiptMessage && currReceiptMessage !== null
@@ -27,12 +47,13 @@ const PrintComponent = (props) => {
   React.useEffect(() => {
     if (isElectron && printData) {
       window.api.printBillSilently({
-        logo,
+        logo: enableLogo && logo,
         printData,
         restaurant,
         gstNumber,
         receiptMessage: receiptMessage,
         branchAddress,
+        printSetting,
       });
     }
   }, [printData, enablePrinting]);
@@ -44,11 +65,12 @@ const PrintComponent = (props) => {
   ) : (
     <BrowserComponent
       printData={printData}
-      logo={logo}
+      logo={enableLogo && logo}
       restaurant={restaurant}
-      gstNumber={gstNumber}
-      branchAddress={branchAddress}
+      gstNumber={enableGSTNumber && gstNumber}
+      branchAddress={enableAddress && branchAddress}
       receiptMessage={receiptMessage}
+      printSetting={printSetting}
     />
   );
   // return <BrowserComponent {...props} />;

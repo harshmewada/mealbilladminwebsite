@@ -93,7 +93,14 @@ const renderItem = (value, index) => {
 };
 const electronPrintBill = async (printdata, printerName) => {
   const receiptMessage = printdata.receiptMessage;
+  const {
+    enableLogo,
+    enableBranchName,
 
+    enableAddress,
+    enableGSTNumber,
+    enableCustomer,
+  } = printdata.printSetting;
   // const files = fs.readdirSync(filepath);
   // console.log("dir files", process.cwd());
   const currentOrderType = TYPESOFORDERS.find((types) => {
@@ -136,13 +143,17 @@ const electronPrintBill = async (printdata, printerName) => {
   }
 
   const headerdata = [
-    {
-      type: "image",
-      path: `${process.cwd()}/offlineImages/resLogo.png`, // file path
-      position: "center", // position of image: 'left' | 'center' | 'right'
-      width: "auto", // width of image in px; default: auto
-      height: "80px", // width of image in px; default: 50 or '50px'
-    },
+    ...(enableLogo
+      ? [
+          {
+            type: "image",
+            path: `${process.cwd()}/offlineImages/resLogo.png`, // file path
+            position: "center", // position of image: 'left' | 'center' | 'right'
+            width: "auto", // width of image in px; default: auto
+            height: "80px", // width of image in px; default: 50 or '50px'
+          },
+        ]
+      : []),
     ...(printdata?.restaurant
       ? [
           {
@@ -164,7 +175,7 @@ const electronPrintBill = async (printdata, printerName) => {
           },
         ]
       : []),
-    ...(printdata?.branchAddress
+    ...(enableAddress && printdata?.branchAddress
       ? [
           {
             type: "table",
@@ -183,7 +194,7 @@ const electronPrintBill = async (printdata, printerName) => {
           },
         ]
       : []),
-    ...(printdata?.gstNumber
+    ...(enableGSTNumber && printdata?.gstNumber
       ? [
           {
             type: "table",
@@ -202,7 +213,7 @@ const electronPrintBill = async (printdata, printerName) => {
           },
         ]
       : []),
-    ...(printdata.printData?.customerName
+    ...(enableCustomer && printdata.printData?.customerName
       ? [
           {
             type: "table",

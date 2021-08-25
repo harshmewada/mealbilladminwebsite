@@ -1,4 +1,6 @@
+import utilApi from "../api/utilApi";
 import { utilTypes } from "../types";
+import checkIfAsyncReqSuccess from "./checkIfAsyncReqSuccess";
 
 export const toggleDrawer = () => {
   return {
@@ -21,20 +23,6 @@ export const togglePrinting = () => {
 export const toggleKOT = () => {
   return {
     type: utilTypes.TOGGLE_KOT,
-  };
-};
-
-export const setPrinting = (value) => {
-  return {
-    type: utilTypes.SET_PRINTING,
-    payload: value,
-  };
-};
-
-export const setKOT = (value) => {
-  return {
-    type: utilTypes.SET_KOT,
-    payload: value,
   };
 };
 

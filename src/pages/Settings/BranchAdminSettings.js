@@ -6,6 +6,7 @@ import {
   updateReceiptMessage,
 } from "../../redux/action/branchActions";
 import { toggleKOT, togglePrinting } from "../../redux/action/utilActions";
+import PrintSetting from "./PrintSetting";
 
 const BranchAdminSettings = () => {
   const dispatch = useDispatch();
@@ -19,8 +20,6 @@ const BranchAdminSettings = () => {
     receiptMessage: customMessage,
     token,
   } = useSelector((state) => state.user);
-
-  const { enablePrinting, enableKOT } = useSelector((state) => state.util);
 
   const handleChange = (e) => {
     setReceiptMessage(e.target.value);
@@ -77,43 +76,7 @@ const BranchAdminSettings = () => {
 
   return (
     <div class="page-content-tab">
-      <Card>
-        <Card.Header class="card-header bg-primary">
-          <h5 class="text-white">Printer Setting</h5>
-        </Card.Header>
-        <Card.Body>
-          <div class="custom-control custom-switch switch-primary">
-            <input
-              type="checkbox"
-              class="custom-control-input"
-              id="customSwitchPrimary"
-              checked={enablePrinting}
-              onChange={(e) => {
-                const checked = e.target.checked;
-                dispatch(togglePrinting(checked));
-              }}
-            />
-            <label class="custom-control-label" for="customSwitchPrimary">
-              Enable Printing
-            </label>
-          </div>
-          <div class="custom-control custom-switch switch-primary">
-            <input
-              type="checkbox"
-              class="custom-control-input"
-              id="customSwitchPrimary1"
-              checked={enableKOT}
-              onChange={(e) => {
-                const checked = e.target.checked;
-                dispatch(toggleKOT(checked));
-              }}
-            />
-            <label class="custom-control-label" for="customSwitchPrimary1">
-              Enable KOT
-            </label>
-          </div>
-        </Card.Body>
-      </Card>
+      <PrintSetting />
       <Card>
         <Card.Header class="card-header bg-primary">
           <h5 class="text-white">Receipt message</h5>

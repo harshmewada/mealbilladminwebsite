@@ -16,6 +16,7 @@ const PrintComponent = ({
   branchAddress,
   containerStyle,
   receiptMessage,
+  printSetting,
 }) => {
   const dispatch = useDispatch();
   const isPrinting = useDetectPrint();
@@ -51,6 +52,7 @@ const PrintComponent = ({
           gstNumber={gstNumber}
           receiptMessage={receiptMessage}
           branchAddress={branchAddress}
+          printSetting={printSetting}
         />
       </div>
     </div>

@@ -6,7 +6,25 @@ import { RootUrl } from "../../redux/types";
 const KOTPrintComponent = (props) => {
   const isElectron = window?.api?.isElectron;
 
-  const { KOTprintData, enableKOT } = useSelector((state) => state.util);
+  const {
+    KOTprintData,
+    enableKOT,
+    enablePrinting,
+    enableLogo,
+    enableBranchName,
+
+    enableAddress,
+    enableGSTNumber,
+    enableCustomer,
+  } = useSelector((state) => state.util);
+  const printSetting = {
+    enableLogo,
+    enableBranchName,
+
+    enableAddress,
+    enableGSTNumber,
+    enableCustomer,
+  };
   const logo =
     RootUrl + "/" + useSelector((state) => state.user.restaurantLogo);
 
@@ -14,7 +32,9 @@ const KOTPrintComponent = (props) => {
     (state) => state.user
   );
 
-  const restaurant = `${restaurantName}${branchName ? `(${branchName})` : ""}`;
+  const restaurant = `${restaurantName}${
+    branchName && enableBranchName ? `(${branchName})` : ""
+  }`;
 
   React.useEffect(() => {
     if (isElectron && KOTprintData) {
@@ -23,6 +43,7 @@ const KOTPrintComponent = (props) => {
         printData: KOTprintData,
         restaurant,
         branchAddress,
+        printSetting,
       });
     }
   }, [KOTprintData, enableKOT]);
@@ -34,9 +55,9 @@ const KOTPrintComponent = (props) => {
   ) : (
     <BrowserComponent
       printData={KOTprintData}
-      logo={logo}
+      logo={enableLogo && logo}
       restaurant={restaurant}
-      branchAddress={branchAddress}
+      branchAddress={enableAddress && branchAddress}
     />
   );
 };
