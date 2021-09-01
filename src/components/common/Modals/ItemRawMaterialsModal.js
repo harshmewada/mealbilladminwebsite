@@ -8,6 +8,7 @@ import TableTitle from "../SmartTable/TableTitle";
 import { useSelector } from "react-redux";
 import { Formik, Field, Form, ErrorMessage, FieldArray } from "formik";
 import { MEASUREUNITS } from "../../../contants";
+import { RootUrl } from "../../../redux/types";
 
 const Nodata = () => (
   <td colSpan={"8"} className="text-center">
@@ -16,25 +17,36 @@ const Nodata = () => (
 );
 
 const emptyRow = {
-  subExpenseType: "",
+  item: {},
 
-  includeQuantity: false,
-
-  measureUnit: undefined,
+  usedStock: undefined,
 
   status: true,
 };
-
+var convert = require("convert-units");
 const headers = [
-  { title: "Sub Expense name", key: "subExpenseType" },
+  { title: "Raw Material Name", key: "itemName" },
 
-  { title: "Include Quantity", key: "includeQuantity" },
-  { title: "Measure Unit", key: "measureUnit", isCurrency: true },
+  // {
+  //   title: "Item Image",
+  //   key: "itemImage",
+  //   type: "image",
+  //   sourceUrl: RootUrl,
+  // },
+  // { title: "Hotkey", key: "hotKey" },
 
-  { title: "Status", key: "status" },
+  { title: "Quantity used", key: "usedStock" },
+
+  { title: "Measure Unit", key: "stockUnit" },
 ];
 
-const SubExpensesModal = ({ open, onClose, data, onSubmit }) => {
+const ItemRawMaterialsModal = ({
+  open,
+  onClose,
+  data,
+  onSubmit,
+  allRawMaterials,
+}) => {
   const [rows, setRows] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
@@ -42,7 +54,7 @@ const SubExpensesModal = ({ open, onClose, data, onSubmit }) => {
 
   const isLoading = useSelector((state) => state.util.spinner);
   const initialValues = {
-    subExpenseTypes: data?.subExpenseTypes || [],
+    rawMaterials: data?.rawMaterials || [],
   };
 
   return (
@@ -54,31 +66,32 @@ const SubExpensesModal = ({ open, onClose, data, onSubmit }) => {
           // setFormErrors();
           // reset();
         }}
-        title={`${data?.expenseType}`}
+        title={`${data?.itemName} Raw Materials`}
         // title={`${mode} ${title}`}
       >
         <Formik
           initialValues={initialValues}
           onSubmit={async (values) => {
             onSubmit({
-              subExpenseTypes: values.subExpenseTypes.filter(
-                (val) => val.subExpenseType !== ""
+              rawMaterials: values.rawMaterials.filter(
+                (val) => val.itemName !== ""
               ),
             });
           }}
         >
-          {({ values }) => (
+          {({ values, setFieldValue }) => (
             <Form>
-              <FieldArray name="subExpenseTypes">
+              {console.log("values", values.rawMaterials)}
+              <FieldArray name="rawMaterials">
                 {({ insert, remove, push }) => (
                   <div class="row">
                     <div class="col-12">
                       <TableTitle
-                        title={"Sub Expenses"}
+                        title={"Variants"}
                         endActions={[
                           () => (
                             <AddCommonAction
-                              title="New Sub Expense Type"
+                              title="New Item Variant"
                               onClick={() => push(emptyRow)}
                             />
                           ),
@@ -86,7 +99,7 @@ const SubExpensesModal = ({ open, onClose, data, onSubmit }) => {
                       />
                       <div class="d-flex justify-content-between align-items-center mb-4">
                         <label style={styles.paginated}>
-                          Total {values.subExpenseTypes.length} entries
+                          Total {values.rawMaterials.length} entries
                         </label>
                       </div>
                       <div class={"table-responsive "}>
@@ -104,48 +117,98 @@ const SubExpensesModal = ({ open, onClose, data, onSubmit }) => {
                             order={order}
                           />
                           <tbody>
-                            {values.subExpenseTypes.length === 0 && <Nodata />}
-                            {values.subExpenseTypes.map((item, childindex) => {
+                            {values.rawMaterials.length === 0 && <Nodata />}
+                            {values.rawMaterials.map((item, childindex) => {
+                              console.log("values rawMaterials", item);
+
                               return (
                                 <tr key={childindex}>
                                   <td>
                                     <Field
                                       disabled={isLoading}
-                                      name={`subExpenseTypes.${childindex}.subExpenseType`}
-                                      placeholder="Enter Sub Expense Name"
-                                      type="text"
+                                      as="select"
                                       className="form-control"
-                                    />
+                                      name={`rawMaterials.${childindex}.item`}
+                                    >
+                                      {(propo) => {
+                                        const { field, form, meta } = propo;
+                                        console.log("field", field);
+
+                                        return (
+                                          <>
+                                            <select
+                                              name={`rawMaterials.${childindex}.item`}
+                                              className="form-control"
+                                              {...field}
+                                              value={field?.value?.itemIndex}
+                                              onChange={(e) => {
+                                                const currentIndex =
+                                                  e.target.value;
+
+                                                setFieldValue(
+                                                  `rawMaterials.${childindex}.item`,
+                                                  {
+                                                    ...allRawMaterials[
+                                                      parseInt(currentIndex)
+                                                    ],
+                                                    itemIndex: currentIndex,
+                                                  }
+                                                );
+                                              }}
+                                            >
+                                              <option selected disabled>
+                                                Choose Raw Material
+                                              </option>
+                                              {allRawMaterials.map(
+                                                (mat, matIndex) => {
+                                                  return (
+                                                    <option
+                                                      key={matIndex}
+                                                      value={matIndex}
+                                                    >
+                                                      {mat.itemName}
+                                                    </option>
+                                                  );
+                                                }
+                                              )}
+                                            </select>
+
+                                            {meta.touched && meta.error && (
+                                              <div className="error">
+                                                {meta.error}
+                                              </div>
+                                            )}
+                                          </>
+                                        );
+                                      }}
+                                    </Field>
                                   </td>
+
                                   <td>
                                     <Field
                                       disabled={isLoading}
-                                      name={`subExpenseTypes.${childindex}.includeQuantity`}
+                                      as="select"
+                                      className="form-control"
+                                      name={`rawMaterials.${childindex}.stockUnit`}
                                     >
-                                      {({
-                                        field, // { name, value, onChange, onBlur }
-                                        form: { touched, errors }, // also values, setXXXX, handleXXXX, dirty, isValid, status, etc.
-                                        meta,
-                                      }) => (
-                                        <div class="custom-control custom-switch switch-primary">
-                                          <input
-                                            type="checkbox"
-                                            class="custom-control-input"
-                                            id={`customSwitchPrimary${childindex}`}
-                                            {...field}
-                                            checked={field.value}
-                                          />
-                                          <label
-                                            class="custom-control-label"
-                                            for={`customSwitchPrimary${childindex}`}
-                                          ></label>
-
-                                          {meta.touched && meta.error && (
-                                            <div className="error">
-                                              {meta.error}
-                                            </div>
-                                          )}
-                                        </div>
+                                      <option selected disabled>
+                                        Choose Measure Unit{" "}
+                                        {item?.item?.measureUnit}
+                                      </option>
+                                      {item?.item?.measureUnit &&
+                                      item?.item?.measureUnit != "count" ? (
+                                        convert()
+                                          .from(item?.item?.measureUnit)
+                                          ?.possibilities()
+                                          ?.map((pos) => {
+                                            return (
+                                              <option value={pos}>{pos}</option>
+                                            );
+                                          })
+                                      ) : (
+                                        <option value={"count"}>
+                                          {"count"}
+                                        </option>
                                       )}
                                     </Field>
                                   </td>
@@ -153,34 +216,14 @@ const SubExpensesModal = ({ open, onClose, data, onSubmit }) => {
                                   <td>
                                     <Field
                                       disabled={isLoading}
-                                      as="select"
+                                      name={`rawMaterials.${childindex}.usedStock`}
+                                      placeholder="Enter Quantity used"
+                                      type="number"
+                                      steps="0.0"
                                       className="form-control"
-                                      name={`subExpenseTypes.${childindex}.measureUnit`}
-                                    >
-                                      <option selected disabled>
-                                        Choose measure unit
-                                      </option>
-                                      {MEASUREUNITS.map((unit) => (
-                                        <option value={unit.value}>
-                                          {unit.title}
-                                        </option>
-                                      ))}
-                                      <option selected value="other">
-                                        Other
-                                      </option>
-                                    </Field>
+                                    />
                                   </td>
-                                  <td>
-                                    <Field
-                                      disabled={isLoading}
-                                      as="select"
-                                      className="form-control"
-                                      name={`subExpenseTypes.${childindex}.status`}
-                                    >
-                                      <option value="true">Active</option>
-                                      <option value="false">inactive</option>
-                                    </Field>
-                                  </td>
+
                                   <td
                                     style={{
                                       display: "flex",
@@ -196,37 +239,6 @@ const SubExpensesModal = ({ open, onClose, data, onSubmit }) => {
                                       }}
                                     />
                                   </td>
-
-                                  {/* <td>
-                            <Controller
-                              render={({ field }) => <input {...field} />}
-                              name={`subExpenseTypes.${childindex}.measureUnit`}
-                              control={control}
-                              defaultValue={item.measureUnit} // make sure to set up defaultValue
-                            />
-                          </td> */}
-                                  {/* {actions?.length > 0 && (
-                                    <td
-                                      style={{
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        justifyContent: "space-evenly",
-                                        height: "100%",
-                                      }}
-                                    >
-                                      {actions.map((Action, index) => {
-                                        return (
-                                          <div>
-                                            <Action
-                                              index={index}
-                                              key={index}
-                                              data={item}
-                                            />
-                                          </div>
-                                        );
-                                      })}
-                                    </td>
-                                  )} */}
                                 </tr>
                               );
                             })}
@@ -262,7 +274,7 @@ const SubExpensesModal = ({ open, onClose, data, onSubmit }) => {
   );
 };
 
-export default SubExpensesModal;
+export default ItemRawMaterialsModal;
 
 const styles = {
   paginated: {

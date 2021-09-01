@@ -31,6 +31,7 @@ import OrderHistory from "../pages/OrderHistory";
 import ExpiredSubscription from "../pages/ExpiredSubscription";
 // import BranchAdminSettings from "../pages/Settings/BranchAdminSettings";
 import Settings from "../pages/Settings";
+import ManageRawMaterials from "../pages/RawMaterials";
 
 const DashBoardRoutes = () => {
   const role = useSelector((state) => state.user.role);
@@ -121,7 +122,11 @@ const DashBoardRoutes = () => {
             path="/managetables"
             component={ManageTables}
           />
-
+          <ProtectedRoute
+            roles={[branchadmin]}
+            path="/managerawmaterials"
+            component={ManageRawMaterials}
+          />
           <ProtectedRoute
             roles={[restaurantadmin, branchadmin]}
             path="/managehotkeys"

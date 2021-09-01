@@ -21,6 +21,9 @@ import { useHistory } from "react-router-dom";
 import EditOrderModal from "../../components/common/Modals/EditOrderModal";
 import ViewCommonAction from "../../components/common/Actions/ViewCommonAction";
 
+import { setPrintData } from "../../redux/action/utilActions";
+import { uuid } from "uuidv4";
+
 const PageTitle = "Order History";
 
 const OrderHistory = () => {
@@ -60,6 +63,10 @@ const OrderHistory = () => {
     // props.setValue({ start, end });
     // onChange(setState({ start, end }));
     setState({ start, end });
+  };
+
+  const handlePrint = (data) => {
+    dispatch(setPrintData({ ...data, printId: uuid() }));
   };
 
   const toggleAdd = (mode) => {
@@ -215,6 +222,7 @@ const OrderHistory = () => {
             mode={open}
             onClose={() => toggleAdd()}
             onSubmit={(data) => handleUpdateOrder(data)}
+            onPrint={(data) => handlePrint(data)}
           />
         )}
 

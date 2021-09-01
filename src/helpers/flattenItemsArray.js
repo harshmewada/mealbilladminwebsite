@@ -7,6 +7,7 @@ const flattentItemsArray = (items) => {
           ...variant,
           itemName: `${element.itemName} ${variant.itemName}`,
           variantId: variant._id || variant.id,
+          hotKey: element.hotKey,
         })
       );
       return;

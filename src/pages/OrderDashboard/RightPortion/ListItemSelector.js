@@ -30,7 +30,7 @@ const ListItemSelector = ({ allItems, clearCount, handleSearchAndAddItem }) => {
                 filterBy={["itemName", "hotKey"]}
                 selected={selectValues}
                 emptyLabel
-                dropup={true}
+                // dropup={true}
                 flip={true}
                 onChange={(selected) => handleSearchAndAddItem(selected)}
                 //   autoFocus={true}

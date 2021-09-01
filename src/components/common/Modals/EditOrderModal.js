@@ -17,13 +17,14 @@ import { CURRENCY, DATETIMEFORMAT } from "../../../contants";
 import calculateOrderTotals from "../../../helpers/calculateOrderTotals";
 import flattentItemsArray from "../../../helpers/flattenItemsArray";
 
-const EditOrderModal = ({ open, onClose, data, onSubmit, mode }) => {
+const EditOrderModal = ({ open, onClose, data, onSubmit, mode, onPrint }) => {
   const isViewMode = mode === "View";
   const ready = getOrderNeccesaryData();
 
   const isLoading = useSelector((state) => state.util.spinner);
   const [activeOrders, setActiveOrders] = React.useState([]);
   const { allItems } = useSelector((state) => state.order);
+  const { enablePrinting } = useSelector((state) => state.util);
 
   const handleItemQuantity = (quantity, itemindex) => {
     // dispatch(changeItemQuantity(parseInt(quantity), itemindex));
@@ -84,7 +85,7 @@ const EditOrderModal = ({ open, onClose, data, onSubmit, mode }) => {
         value: "Order Date : ",
       },
       {
-        value: moment(data?.createdAt).format(DATETIMEFORMAT),
+        value: data.createdAt,
       },
       {
         value: "Sub Total : ",
@@ -102,7 +103,7 @@ const EditOrderModal = ({ open, onClose, data, onSubmit, mode }) => {
         value: data?.orderBy,
       },
       {
-        value: "GST(if any) : ",
+        value: "GST : ",
       },
       {
         renderTd: (row) => (
@@ -122,7 +123,7 @@ const EditOrderModal = ({ open, onClose, data, onSubmit, mode }) => {
         value: data?.paymentType,
       },
       {
-        value: "Charges(if any) : ",
+        value: "Charges : ",
       },
       {
         value: getData()?.otherCharges,
@@ -137,7 +138,7 @@ const EditOrderModal = ({ open, onClose, data, onSubmit, mode }) => {
         value: data?.customerName,
       },
       {
-        value: "Discount(if any) : ",
+        value: "Discount : ",
       },
       {
         value: data?.discount,
@@ -183,7 +184,7 @@ const EditOrderModal = ({ open, onClose, data, onSubmit, mode }) => {
           // setFormErrors();
           // reset();
         }}
-        title={`Edit Order : # ${data?.branchOrderNumber}`}
+        title={`Order : # ${data?.branchOrderNumber}`}
         // title={`${mode} ${title}`}
         size="md"
       >
@@ -207,7 +208,7 @@ const EditOrderModal = ({ open, onClose, data, onSubmit, mode }) => {
           </>
         )}
 
-        <div class="form-group mb-0 mt-3">
+        <div class="form-group mb-0 mt-3 d-flex justify-content-center">
           {!isViewMode && (
             <button
               type="submit"
@@ -232,8 +233,18 @@ const EditOrderModal = ({ open, onClose, data, onSubmit, mode }) => {
             class="btn btn-gradient-danger waves-effect ml-3"
             onClick={() => onClose()}
           >
-            Cancel
+            Close
           </button>
+          {enablePrinting && (
+            <button
+              onClick={() => onPrint(data)}
+              type="button"
+              class="btn btn-outline-primary ml-3"
+            >
+              <i class={`dripicons-print mr-2`}></i>
+              Bill
+            </button>
+          )}
         </div>
       </ModalContainer>
     </div>

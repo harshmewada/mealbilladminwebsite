@@ -2,15 +2,15 @@ import moment from "moment";
 import getCurrency from "../helpers/getCurrency";
 
 //ips
-//web  -  3.108.102.23:443
+// web  -  3.108.102.23:443
 //pre- 3.109.130.95
 //TEST -65.1.245.30
 
-// export const BASEURL = "http://192.168.0.111:4000";
+export const BASEURL = "http://192.168.0.111:4000";
 // export const BASEURL = "https://pre.mealbill.in/api";
 // export const BASEURL = "https://web.mealbill.in/api";
 
-export const BASEURL = "https://test.mealbill.in/api";
+// export const BASEURL = "https://test.mealbill.in/api";
 // export const BASEURL = "http://34.202.79.31/api";
 // export const BASEURL = "http://localhost:4000";
 
@@ -22,7 +22,6 @@ export const TIMEFORMAT = "HH:mm:ss";
 export const TIMEZONE = "Asia/Kolkata";
 
 export const CURRENCY = getCurrency() || "₹";
-
 export const CURRENCYOPTIONS = [
   { title: "Rupee", value: "₹" },
 
@@ -33,6 +32,9 @@ export const CURRENCYOPTIONS = [
   { title: "Dirham", value: "د.إ" },
   { title: "Yuan", value: "¥" },
 ];
+export const CURRENCYNAME = CURRENCYOPTIONS.find(
+  (val) => val.value === CURRENCY
+).title;
 
 export const TYPESOFORDERS = [
   { key: "Dine In", value: 0, bgColor: "#6d81f5" },

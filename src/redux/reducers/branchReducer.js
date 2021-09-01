@@ -5,6 +5,7 @@ import {
   expenseTypes,
   hotKeyTypes,
   itemTypes,
+  rawMaterialTypes,
   restaurantTypes,
   tableTypes,
   userTypes,
@@ -20,6 +21,7 @@ const initialstate = {
   tables: [],
   expenses: [],
   restaurantExpenseTypes: [],
+  rawMaterials: [],
 };
 
 const branchReducer = (state = initialstate, action) => {
@@ -93,6 +95,12 @@ const branchReducer = (state = initialstate, action) => {
       return {
         ...state,
         tables: getData().data,
+      };
+
+    case rawMaterialTypes.GET_ALL_RAW_MATERIAL_SUCCESS:
+      return {
+        ...state,
+        rawMaterials: getData().data,
       };
     case userTypes.LOGOUT_USER:
       return { ...initialstate };

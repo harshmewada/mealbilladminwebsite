@@ -39,6 +39,7 @@ const CommonAddModal = ({
       sgst,
       expenseTotal,
     });
+    resetForm();
   };
 
   // const formData = [
@@ -127,6 +128,7 @@ const CommonAddModal = ({
     initialValues: data || {},
     onSubmit: (values) => {
       localSubmit(values);
+
       // alert(JSON.stringify(values, null, 2));
     },
   });

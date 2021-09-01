@@ -103,7 +103,13 @@ const RightPortion = () => {
     }
   };
   return (
-    <div style={{ width: 500, padding: "10px 0px", height: "100%" }}>
+    <div
+      style={{
+        width: 500,
+        padding: "10px 0px",
+        height: "100%",
+      }}
+    >
       <div
         // class="card tables"
         class="tables"

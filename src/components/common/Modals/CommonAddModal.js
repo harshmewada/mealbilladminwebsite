@@ -32,12 +32,26 @@ const CommonAddModal = ({
     getValues,
   } = methods;
 
-  // console.log("methods", methods);
   const isLoading = useSelector((state) => state.util.spinner);
   const [formErrors, setFormErrors] = React.useState({});
-  // const dispatch = useDispatch();
+  const [fileFields, setFileFields] = React.useState();
+  const [otherFields, setOtherFields] = React.useState({});
 
-  // console.log("error", errors);
+  const handleOtherChange = ({ name, value }) => {
+    setOtherFields({
+      ...otherFields,
+      [name]: value,
+    });
+  };
+  const handleFileFieldChange = (name, file) => {
+    console.log("upcomin", file);
+    setFileFields({
+      [name]: file,
+    });
+  };
+  const localSubmit = (values) => {
+    onSubmit({ ...data, ...values, ...fileFields, ...otherFields });
+  };
   React.useEffect(() => {
     setFormErrors(formState.errors);
   }, [formState]);
@@ -54,7 +68,7 @@ const CommonAddModal = ({
         title={`${mode} ${title}`}
       >
         <FormProvider {...methods}>
-          <form class="form-parsley" onSubmit={handleSubmit(onSubmit)}>
+          <form class="form-parsley" onSubmit={handleSubmit(localSubmit)}>
             <div class="row">
               {formData.map((item, index) => {
                 const MyInput = Inputs[item.type];
@@ -71,6 +85,9 @@ const CommonAddModal = ({
                       ref={register(item.rules)}
                       error={formErrors[item.name]?.message}
                       mode={mode}
+                      setValue={setValue}
+                      onCustomChange={handleOtherChange}
+                      onFileChange={handleFileFieldChange}
                     />
                   )
                 );

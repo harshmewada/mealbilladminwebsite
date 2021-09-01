@@ -19,7 +19,7 @@ const Switch = React.forwardRef((props, ref) => {
       <div class="custom-control custom-switch switch-primary">
         <input
           class="custom-control-input form-control"
-          id="customSwitchPrimary"
+          id={`customSwitchPrimary${name}`}
           ref={ref}
           // {...props}
           name={name}
@@ -27,7 +27,7 @@ const Switch = React.forwardRef((props, ref) => {
           checked={value}
           defaultChecked={defaultValue}
         />
-        <label class="custom-control-label" for="customSwitchPrimary">
+        <label class="custom-control-label" for={`customSwitchPrimary${name}`}>
           {label}
         </label>
       </div>

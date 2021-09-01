@@ -20,6 +20,7 @@ const initialstate = {
   hasSubscriptionExpired: false,
   receiptMessage: null,
   currency: CURRENCY,
+  measureUnits: [],
 };
 
 const saveLocallogo = (path) => {

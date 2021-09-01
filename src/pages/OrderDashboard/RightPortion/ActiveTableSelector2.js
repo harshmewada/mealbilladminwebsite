@@ -87,6 +87,7 @@ const ActiveOrderSelector = ({
       <>
         <div
           class="card border mb-1 shadow-none"
+          // style={{ overflow: "auto" }}
           ref={(el) => (tablesRef.current[dataIndex] = el)}
         >
           <div
@@ -184,14 +185,14 @@ const ActiveOrderSelector = ({
                       Paid
                     </span>
                   )}
-                  {isActive && active?.isEdited && (
+                  {/* {isActive && active?.isEdited && (
                     <span
                       className={"badge badge-light"}
                       style={{ color: "black" }}
                     >
                       Editing
                     </span>
-                  )}
+                  )} */}
                 </div>
               </div>
             </a>

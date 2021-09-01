@@ -190,6 +190,11 @@ export const branchadmin = [
         icon: "mdi mdi-table-column-plus-after",
         link: "/managetables",
       },
+      {
+        title: "Raw Materials",
+        icon: "mdi mdi-truck",
+        link: "/managerawmaterials",
+      },
     ],
   },
   {

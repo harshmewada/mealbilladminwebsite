@@ -1,4 +1,9 @@
-import { TYPESOFPAYMENTS, MONTHSARRAY, CURRENCY } from "../../contants";
+import {
+  TYPESOFPAYMENTS,
+  MONTHSARRAY,
+  CURRENCY,
+  CURRENCYNAME,
+} from "../../contants";
 
 import CustomCashRow from "../../components/ReportLayouts/CustomCashRow";
 
@@ -581,7 +586,7 @@ export default {
               },
               yaxis: {
                 title: {
-                  text: `${CURRENCY} Rupees`,
+                  text: `${CURRENCY} ${CURRENCYNAME}`,
                 },
               },
               fill: {

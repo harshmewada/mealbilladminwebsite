@@ -21,8 +21,8 @@ const TableHeading = ({
   sortable,
   order,
 }) => {
-  const createSortHandler = (property) => (event) => {
-    sortable && onRequestSort(event, property);
+  const createSortHandler = (event, property) => {
+    if (sortable) onRequestSort(event, property);
   };
   const [allChecked, setAllChecked] = React.useState();
 
@@ -67,8 +67,8 @@ const TableHeading = ({
               <button
                 style={styles.button}
                 disabled={!sortable}
-                onClick={() => {
-                  sortable && createSortHandler(child.key);
+                onClick={(e) => {
+                  createSortHandler(e, child.key);
                 }}
               >
                 {isCurrency && `(${CURRENCY})`} {child.title}
