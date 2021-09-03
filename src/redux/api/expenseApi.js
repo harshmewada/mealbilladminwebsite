@@ -11,5 +11,7 @@ const expenseApi = {
   DELETE_EXPENSE_TYPES: `/api/restaurant/expensetype/delete`,
 
   IMPORT_EXPENSES: `/api/restaurant/expensetype/import`,
+
+  UPDATE_SUB_EXPENSE_TYPES: `/api/restaurant/subexpensetype/update`,
 };
 export default expenseApi;

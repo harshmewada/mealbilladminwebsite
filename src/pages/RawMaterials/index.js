@@ -36,78 +36,78 @@ const ManageRawMaterials = () => {
   };
 
   const formData = [
-    {
-      type: "text",
-      name: "itemName",
-      label: "Raw material Name",
-      size: 3,
+    // {
+    //   type: "text",
+    //   name: "itemName",
+    //   label: "Raw material Name",
+    //   size: 3,
 
-      placeholder: "Type Material Name",
-      required: true,
-      rules: {
-        required: {
-          value: true,
-          message: "Material Name is required",
-        },
-      },
-    },
+    //   placeholder: "Type Material Name",
+    //   required: true,
+    //   rules: {
+    //     required: {
+    //       value: true,
+    //       message: "Material Name is required",
+    //     },
+    //   },
+    // },
     {
       type: "float",
       name: "currentStock",
-      size: 3,
+      size: 12,
 
       label: "Item Current Quantity",
       placeholder: "Item  Current Quantity",
       required: false,
     },
 
-    {
-      type: "select",
-      name: "measureUnit",
-      size: 3,
-      disabled: open === "Edit",
+    // {
+    //   type: "select",
+    //   name: "measureUnit",
+    //   size: 3,
+    //   disabled: open === "Edit",
 
-      label: "Measure unit",
-      options: measureUnits,
-      optionLabelProp: "title",
-      optionValueProp: "value",
+    //   label: "Measure unit",
+    //   options: measureUnits,
+    //   optionLabelProp: "title",
+    //   optionValueProp: "value",
 
-      required: true,
-      rules: {
-        required: {
-          value: true,
-          message: "Measure unit is required",
-        },
-      },
-    },
+    //   required: true,
+    //   rules: {
+    //     required: {
+    //       value: true,
+    //       message: "Measure unit is required",
+    //     },
+    //   },
+    // },
 
-    {
-      type: "select",
-      name: "status",
-      size: 3,
+    // {
+    //   type: "select",
+    //   name: "status",
+    //   size: 3,
 
-      label: "Status",
-      options: [
-        {
-          title: "Active",
-          value: true,
-        },
-        {
-          title: "Inactive",
-          value: false,
-        },
-      ],
-      optionLabelProp: "title",
-      optionValueProp: "value",
+    //   label: "Status",
+    //   options: [
+    //     {
+    //       title: "Active",
+    //       value: true,
+    //     },
+    //     {
+    //       title: "Inactive",
+    //       value: false,
+    //     },
+    //   ],
+    //   optionLabelProp: "title",
+    //   optionValueProp: "value",
 
-      required: true,
-      rules: {
-        required: {
-          value: true,
-          message: "Branch Name is required",
-        },
-      },
-    },
+    //   required: true,
+    //   rules: {
+    //     required: {
+    //       value: true,
+    //       message: "Branch Name is required",
+    //     },
+    //   },
+    // },
   ];
 
   const dispatch = useDispatch();
@@ -226,10 +226,11 @@ const ManageRawMaterials = () => {
     <>
       <div class="page-content-tab">
         <CommonAddModal
-          title={PageTitle}
+          title={"Edit Quantity"}
           open={open === "Add" || open === "Edit"}
           onClose={() => toggleAdd()}
           mode={open}
+          size="xs"
           onSubmit={(e) => onAdd(e)}
           data={actionData}
           formData={formData}
@@ -246,13 +247,13 @@ const ManageRawMaterials = () => {
         <SmartTable
           headerComponents={headerComponents[role]}
           title={PageTitle}
-          headActions={[AddAction]}
-          actions={[EditAction, DeleteAction]}
+          headActions={[]}
+          actions={[EditAction]}
           tableData={rawMaterials}
           headers={headers}
           sortable={true}
           paginated={true}
-          searchByLabel={"Item name"}
+          searchByLabel={"Raw material name"}
           searchByField={"itemName"}
           rowsPerPage={5}
         />

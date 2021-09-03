@@ -15,6 +15,7 @@ import {
   createRestaurantExpenseType,
   updateRestaurantExpenseType,
   deleteRestaurantExpenseType,
+  updateRestaurantSubExpenseType,
 } from "../../redux/action/expenseActions";
 import { RootUrl } from "../../redux/types";
 import { getAllBranches } from "../../redux/action/branchActions";
@@ -110,7 +111,7 @@ const RestaurantExpenseTypes = () => {
   const onAddNewSubExpenses = (e) => {
     if (open === "sub") {
       dispatch(
-        updateRestaurantExpenseType(
+        updateRestaurantSubExpenseType(
           {
             ...actionData,
             ...e,
@@ -283,16 +284,7 @@ const RestaurantExpenseTypes = () => {
     { title: "Status", key: "status" },
   ];
 
-  const branchtableheaders = [
-    { title: "Expense Title", key: "expenseTitle" },
-    { title: "Expense Type", key: "expenseType" },
-    { title: "Quantity", key: "quantity" },
-
-    { title: "Expense Price", key: "expensePrice", isCurrency: true },
-  ];
-  const headers = isRestaurantAdmin
-    ? restauranttableheaders
-    : branchtableheaders;
+  const headers = restauranttableheaders;
 
   const defaultValues = {
     restaurantId: restaurantId,
@@ -310,6 +302,7 @@ const RestaurantExpenseTypes = () => {
 
   return (
     <>
+      eheh
       <div class="page-content-tab">
         <SubExpensesModal
           open={open === "sub" || open === "subEdit"}

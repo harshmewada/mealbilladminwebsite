@@ -136,6 +136,27 @@ export const updateRestaurantExpenseType = (data, cb, errorCb) => {
     });
 };
 
+export const updateRestaurantSubExpenseType = (data, cb, errorCb) => {
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: "Sub Expense Type Updated successfully",
+      errorMessage: "Failed to update Expense Type",
+      cb: cb,
+      errorCb: errorCb,
+      type: expenseTypes.UPDATE_SUB_EXPENSE_TYPE,
+      payload: {
+        request: {
+          url: expenseApi.UPDATE_SUB_EXPENSE_TYPES,
+          method: "PUT",
+          data: data,
+          headers: {
+            "Content-type": "application/json",
+          },
+        },
+      },
+    });
+};
+
 export const deleteRestaurantExpenseType = (data, cb, errorCb) => {
   return (dispatch) =>
     checkIfAsyncReqSuccess(dispatch, {

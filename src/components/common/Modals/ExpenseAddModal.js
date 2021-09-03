@@ -26,6 +26,8 @@ const CommonAddModal = ({
 }) => {
   const [showQuantityOptions, setShowQuantityOptions] = React.useState();
   const [subExpenseTypes, setSubExpenseTypes] = React.useState([]);
+  const [selectedSubExpenseType, setselectedSubExpenseType] = React.useState();
+
   const [quantityLabel, setQuantityLabel] = React.useState();
   const [file, setFile] = React.useState();
 
@@ -35,6 +37,8 @@ const CommonAddModal = ({
       ...values,
       ...(quantityLabel && { quantityType: quantityLabel }),
       ...(file && { attachment: file }),
+      ...(selectedSubExpenseType && { subExpenseType: selectedSubExpenseType }),
+
       cgst,
       sgst,
       expenseTotal,
@@ -157,7 +161,7 @@ const CommonAddModal = ({
   // }, [formState]);
 
   let watchExpenseType = values?.expenseTypeId;
-  const watchSubExpenseType = values?.subExpenseType;
+  const watchSubExpenseType = values?.subExpenseTypeId;
 
   const cgst = values?.cgst || 0;
   const sgst = values?.sgst || 0;
@@ -176,9 +180,9 @@ const CommonAddModal = ({
   React.useEffect(() => {
     if (watchExpenseType) {
       const founddata = restaurantExpenseTypes.find(
-        (item) => item.id === watchExpenseType
+        (item) => item._id === watchExpenseType
       );
-      // console.log("founddata", founddata);
+      console.log("founddata", founddata, watchExpenseType);
       if (founddata) {
         if (founddata.subExpenseTypes.length > 0) {
           setSubExpenseTypes(founddata.subExpenseTypes);
@@ -191,17 +195,20 @@ const CommonAddModal = ({
       } else {
         setShowQuantityOptions(false);
       }
+      setselectedSubExpenseType();
     }
   }, [watchExpenseType]);
 
   React.useEffect(() => {
-    // console.log("founddata watchSubExpenseType", watchSubExpenseType);
-
     if (watchSubExpenseType) {
-      const founddata = subExpenseTypes.find(
-        (item) => item.subExpenseType === watchSubExpenseType
-      );
+      const founddata = subExpenseTypes.find((item) => {
+        const heheid = item.id || item._id;
+        return heheid === watchSubExpenseType;
+      });
+
       if (founddata) {
+        setselectedSubExpenseType(founddata.subExpenseType);
+
         if (founddata.measureUnit) {
           setQuantityLabel(founddata.measureUnit);
         } else {
@@ -272,7 +279,9 @@ const CommonAddModal = ({
                   Select Expense Type
                 </option>
                 {restaurantExpenseTypes.map((unit) => (
-                  <option value={unit.id}>{unit.expenseType}</option>
+                  <option value={unit.id || unit._id}>
+                    {unit.expenseType}
+                  </option>
                 ))}
               </select>
             </InputContainer>
@@ -281,7 +290,7 @@ const CommonAddModal = ({
               <InputContainer label="Sub Expense Type">
                 <select
                   className="form-control"
-                  name={`subExpenseType`}
+                  name={`subExpenseTypeId`}
                   label="Sub Expense Type"
                   disabled={mode === "Edit"}
                   value={values.subExpenseType}
@@ -291,7 +300,7 @@ const CommonAddModal = ({
                     Select Sub Expense Type
                   </option>
                   {subExpenseTypes.map((unit) => (
-                    <option value={unit.subExpenseType}>
+                    <option value={unit.id || unit._id}>
                       {unit.subExpenseType}
                     </option>
                   ))}

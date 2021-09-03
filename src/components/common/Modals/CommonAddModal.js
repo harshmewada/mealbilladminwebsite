@@ -16,6 +16,7 @@ const CommonAddModal = ({
   restaurants,
   formData,
   defaultValues,
+  size,
 }) => {
   const methods = useForm({
     defaultValues: defaultValues,
@@ -65,6 +66,7 @@ const CommonAddModal = ({
           setFormErrors();
           reset();
         }}
+        size={size}
         title={`${mode} ${title}`}
       >
         <FormProvider {...methods}>
