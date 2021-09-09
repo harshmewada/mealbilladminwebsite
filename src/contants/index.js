@@ -6,11 +6,11 @@ import getCurrency from "../helpers/getCurrency";
 //pre- 3.109.130.95
 //TEST -65.1.245.30
 
-// export const BASEURL = "http://192.168.0.111:4000";
+export const BASEURL = "http://192.168.0.111:4000";
 // export const BASEURL = "https://pre.mealbill.in/api";
 // export const BASEURL = "https://web.mealbill.in/api";
 
-export const BASEURL = "https://test.mealbill.in/api";
+// export const BASEURL = "https://test.mealbill.in/api";
 // export const BASEURL = "http://34.202.79.31/api";
 // export const BASEURL = "http://localhost:4000";
 
@@ -18,6 +18,7 @@ export const DATEFORMAT = "DD/MM/YYYY";
 
 export const DATETIMEFORMAT = "DD/MM/YYYY HH:mm";
 export const TIMEFORMAT = "HH:mm:ss";
+export const TIMEONLYFORMAT = "HH:mm";
 
 export const TIMEZONE = "Asia/Kolkata";
 
@@ -52,8 +53,8 @@ export const MEASUREUNITS = [
     value: "Gram",
   },
   {
-    title: " Nos.",
-    value: " Nos.",
+    title: "Nos.",
+    value: "Nos.",
   },
   {
     title: "Litres",

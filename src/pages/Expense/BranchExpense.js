@@ -151,7 +151,7 @@ const ManageExpense = () => {
         .catch((err) => {
           dispatch(
             showSnackBar(
-              getErrorMessage(err) || "Failed to Add Cateogry",
+              getErrorMessage(err) || "Failed to Add Expense",
               "error"
             )
           );

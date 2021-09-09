@@ -25,6 +25,7 @@ import DashBoard from "../pages/DashBoard";
 import Reports from "../pages/Reports";
 import ManageExpenseTypes from "../pages/ExpenseTypes";
 import RestaurantExpenseTypes from "../pages/ExpenseTypes/RestaurantExpenseTypes";
+import BookingSpaces from "../pages/Bookings";
 
 import OrderHistory from "../pages/OrderHistory";
 
@@ -73,6 +74,12 @@ const DashBoardRoutes = () => {
             roles={[superadmin]}
             path="/managerestaurant"
             component={AddRestaurant}
+          />
+
+          <ProtectedRoute
+            roles={[branchadmin, restaurantadmin]}
+            path="/bookings"
+            component={BookingSpaces}
           />
 
           <ProtectedRoute

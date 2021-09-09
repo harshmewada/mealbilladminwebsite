@@ -1,210 +1,71 @@
 import React from "react";
-
+import AddCommonAction from "../Actions/AddCommonAction";
+import DeleteCommonAction from "../Actions/DeleteCommonAction";
 import ModalContainer from "../ModalContainer";
-
-import { useDispatch, useSelector } from "react-redux";
-import ActiveTableSelector from "../../../pages/OrderDashboard/RightPortion/ActiveTableSelector2";
-
-import {
-  changeItemQuantityRedux,
-  pushItemToActiveOrderRedux,
-  removeItemRedux,
-} from "../../../redux/reducers/orderReducer";
-
-import getOrderNeccesaryData from "../../../helpers/getOrderNeccesaryData";
+import { getEntriesOptions } from "../SmartTable/functions";
+import TableHeading from "../SmartTable/TableHeading";
+import TableTitle from "../SmartTable/TableTitle";
+import { useSelector } from "react-redux";
+import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
-import { CURRENCY, DATETIMEFORMAT } from "../../../contants";
-import calculateOrderTotals from "../../../helpers/calculateOrderTotals";
-import flattentItemsArray from "../../../helpers/flattenItemsArray";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+// import "react-big-calendar/lib/sass/styles";
+const localizer = momentLocalizer(moment);
+// Setup the localizer by providing the moment (or globalize) Object
+// to the correct localizer.
 
-const EditOrderModal = ({
+const Nodata = () => (
+  <td colSpan={"8"} className="text-center">
+    {"No Data Available"}
+  </td>
+);
+
+const initEvent = {
+  start: new Date(),
+  end: new Date(),
+  title: "",
+};
+const CalComp = () => {
+  const [events, setEvents] = React.useState([]);
+
+  const handleSelect = ({ start, end }) => {
+    const title = window.prompt("New Event name");
+    if (title)
+      setEvents([
+        ...events,
+        {
+          start,
+          end,
+          title,
+        },
+      ]);
+  };
+  return (
+    <Calendar
+      selectable
+      localizer={localizer}
+      events={events}
+      scrollToTime={new Date(1970, 1, 1, 6)}
+      defaultDate={new Date(2015, 3, 12)}
+      startAccessor="start"
+      endAccessor="end"
+      style={{ height: 500 }}
+      defaultView={Views.WEEK}
+      onSelectEvent={(event) => alert(event.title)}
+      onSelectSlot={handleSelect}
+    />
+  );
+};
+
+const ScheduleBookingModal = ({
   open,
   onClose,
-  data: orderData,
+  data,
   onSubmit,
   mode,
-  onPrint,
+  title,
 }) => {
-  const isViewMode = mode === "View";
-  const ready = getOrderNeccesaryData();
-
   const isLoading = useSelector((state) => state.util.spinner);
-  const [activeOrders, setActiveOrders] = React.useState([]);
-  const [activeOldOrders, setActiveOldOrders] = React.useState([]);
-
-  const { allItems } = useSelector((state) => state.order);
-  const { enablePrinting } = useSelector((state) => state.util);
-
-  const formatData = (data) => {
-    const orderItems = data.orderItems;
-
-    return {
-      ...data,
-      tablePrice: data?.tablePrice || 0,
-      items: orderItems,
-      orderType: parseInt(data.orderType),
-      ...(mode === "EditOrder" && { isEdited: true }),
-    };
-  };
-
-  const handleItemQuantity = (quantity, itemindex) => {
-    // dispatch(changeItemQuantity(parseInt(quantity), itemindex));
-
-    setActiveOrders([
-      ...changeItemQuantityRedux(
-        activeOrders,
-        0,
-        parseInt(quantity),
-        itemindex
-      ),
-    ]);
-  };
-  const deleteItem = (index) => {
-    // dispatch(removeItem(index));
-    setActiveOrders([...removeItemRedux(activeOrders, 0, index)]);
-  };
-
-  const handleSearchAndAddItem = (selected) => {
-    if (selected.length > 0) {
-      const item = selected[0];
-
-      const isVariant = item?.variantId ? true : false;
-
-      setActiveOrders([
-        ...pushItemToActiveOrderRedux(
-          activeOrders,
-          0,
-
-          item,
-          isVariant
-        ),
-      ]);
-    }
-  };
-
-  React.useEffect(() => {
-    if (open) {
-      const myData = formatData(orderData);
-      setActiveOrders([myData]);
-      if (myData?.oldOrder) {
-        const emyData = formatData(orderData.oldOrder);
-
-        setActiveOldOrders([emyData]);
-      }
-    }
-  }, [open]);
-
-  const activeOrder = activeOrders[0];
-  const activeOldOrder = activeOldOrders[0];
-
-  const getData = (orderData) => {
-    let mydata = orderData || activeOrder;
-    return mydata
-      ? calculateOrderTotals(
-          mydata,
-          mydata?.cgst,
-          mydata?.sgst,
-          mydata?.otherCharges,
-          mydata?.discount
-        )
-      : {};
-  };
-
-  const bottomTableData = (varData) => [
-    [
-      {
-        value: "Order Date : ",
-      },
-      {
-        value: moment(varData.createdAt).format(DATETIMEFORMAT),
-      },
-      {
-        value: "Sub Total : ",
-      },
-      {
-        value: getData(varData).itemsTotal,
-        isCurrency: true,
-      },
-    ],
-    [
-      {
-        value: "User : ",
-      },
-      {
-        value: varData?.orderBy,
-      },
-      {
-        value: "GST : ",
-      },
-      {
-        renderTd: (row) => (
-          <td>
-            {CURRENCY}
-            {getData(varData).sgstCharges + getData(varData).cgstCharges}
-          </td>
-        ),
-        isCurrency: true,
-      },
-    ],
-    [
-      {
-        value: "Payment : ",
-      },
-      {
-        value: varData?.paymentType,
-      },
-      {
-        value: "Charges : ",
-      },
-      {
-        value: getData(varData)?.otherCharges,
-        isCurrency: true,
-      },
-    ],
-    [
-      {
-        value: "Customer Name : ",
-      },
-      {
-        value: varData?.customerName,
-      },
-      {
-        value: "Discount : ",
-      },
-      {
-        value: varData?.discount,
-        isCurrency: true,
-      },
-    ],
-    [
-      {
-        value: "Mobile Number : ",
-      },
-      {
-        value: varData?.customerMobile,
-      },
-      {
-        value: "Grand Total : ",
-        renderTd: (row) => (
-          <td>
-            <strong>Grand Total : </strong>
-          </td>
-        ),
-      },
-      {
-        renderTd: (row) => (
-          <td>
-            <strong>
-              {CURRENCY}
-              {getData(varData)?.grandTotal}
-            </strong>
-          </td>
-        ),
-
-        isCurrency: true,
-      },
-    ],
-  ];
 
   return (
     <div>
@@ -215,145 +76,52 @@ const EditOrderModal = ({
           // setFormErrors();
           // reset();
         }}
-        title={`Order : # ${activeOrder?.branchOrderNumber}`}
-        // title={`${mode} ${title}`}
-        size={activeOldOrder ? "xl" : "md"}
+        title={`${mode} ${title}`}
       >
         <div class="row">
-          {activeOldOrder && (
-            <div className="col-md-6">
-              <h5>Old Order </h5>
-              <ActiveTableSelector
-                tables={activeOldOrders}
-                activeOrdersLength={1}
-                scrollable
-                orderDeletable={false}
-                active={activeOldOrder}
-                handleItemQuantity={() => {}}
-                deleteItem={() => {}}
-                handleSearchAndAddItem={() => {}}
-                allItems={flattentItemsArray(allItems)}
-                disabled={true}
-                hideSearch={true}
-                makeTableActive={() => {}}
-              />
-              <BottomTable tableData={bottomTableData(activeOldOrder)} />
-            </div>
-          )}
-
-          {activeOrders.length > 0 && (
-            <div className={activeOldOrder ? "col-md-6" : "col-md-12"}>
-              {activeOldOrder && <h5>Current Order </h5>}
-              <ActiveTableSelector
-                tables={activeOrders}
-                activeOrdersLength={1}
-                scrollable
-                orderDeletable={false}
-                active={activeOrder}
-                handleItemQuantity={handleItemQuantity}
-                deleteItem={deleteItem}
-                handleSearchAndAddItem={handleSearchAndAddItem}
-                allItems={flattentItemsArray(allItems)}
-                disabled={isViewMode}
-                hideSearch={isViewMode}
-                makeTableActive={() => {}}
-              />
-              <BottomTable tableData={bottomTableData(activeOrder)} />
-            </div>
-          )}
+          <div class="col-12">
+            <TableTitle
+              title={"Schedule"}
+              // endActions={[
+              //   () => (
+              //     <AddCommonAction
+              //       title="New Event"
+              //       // onClick={() => push(emptyRow)}
+              //     />
+              //   ),
+              // ]}
+            />
+            <div class="d-flex justify-content-between align-items-center mb-4"></div>
+            <div class={"table-responsive "}></div>
+          </div>
+        </div>
+        <div className="col-12">
+          <CalComp />
         </div>
 
-        <div class="form-group mb-0 mt-3 d-flex justify-content-center">
-          {!isViewMode && activeOrder?.editCount < 1 && (
-            <button
-              type="submit"
-              disabled={isLoading}
-              class="btn btn-gradient-primary waves-effect waves-light"
-              onClick={() => {
-                onSubmit({ ...activeOrders[0], ...getData() });
-              }}
-            >
-              {isLoading && (
-                <span
-                  class="spinner-border spinner-border-sm"
-                  role="status"
-                  aria-hidden="true"
-                ></span>
-              )}
-              Submit
-            </button>
-          )}
+        <div class="form-group mb-0">
           <button
-            type="reset"
-            class="btn btn-gradient-danger waves-effect ml-3"
-            onClick={() => onClose()}
+            type="submit"
+            disabled={isLoading}
+            class="btn btn-gradient-primary waves-effect waves-light"
           >
-            Close
+            {isLoading && (
+              <span
+                class="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            )}
+            Submit
           </button>
-          {enablePrinting && (
-            <button
-              onClick={() => onPrint(activeOrder)}
-              type="button"
-              class="btn btn-outline-primary ml-3"
-            >
-              <i class={`dripicons-print mr-2`}></i>
-              Bill
-            </button>
-          )}
         </div>
       </ModalContainer>
     </div>
   );
 };
 
-export default EditOrderModal;
+export default ScheduleBookingModal;
 
-const BottomTable = ({ tableData }) => {
-  return (
-    <div>
-      <div class="table-responsive-sm">
-        <table class="table table-sm mb-0">
-          <tbody>
-            {tableData.map((row, rowIndex) => {
-              return (
-                <tr>
-                  {row.map((td) => {
-                    if (td.renderTd) {
-                      return td.renderTd();
-                    }
-                    return (
-                      <td>
-                        {" "}
-                        {td.isCurrency ? CURRENCY : ""}
-                        {td.value}
-                      </td>
-                    );
-                  })}
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-};
-
-const styles = {
-  paginated: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-    margin: "0px 1vw",
-    maxWidth: "20vw",
-  },
-  select: {
-    margin: "0px 0.5vw",
-  },
-  searchGroup: {
-    maxWidth: "15vw",
-  },
-};
 // import React from "react";
 // import { useDispatch, useSelector } from "react-redux";
 // import { showSnackBar } from "../../redux/action/snackActions";

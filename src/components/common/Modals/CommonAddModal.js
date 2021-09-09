@@ -17,6 +17,7 @@ const CommonAddModal = ({
   formData,
   defaultValues,
   size,
+  optionsData,
 }) => {
   const methods = useForm({
     defaultValues: defaultValues,
@@ -74,7 +75,12 @@ const CommonAddModal = ({
             <div class="row">
               {formData.map((item, index) => {
                 const MyInput = Inputs[item.type];
-
+                console.log(
+                  "input value",
+                  item.hasOptions,
+                  // data[item.name],
+                  optionsData
+                );
                 return (
                   mode !== item?.hideAt && (
                     <MyInput
@@ -90,6 +96,10 @@ const CommonAddModal = ({
                       setValue={setValue}
                       onCustomChange={handleOtherChange}
                       onFileChange={handleFileFieldChange}
+                      control={control}
+                      {...(item?.hasOptions && {
+                        options: optionsData[item.name],
+                      })}
                     />
                   )
                 );

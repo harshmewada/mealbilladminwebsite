@@ -302,7 +302,6 @@ const RestaurantExpenseTypes = () => {
 
   return (
     <>
-      eheh
       <div class="page-content-tab">
         <SubExpensesModal
           open={open === "sub" || open === "subEdit"}
@@ -342,7 +341,11 @@ const RestaurantExpenseTypes = () => {
           title={PageTitle}
           headerComponents={headerComponents[role]}
           headActions={[AddAction]}
-          actions={[EditAction, DeleteAction, AddSubExpenseAction]}
+          actions={[
+            EditAction,
+            // DeleteAction,
+            AddSubExpenseAction,
+          ]}
           tableData={expenses}
           headers={headers}
           sortable={true}

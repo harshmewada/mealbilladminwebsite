@@ -37,11 +37,11 @@ const ReportSelector = ({
     branchId: "All",
     shouldUnregister: false,
   });
-  const [formErrors, setFormErrors] = React.useState({});
 
   const [state, setState] = React.useState({
     date: { start: moment(), end: moment() },
   });
+  const [formErrors, setFormErrors] = React.useState({});
 
   React.useEffect(() => {
     setFormErrors(formState.errors);
@@ -109,7 +109,7 @@ const ReportSelector = ({
                 <MyInput
                   value={state[item.name]}
                   {...item}
-                  onChange={(e) => handleChange(e)}
+                  onCustomChange={(e) => handleChange(e)}
                   key={index}
                   noPadding
                   name={item.name}
@@ -124,21 +124,6 @@ const ReportSelector = ({
             );
           })}
         </div>
-        {/* <div class="form-group mb-0">
-          <button
-            type="submit"
-            class="btn btn-gradient-primary waves-effect waves-light"
-          >
-            Submit
-          </button>
-          <button
-            type="button"
-            onClick={() => setValue("lio", "lodu")}
-            class="btn btn-gradient-danger waves-effect ml-3"
-          >
-            Cancel
-          </button>
-        </div> */}
       </form>
     );
   };

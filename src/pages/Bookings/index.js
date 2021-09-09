@@ -1,0 +1,283 @@
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllBranches } from "../../redux/action/branchActions";
+import SmartTable from "../../components/common/SmartTable";
+import DeleteModal from "../../components/common/Modals/DeleteModal";
+import AddCommonAction from "../../components/common/Actions/AddCommonAction";
+import EditCommonAction from "../../components/common/Actions/EditAction";
+import DeleteCommonAction from "../../components/common/Actions/DeleteCommonAction";
+import IconCommonAction from "../../components/common/Actions/IconCommonAction";
+
+import { getAllRestaurants } from "../../redux/action/restaurantActions";
+import ScheduleBookingModal from "../../components/common/Modals/ScheduleBookingModal";
+import TableTitle from "../../components/common/SmartTable/TableTitle";
+import ScheduleCalendar from "../../components/common/Booking/ScheduleCalendar";
+import CommonAddModal from "../../components/common/Modals/CommonAddModal";
+import { mobileRegex } from "../../helpers/regex";
+import moment from "moment";
+import { getAllBookings } from "../../redux/action/bookingActions";
+import { getAllTables } from "../../redux/action/tableActions";
+
+const PageTitle = "Bookings";
+const formData = [
+  {
+    type: "multiSelect",
+    size: 12,
+
+    name: "tables",
+    label: "Choose Tables",
+    optionLabelProp: "tableNumber",
+    optionValueProp: "_id",
+    hasOptions: true,
+  },
+  {
+    type: "text",
+    name: "eventName",
+    label: "Event Name ",
+    placeholder: "Type Event Name",
+    required: true,
+    size: 12,
+    rules: {
+      required: {
+        value: true,
+        message: "Event Name is required",
+      },
+    },
+  },
+  {
+    type: "text",
+    name: "hostedBy",
+    label: "Hosted By",
+    placeholder: "Type Host Name",
+    required: true,
+    size: 6,
+    rules: {
+      required: {
+        value: true,
+        message: "Host name is required",
+      },
+    },
+  },
+  {
+    type: "text",
+    name: "contactNumber",
+    label: "Contact Mobile Number",
+    size: 6,
+
+    placeholder: "Enter a Contact Mobile Number Name",
+    required: true,
+    rules: {
+      required: {
+        value: true,
+        message: "Contact Mobile Number is required",
+      },
+      pattern: {
+        value: mobileRegex,
+        message: "Invalid Mobile Number",
+      },
+    },
+  },
+  {
+    type: "dateTime",
+    name: "start",
+    size: 6,
+    label: "Event Start Date & Time",
+    placeholder: "Event Start Date & Time",
+    required: true,
+    options: {
+      singleDatePicker: true,
+      hideRanges: true,
+    },
+    rules: {
+      required: {
+        value: true,
+        message: "Start Date & time is required",
+      },
+    },
+  },
+  {
+    type: "dateTime",
+    name: "end",
+    size: 6,
+    label: "Event End Date & Time",
+    placeholder: "Event End Date & Time",
+    required: true,
+    options: {
+      singleDatePicker: true,
+      hideRanges: true,
+    },
+    rules: {
+      required: {
+        value: true,
+        message: "End Date & time is required",
+      },
+    },
+  },
+  {
+    type: "textarea",
+    name: "remarks",
+    label: "Remarks",
+    size: 12,
+    placeholder: "Type Remarks",
+  },
+];
+const ManageBranches = () => {
+  const dispatch = useDispatch();
+  const [open, setOpen] = React.useState();
+  const [actionData, setActionData] = React.useState();
+
+  const { role, restaurantId, branchId, currentBranches, allowedBranches } =
+    useSelector((state) => state.user);
+  const { allBranches: branches, tables } = useSelector(
+    (state) => state.branch
+  );
+
+  const [selectedBranch, setSelectedBranch] = React.useState(branchId || "all");
+
+  const { bookings } = useSelector((state) => state.common);
+
+  const currentBranchId = branchId || selectedBranch || branches[0]?._id;
+
+  const toggleAdd = (mode) => {
+    setOpen(mode);
+    if (mode === undefined) {
+      setActionData({});
+    }
+  };
+  const handleAdd = (data) => {
+    setActionData(data);
+
+    toggleAdd("Add");
+  };
+  const handleEdit = (data) => {
+    toggleAdd("Edit");
+    setActionData(data);
+  };
+  const handleDelete = (data) => {
+    toggleAdd("Delete");
+    setActionData(data);
+  };
+
+  const handleSchedule = (data) => {
+    toggleAdd("schedule");
+    setActionData(data);
+  };
+
+  const confirmDelete = (data) => {};
+
+  const onAdd = (data) => {
+    console.log("submitData", data);
+  };
+
+  const AddAction = () => {
+    return (
+      <AddCommonAction
+        onClick={() => handleAdd(defaultValues)}
+        title={PageTitle}
+      />
+    );
+  };
+
+  const EditAction = (action) => (
+    <EditCommonAction onClick={() => handleEdit(action.data)} />
+  );
+
+  const DeleteAction = (action) => (
+    <DeleteCommonAction onClick={() => handleDelete(action.data)} />
+  );
+
+  const ScheduleAddAction = (action) => (
+    <IconCommonAction
+      title="Schedule Booking"
+      icon="mdi mdi-calendar-plus"
+      onClick={() => handleSchedule(action.data)}
+    />
+  );
+
+  const headers = [
+    { title: "Booking Space name", key: "bookingSpace" },
+    { title: "Associated With", key: "branchName" },
+
+    // { title: "Total Items", key: "itemCount" },
+    { title: "Status", key: "status" },
+  ];
+
+  const BranchFilter = (action) => (
+    <div class="">
+      <select
+        name="status"
+        class="form-control"
+        defaultValue="true"
+        required
+        value={selectedBranch}
+        onChange={(e) => setSelectedBranch(e.target.value)}
+      >
+        <option value={"all"}>All Branches</option>
+        {branches.map((res, resindex) => {
+          return (
+            <option key={resindex} value={res._id}>
+              {res.branchName}
+            </option>
+          );
+        })}
+      </select>
+    </div>
+  );
+
+  const headerComponents = {
+    superadmin: [],
+    restaurantadmin: [BranchFilter],
+  };
+
+  const defaultValues = {
+    restaurantId: restaurantId,
+    start: moment().toDate(),
+    end: moment().toDate(),
+  };
+  React.useEffect(() => {
+    dispatch(getAllBranches(restaurantId));
+    dispatch(getAllBookings("true"));
+    dispatch(getAllTables(restaurantId, currentBranchId));
+  }, [currentBranchId]);
+  return (
+    <div class="page-content-tab">
+      <DeleteModal
+        size="md"
+        open={open === "Delete"}
+        title={actionData?.name}
+        onClose={() => toggleAdd()}
+        onConfirm={() => confirmDelete()}
+      />
+      <CommonAddModal
+        title={PageTitle}
+        open={open === "Add" || open === "Edit"}
+        onClose={() => toggleAdd()}
+        mode={open}
+        onSubmit={(e) => onAdd(e)}
+        data={actionData}
+        formData={formData}
+        defaultValues={defaultValues}
+        size="md"
+        optionsData={{
+          tables: tables,
+        }}
+      />
+      <div class="row">
+        <div class="col-12">
+          <div class={"card"}>
+            <div class={"card-body"}>
+              <TableTitle
+                headerComponents={headerComponents[role]}
+                title={PageTitle}
+                endActions={[AddAction]}
+              />
+              <ScheduleCalendar />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ManageBranches;

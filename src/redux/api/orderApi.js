@@ -3,5 +3,7 @@ export const orderApi = {
   UPDATE_ORDER: `/api/restaurant/orders/update`,
   DELETE_ORDER: `/api/restaurant/orders/delete`,
 
+  EDIT_ORDER: `/api/restaurant/orders/edit`,
+
   GET_PREVIOS_ORDERS: `/api/restaurant/orders`,
 };

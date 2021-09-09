@@ -5,8 +5,12 @@ export { default as textarea } from "./TextArea";
 
 export { default as number } from "./Number";
 export { default as select } from "./Select";
+export { default as multiSelect } from "./MultiSelect";
+
 export { default as file } from "./File";
 export { default as dateRange } from "./DateRange";
+export { default as dateTime } from "./DateTime";
+
 export { default as switch } from "./Switch";
 export { default as rating } from "./Rating";
 

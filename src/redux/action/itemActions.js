@@ -68,21 +68,6 @@ export const bulkUploadItems = (data, cb, errorCb) => {
 };
 
 export const updateItemVariants = (data, cb, errorCb) => {
-  // const formData = new FormData();
-
-  // Object.keys(data).forEach((key) => {
-  //   if (Array.isArray(data[key])) {
-  //     console.log("formData if", key);
-  //     formData.append(key, JSON.stringify(data[key]));
-  //   } else {
-  //     console.log("formData else", key, data[key], typeof data[key]);
-
-  //     formData.append(key, data[key]);
-  //   }
-  // });
-
-  // console.log("formData if hehe", formData);
-
   return (dispatch) =>
     checkIfAsyncReqSuccess(dispatch, {
       successMessage: "Item variants updated successfully",
@@ -94,6 +79,28 @@ export const updateItemVariants = (data, cb, errorCb) => {
       payload: {
         request: {
           url: itemsApi.UPDATE_ITEM_VARIANT,
+          method: "PUT",
+          data: data,
+          headers: {
+            "Content-type": "application/json",
+          },
+        },
+      },
+    });
+};
+
+export const updateItemRawMaterials = (data, cb, errorCb) => {
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: "Item Raw Materials updated successfully",
+      errorMessage: "Failed to update Item Raw Materials Message",
+      cb: cb,
+      errorCb: errorCb,
+      type: itemTypes.UPDATE_ITEM_RAW_MATERIAL,
+      enableMessage: true,
+      payload: {
+        request: {
+          url: itemsApi.UPDATE_ITEM_RAW_MATERIALS,
           method: "PUT",
           data: data,
           headers: {

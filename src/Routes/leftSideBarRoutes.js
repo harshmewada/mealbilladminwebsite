@@ -77,7 +77,11 @@ export const restaurantadmin = [
     icon: "mdi mdi-food",
     link: "/manageitems",
   },
-
+  {
+    title: "Booking Spaces",
+    icon: "mdi mdi-calendar-plus",
+    link: "/bookings",
+  },
   {
     title: "Manage Categories",
     icon: "mdi mdi-format-list-bulleted",

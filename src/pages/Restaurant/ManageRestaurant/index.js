@@ -250,6 +250,16 @@ const AddRestaurant = () => {
       // disabled: disabled,
     },
     {
+      type: "number",
+      name: "allowedBookingSpaces",
+      size: 3,
+      min: 0,
+      step: 1,
+      label: "Booking Spaces",
+
+      // disabled: disabled,
+    },
+    {
       type: "select",
       name: "status",
       size: 3,

@@ -1,4 +1,5 @@
 import {
+  bookingTypes,
   categoryTypes,
   commonTypes,
   expenseTypes,
@@ -12,10 +13,17 @@ const initialstate = {
   tableTypes: [],
   categoryTypes: [],
   expenseTypes: [],
+  bookings: [],
 };
 
 const commonDataReducer = (state = initialstate, action) => {
   switch (action.type) {
+    case bookingTypes.GET_BOOKINGS_SUCCESS:
+      return {
+        ...state,
+        bookings: action.payload.data.data || [],
+      };
+
     case commonTypes.GET_ALL_THEMES_SUCCESS:
       return {
         ...state,

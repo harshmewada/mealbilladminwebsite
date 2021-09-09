@@ -13,6 +13,7 @@ import "bootstrap-daterangepicker/daterangepicker.css";
 import moment from "moment";
 import { DATEFORMAT, dateRanges } from "../../contants";
 import {
+  editOrder,
   getPreviosOrders,
   setOrderToEdit,
   updateOrder,
@@ -77,22 +78,15 @@ const OrderHistory = () => {
   };
 
   const handleEdit = (data, mode) => {
-    const orderItems = data.orderItems;
     // delete data.orderItems;
 
     toggleAdd(mode || "EditOrder");
-    setActionData({
-      ...data,
-      tablePrice: data?.tablePrice || 0,
-      items: orderItems,
-      orderType: parseInt(data.orderType),
-      ...(mode === "EditOrder" && { isEdited: true }),
-    });
+    setActionData(data);
   };
 
   const handleUpdateOrder = (data) => {
     dispatch(
-      updateOrder(
+      editOrder(
         {
           ...data,
 

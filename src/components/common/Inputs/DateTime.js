@@ -3,10 +3,17 @@ import DateRangePicker from "react-bootstrap-daterangepicker";
 import "bootstrap-daterangepicker/daterangepicker.css";
 import moment from "moment";
 import InputContainer from "./InputContainer";
-import { useController, useForm } from "react-hook-form";
-import { DATEFORMAT, dateRanges } from "../../../contants";
+import { Controller, useController, useForm } from "react-hook-form";
+import {
+  DATEFORMAT,
+  dateRanges,
+  DATETIMEFORMAT,
+  TIMEONLYFORMAT,
+} from "../../../contants";
+import DatetimePciker from "react-datetime";
+import "react-datetime/css/react-datetime.css";
 
-const DateRange = (props) => {
+const DateTime = (props) => {
   const {
     label,
     name,
@@ -20,18 +27,8 @@ const DateRange = (props) => {
     value,
     noPadding,
     defaultValue,
+    control,
   } = props;
-
-  // const { start, end } = value;
-  const start = value?.start || defaultValue?.start || moment();
-  const end = value?.end || defaultValue?.end || moment();
-
-  const handleCallback = (start, end) => {
-    // props.setValue({ start, end });
-    onCustomChange({ [name]: { start, end } });
-
-    // setState({ start, end });
-  };
 
   return (
     <InputContainer
@@ -41,29 +38,29 @@ const DateRange = (props) => {
       label={label}
       error={error}
     >
-      <DateRangePicker
-        initialSettings={{
-          startDate: start.toDate(),
-          endDate: end.toDate(),
-
-          locale: {
-            format: DATEFORMAT,
-          },
-          maxDate: new Date(),
-          ...(!options?.hideRanges && {
-            ranges: dateRanges,
-          }),
-          ...options,
+      <Controller
+        control={control}
+        name={name}
+        rules={props.rules}
+        render={(props) => {
+          console.log("dateTime", props);
+          return (
+            <DatetimePciker
+              initialValue={defaultValue}
+              onChange={(date) => props.onChange(date.toDate())}
+              value={props.value}
+              dateFormat={DATEFORMAT}
+              timeFormat={TIMEONLYFORMAT}
+            />
+          );
         }}
-        onCallback={handleCallback}
-      >
-        <input type="text" class="form-control" />
-      </DateRangePicker>
+        defaultValue={defaultValue}
+      />
     </InputContainer>
   );
 };
 
-export default DateRange;
+export default DateTime;
 
 // import React from "react";
 // import DateRangePicker from "react-bootstrap-daterangepicker";

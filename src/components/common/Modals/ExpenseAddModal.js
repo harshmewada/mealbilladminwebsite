@@ -32,6 +32,17 @@ const CommonAddModal = ({
   const [file, setFile] = React.useState();
 
   const localSubmit = (values) => {
+    console.log("values", {
+      ...defaultValues,
+      ...values,
+      ...(quantityLabel && { quantityType: quantityLabel }),
+      ...(file && { attachment: file }),
+      ...(selectedSubExpenseType && { subExpenseType: selectedSubExpenseType }),
+
+      cgst,
+      sgst,
+      expenseTotal,
+    });
     onSubmit({
       ...defaultValues,
       ...values,
@@ -321,6 +332,7 @@ const CommonAddModal = ({
                   placeholder="Type Expense Quantity"
                   onChange={handleChange}
                   name={`quantity`}
+                  step="0.000"
                   value={values.quantity}
                 />
               </InputContainer>

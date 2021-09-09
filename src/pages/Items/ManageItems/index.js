@@ -22,6 +22,7 @@ import {
   clearItems,
   updateItemVariants,
   bulkUploadItems,
+  updateItemRawMaterials,
 } from "../../../redux/action/itemActions";
 import { RootUrl } from "../../../redux/types";
 import { getAllBranches } from "../../../redux/action/branchActions";
@@ -495,6 +496,29 @@ const ManageItems = () => {
     }
   };
 
+  const onUpdateRawMaterial = (e) => {
+    if (open === "raw") {
+      let itemData = {
+        id: actionData.id,
+        rawMaterials: e,
+
+        // variants: e.variants,
+        restaurantId: actionData.restaurantId,
+
+        ...(actionData.branchId && { branchId: actionData.branchId }),
+      };
+
+      console.log("onaddnewrawmaterial", itemData);
+
+      dispatch(
+        updateItemRawMaterials(itemData, () => {
+          getAllData();
+          toggleAdd();
+        })
+      );
+    }
+  };
+
   const ImportAction = () => {
     return (
       <ImportCommonAction
@@ -678,7 +702,7 @@ const ManageItems = () => {
           onClose={() => toggleAdd()}
           mode={open}
           data={actionData}
-          onSubmit={(e) => onAddNewItemVariants(e)}
+          onSubmit={(e) => onUpdateRawMaterial(e)}
           allRawMaterials={rawMaterials}
         />
         <ItemVariantsModal

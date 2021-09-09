@@ -176,6 +176,28 @@ export const updateOrder = (
     });
 };
 
+export const editOrder = (data, cb, errorCb, successMessage, errorMessage) => {
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: successMessage || "Order Edited Successfully",
+      errorMessage: errorMessage || "Failed To edit Order",
+      enableMessage: false,
+      cb: cb,
+      errorCb: errorCb,
+      type: orderTypes.UPDATE_ORDER,
+      payload: {
+        request: {
+          url: orderApi.EDIT_ORDER,
+          method: "PUT",
+          data: data,
+          headers: {
+            "Content-type": "application/json",
+          },
+        },
+      },
+    });
+};
+
 export const getPreviosOrders = (data) => {
   return {
     type: orderTypes.GET_PREVIOS_ORDERS,

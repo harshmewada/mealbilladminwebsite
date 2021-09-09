@@ -6,6 +6,7 @@ const itemsApi = {
   UPDATE_ITEM: `/api/restaurant/items/update`,
 
   UPDATE_ITEM_VARIANT: `/api/restaurant/items/variants`,
+  UPDATE_ITEM_RAW_MATERIALS: `/api/restaurant/items/rawmaterials`,
 
   DELETE_ITEM: `/api/restaurant/items/delete`,
 

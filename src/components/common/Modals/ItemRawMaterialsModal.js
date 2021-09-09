@@ -17,28 +17,14 @@ const Nodata = () => (
 );
 
 const emptyRow = {
-  item: {},
+  item: undefined,
+  rawMaterialId: undefined,
 
   usedStock: undefined,
 
   status: true,
 };
 var convert = require("convert-units");
-const headers = [
-  { title: "Raw Material Name", key: "itemName" },
-
-  // {
-  //   title: "Item Image",
-  //   key: "itemImage",
-  //   type: "image",
-  //   sourceUrl: RootUrl,
-  // },
-  // { title: "Hotkey", key: "hotKey" },
-
-  { title: "Quantity used", key: "usedStock" },
-
-  { title: "Measure Unit", key: "stockUnit" },
-];
 
 const ItemRawMaterialsModal = ({
   open,
@@ -57,6 +43,20 @@ const ItemRawMaterialsModal = ({
     rawMaterials: data?.rawMaterials || [],
   };
 
+  const headers = [
+    { title: "Raw Material Name", key: "itemName" },
+
+    // {
+    //   title: "Item Image",
+    //   key: "itemImage",
+    //   type: "image",
+    //   sourceUrl: RootUrl,
+    // },
+    // { title: "Hotkey", key: "hotKey" },
+
+    { title: `Quantity used`, key: "usedStock" },
+    { title: "Measure Unit", key: "stockUnit" },
+  ];
   return (
     <div>
       <ModalContainer
@@ -72,26 +72,49 @@ const ItemRawMaterialsModal = ({
         <Formik
           initialValues={initialValues}
           onSubmit={async (values) => {
-            onSubmit({
-              rawMaterials: values.rawMaterials.filter(
-                (val) => val.itemName !== ""
-              ),
-            });
+            onSubmit(
+              values.rawMaterials
+                .filter((val) => {
+                  if (
+                    val?.id &&
+                    val.usedStock !== "" &&
+                    val.measureUnit !== ""
+                  ) {
+                    return true;
+                  }
+                  return false;
+                })
+                .map((data) => {
+                  const cuuItem = data.id;
+
+                  const foundUtemIndex = allRawMaterials.findIndex(
+                    (all) => all.id === cuuItem
+                  );
+                  const foundItem = allRawMaterials[foundUtemIndex];
+                  delete data.item;
+
+                  return {
+                    ...data,
+
+                    // rawMaterialId: cuuItem,
+                    ...(foundItem && { ...foundItem }),
+                  };
+                })
+            );
           }}
         >
           {({ values, setFieldValue }) => (
             <Form>
-              {console.log("values", values.rawMaterials)}
               <FieldArray name="rawMaterials">
                 {({ insert, remove, push }) => (
                   <div class="row">
                     <div class="col-12">
                       <TableTitle
-                        title={"Variants"}
+                        title={"Raw Materials"}
                         endActions={[
                           () => (
                             <AddCommonAction
-                              title="New Item Variant"
+                              title="New Item Raw material"
                               onClick={() => push(emptyRow)}
                             />
                           ),
@@ -120,7 +143,8 @@ const ItemRawMaterialsModal = ({
                             {values.rawMaterials.length === 0 && <Nodata />}
                             {values.rawMaterials.map((item, childindex) => {
                               console.log("values rawMaterials", item);
-
+                              const currMeasureUnit =
+                                item?.stockUnit || item?.item?.measureUnit;
                               return (
                                 <tr key={childindex}>
                                   <td>
@@ -128,22 +152,29 @@ const ItemRawMaterialsModal = ({
                                       disabled={isLoading}
                                       as="select"
                                       className="form-control"
-                                      name={`rawMaterials.${childindex}.item`}
+                                      name={`rawMaterials.${childindex}.id`}
                                     >
                                       {(propo) => {
                                         const { field, form, meta } = propo;
-                                        console.log("field", field);
-
                                         return (
                                           <>
                                             <select
-                                              name={`rawMaterials.${childindex}.item`}
+                                              name={`rawMaterials.${childindex}.id`}
                                               className="form-control"
                                               {...field}
-                                              value={field?.value?.itemIndex}
+                                              // value={field?.value?.itemIndex}
+
                                               onChange={(e) => {
                                                 const currentIndex =
-                                                  e.target.value;
+                                                  allRawMaterials.findIndex(
+                                                    (all) => {
+                                                      return (
+                                                        all.id ===
+                                                        e.target.value
+                                                      );
+                                                    }
+                                                  );
+                                                // e.target.value;
 
                                                 setFieldValue(
                                                   `rawMaterials.${childindex}.item`,
@@ -153,6 +184,10 @@ const ItemRawMaterialsModal = ({
                                                     ],
                                                     itemIndex: currentIndex,
                                                   }
+                                                );
+                                                setFieldValue(
+                                                  `rawMaterials.${childindex}.id`,
+                                                  e.target.value
                                                 );
                                               }}
                                             >
@@ -164,7 +199,7 @@ const ItemRawMaterialsModal = ({
                                                   return (
                                                     <option
                                                       key={matIndex}
-                                                      value={matIndex}
+                                                      value={mat.id || mat._id}
                                                     >
                                                       {mat.itemName}
                                                     </option>
@@ -187,18 +222,29 @@ const ItemRawMaterialsModal = ({
                                   <td>
                                     <Field
                                       disabled={isLoading}
+                                      name={`rawMaterials.${childindex}.usedStock`}
+                                      placeholder="Enter Quantity used"
+                                      type="number"
+                                      step="0.01"
+                                      className="form-control"
+                                    />
+                                  </td>
+
+                                  <td>
+                                    <Field
+                                      disabled={isLoading}
                                       as="select"
                                       className="form-control"
                                       name={`rawMaterials.${childindex}.stockUnit`}
                                     >
                                       <option selected disabled>
-                                        Choose Measure Unit{" "}
-                                        {item?.item?.measureUnit}
+                                        Choose Measure Unit for{" "}
+                                        {currMeasureUnit}
                                       </option>
-                                      {item?.item?.measureUnit &&
-                                      item?.item?.measureUnit != "count" ? (
+                                      {currMeasureUnit &&
+                                      currMeasureUnit !== "Nos." ? (
                                         convert()
-                                          .from(item?.item?.measureUnit)
+                                          .from(currMeasureUnit)
                                           ?.possibilities()
                                           ?.map((pos) => {
                                             return (
@@ -206,24 +252,10 @@ const ItemRawMaterialsModal = ({
                                             );
                                           })
                                       ) : (
-                                        <option value={"count"}>
-                                          {"count"}
-                                        </option>
+                                        <option value={"Nos."}>{"Nos."}</option>
                                       )}
                                     </Field>
                                   </td>
-
-                                  <td>
-                                    <Field
-                                      disabled={isLoading}
-                                      name={`rawMaterials.${childindex}.usedStock`}
-                                      placeholder="Enter Quantity used"
-                                      type="number"
-                                      steps="0.0"
-                                      className="form-control"
-                                    />
-                                  </td>
-
                                   <td
                                     style={{
                                       display: "flex",
