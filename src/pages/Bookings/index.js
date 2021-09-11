@@ -15,112 +15,17 @@ import ScheduleCalendar from "../../components/common/Booking/ScheduleCalendar";
 import CommonAddModal from "../../components/common/Modals/CommonAddModal";
 import { mobileRegex } from "../../helpers/regex";
 import moment from "moment";
-import { getAllBookings } from "../../redux/action/bookingActions";
+import {
+  createBooking,
+  getAllBookings,
+  updateBooking,
+} from "../../redux/action/bookingActions";
 import { getAllTables } from "../../redux/action/tableActions";
+import { getBranchItems } from "../../redux/action/itemActions";
+import { DATEFORMAT, DATETIMEFORMAT } from "../../contants";
 
 const PageTitle = "Bookings";
-const formData = [
-  {
-    type: "multiSelect",
-    size: 12,
 
-    name: "tables",
-    label: "Choose Tables",
-    optionLabelProp: "tableNumber",
-    optionValueProp: "_id",
-    hasOptions: true,
-  },
-  {
-    type: "text",
-    name: "eventName",
-    label: "Event Name ",
-    placeholder: "Type Event Name",
-    required: true,
-    size: 12,
-    rules: {
-      required: {
-        value: true,
-        message: "Event Name is required",
-      },
-    },
-  },
-  {
-    type: "text",
-    name: "hostedBy",
-    label: "Hosted By",
-    placeholder: "Type Host Name",
-    required: true,
-    size: 6,
-    rules: {
-      required: {
-        value: true,
-        message: "Host name is required",
-      },
-    },
-  },
-  {
-    type: "text",
-    name: "contactNumber",
-    label: "Contact Mobile Number",
-    size: 6,
-
-    placeholder: "Enter a Contact Mobile Number Name",
-    required: true,
-    rules: {
-      required: {
-        value: true,
-        message: "Contact Mobile Number is required",
-      },
-      pattern: {
-        value: mobileRegex,
-        message: "Invalid Mobile Number",
-      },
-    },
-  },
-  {
-    type: "dateTime",
-    name: "start",
-    size: 6,
-    label: "Event Start Date & Time",
-    placeholder: "Event Start Date & Time",
-    required: true,
-    options: {
-      singleDatePicker: true,
-      hideRanges: true,
-    },
-    rules: {
-      required: {
-        value: true,
-        message: "Start Date & time is required",
-      },
-    },
-  },
-  {
-    type: "dateTime",
-    name: "end",
-    size: 6,
-    label: "Event End Date & Time",
-    placeholder: "Event End Date & Time",
-    required: true,
-    options: {
-      singleDatePicker: true,
-      hideRanges: true,
-    },
-    rules: {
-      required: {
-        value: true,
-        message: "End Date & time is required",
-      },
-    },
-  },
-  {
-    type: "textarea",
-    name: "remarks",
-    label: "Remarks",
-    size: 12,
-    placeholder: "Type Remarks",
-  },
-];
 const ManageBranches = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = React.useState();
@@ -128,15 +33,166 @@ const ManageBranches = () => {
 
   const { role, restaurantId, branchId, currentBranches, allowedBranches } =
     useSelector((state) => state.user);
-  const { allBranches: branches, tables } = useSelector(
-    (state) => state.branch
-  );
+  const {
+    allBranches: branches,
+    tables,
+    items,
+  } = useSelector((state) => state.branch);
+
+  const isRestaurantAdmin = role === "restaurantadmin";
 
   const [selectedBranch, setSelectedBranch] = React.useState(branchId || "all");
 
   const { bookings } = useSelector((state) => state.common);
 
   const currentBranchId = branchId || selectedBranch || branches[0]?._id;
+
+  const formData = [
+    {
+      hidden: !isRestaurantAdmin,
+      type: "select",
+      size: 12,
+
+      name: "branchId",
+      label: "Choose Branch",
+      readOnly: open === "Edit",
+      defaultOption: () => (
+        <option disabled selected>
+          Choose Branch
+        </option>
+      ),
+      optionLabelProp: "branchName",
+      optionValueProp: "_id",
+      hasOptions: true,
+      required: true,
+      onSelect: (value) => {
+        dispatch(getAllTables(restaurantId, value));
+        dispatch(getBranchItems(value));
+      },
+    },
+
+    {
+      type: "text",
+      name: "eventName",
+      label: "Event Name ",
+      readOnly: open === "Edit",
+
+      placeholder: "Type Event Name",
+      required: true,
+      size: 12,
+      rules: {
+        required: {
+          value: true,
+          message: "Event Name is required",
+        },
+      },
+    },
+    {
+      type: "multiSelect",
+      size: 12,
+
+      name: "tables",
+      label: "Choose Tables",
+      optionLabelProp: "tableNumber",
+      optionValueProp: "_id",
+      hasOptions: true,
+    },
+    {
+      type: "multiSelect",
+      size: 12,
+      defaultOption: () => (
+        <option disabled selected>
+          Choose Itens
+        </option>
+      ),
+      name: "items",
+      label: "Choose Items",
+      optionLabelProp: "itemName",
+      optionValueProp: "_id",
+      hasOptions: true,
+    },
+
+    {
+      type: "text",
+      name: "hostedBy",
+      label: "Hosted By",
+      readOnly: open === "Edit",
+
+      placeholder: "Type Host Name",
+      required: true,
+      size: 6,
+      rules: {
+        required: {
+          value: true,
+          message: "Host name is required",
+        },
+      },
+    },
+    {
+      type: "text",
+      name: "contactNumber",
+      readOnly: open === "Edit",
+
+      label: "Contact Mobile Number",
+      size: 6,
+
+      placeholder: "Enter a Contact Mobile Number Name",
+      required: true,
+      rules: {
+        required: {
+          value: true,
+          message: "Contact Mobile Number is required",
+        },
+        pattern: {
+          value: mobileRegex,
+          message: "Invalid Mobile Number",
+        },
+      },
+    },
+    {
+      type: "dateTime",
+      name: "start",
+      size: 6,
+      label: "Event Start Date & Time",
+      placeholder: "Event Start Date & Time",
+      required: true,
+      options: {
+        singleDatePicker: true,
+        hideRanges: true,
+      },
+      rules: {
+        required: {
+          value: true,
+          message: "Start Date & time is required",
+        },
+      },
+    },
+    {
+      type: "dateTime",
+      name: "end",
+      size: 6,
+      label: "Event End Date & Time",
+      placeholder: "Event End Date & Time",
+      required: true,
+      options: {
+        singleDatePicker: true,
+        hideRanges: true,
+      },
+      rules: {
+        required: {
+          value: true,
+          message: "End Date & time is required",
+        },
+      },
+    },
+    {
+      type: "textarea",
+      name: "remarks",
+      label: "Remarks",
+      size: 12,
+      placeholder: "Type Remarks",
+    },
+  ];
 
   const toggleAdd = (mode) => {
     setOpen(mode);
@@ -151,7 +207,11 @@ const ManageBranches = () => {
   };
   const handleEdit = (data) => {
     toggleAdd("Edit");
-    setActionData(data);
+    setActionData({
+      ...data,
+      start: moment(data.start).toDate(),
+      end: moment(data.end).toDate(),
+    });
   };
   const handleDelete = (data) => {
     toggleAdd("Delete");
@@ -166,7 +226,31 @@ const ManageBranches = () => {
   const confirmDelete = (data) => {};
 
   const onAdd = (data) => {
-    console.log("submitData", data);
+    if (open === "Add") {
+      dispatch(
+        createBooking(
+          data,
+          () => {
+            toggleAdd();
+            dispatch(getAllBookings());
+          },
+          []
+        )
+      );
+    }
+    if (open === "Edit") {
+      let editData = {
+        ...actionData,
+        ...data,
+      };
+
+      dispatch(
+        updateBooking(editData, () => {
+          toggleAdd();
+          dispatch(getAllBookings({ branchId: currentBranchId, restaurantId }));
+        })
+      );
+    }
   };
 
   const AddAction = () => {
@@ -231,12 +315,12 @@ const ManageBranches = () => {
 
   const defaultValues = {
     restaurantId: restaurantId,
-    start: moment().toDate(),
-    end: moment().toDate(),
+    // start: moment().toDate(),
+    // end: moment().toDate(),
   };
   React.useEffect(() => {
     dispatch(getAllBranches(restaurantId));
-    dispatch(getAllBookings("true"));
+    dispatch(getAllBookings({ branchId: currentBranchId, restaurantId }));
     dispatch(getAllTables(restaurantId, currentBranchId));
   }, [currentBranchId]);
   return (
@@ -260,6 +344,8 @@ const ManageBranches = () => {
         size="md"
         optionsData={{
           tables: tables,
+          branchId: branches,
+          items: items,
         }}
       />
       <div class="row">
@@ -271,7 +357,16 @@ const ManageBranches = () => {
                 title={PageTitle}
                 endActions={[AddAction]}
               />
-              <ScheduleCalendar />
+              <ScheduleCalendar
+                events={
+                  bookings
+                    ? bookings?.map((d) => {
+                        return { ...d, title: d.eventName };
+                      })
+                    : []
+                }
+                handleSelect={(data) => handleEdit(data)}
+              />
             </div>
           </div>
         </div>

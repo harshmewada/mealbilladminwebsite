@@ -24,11 +24,19 @@ const MultiSelect = React.forwardRef((props, ref) => {
     disabled,
     control,
     defaultValue,
+    value,
   } = props;
-
+  // console.log("select option", options, value);
   const CustomOption = ({ innerRef, innerProps, ...props }) => {
-    console.log("select options", options);
-    return <div ref={innerRef} {...innerProps} />;
+    return (
+      <option
+        ref={innerRef}
+        {...innerProps}
+        value={props?.data[optionValueProp]}
+      >
+        {props?.data[optionLabelProp]}
+      </option>
+    );
   };
 
   return (
@@ -44,15 +52,16 @@ const MultiSelect = React.forwardRef((props, ref) => {
         name={name}
         rules={props.rules}
         render={(props) => {
-          console.log("dateTime", props);
           return (
             <Select
               options={options}
+              value={props.value}
               isMulti={true}
               isDisabled={disabled}
-              components={{ Option: CustomOption }}
+              getOptionLabel={(opt) => opt[optionLabelProp]}
+              getOptionValue={(opt) => opt[optionValueProp]}
               onChange={(data) => {
-                console.log("select data", data);
+                props.onChange(data);
               }}
             />
           );

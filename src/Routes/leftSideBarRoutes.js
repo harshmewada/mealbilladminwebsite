@@ -78,7 +78,7 @@ export const restaurantadmin = [
     link: "/manageitems",
   },
   {
-    title: "Booking Spaces",
+    title: "Bookings",
     icon: "mdi mdi-calendar-plus",
     link: "/bookings",
   },
@@ -173,6 +173,7 @@ export const branchadmin = [
 
     link: "/orderhistory",
   },
+
   {
     title: "Resources",
     icon: "mdi mdi-link-variant",
@@ -184,6 +185,7 @@ export const branchadmin = [
         icon: "mdi mdi-food",
         link: "/manageitems",
       },
+
       {
         title: "Categories",
         icon: "mdi mdi-yelp",
@@ -198,6 +200,11 @@ export const branchadmin = [
         title: "Raw Materials",
         icon: "mdi mdi-truck",
         link: "/managerawmaterials",
+      },
+      {
+        title: "Bookings",
+        icon: "mdi mdi-calendar-plus",
+        link: "/bookings",
       },
     ],
   },

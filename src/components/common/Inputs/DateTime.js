@@ -29,7 +29,6 @@ const DateTime = (props) => {
     defaultValue,
     control,
   } = props;
-
   return (
     <InputContainer
       {...props}
@@ -46,7 +45,7 @@ const DateTime = (props) => {
           console.log("dateTime", props);
           return (
             <DatetimePciker
-              initialValue={defaultValue}
+              // initialValue={defaultValue}
               onChange={(date) => props.onChange(date.toDate())}
               value={props.value}
               dateFormat={DATEFORMAT}

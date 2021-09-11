@@ -75,14 +75,15 @@ const CommonAddModal = ({
             <div class="row">
               {formData.map((item, index) => {
                 const MyInput = Inputs[item.type];
-                console.log(
-                  "input value",
-                  item.hasOptions,
-                  // data[item.name],
-                  optionsData
-                );
+                // console.log(
+                //   "input value",
+                //   item.hasOptions,
+                //   // data[item.name],
+                //   optionsData
+                // );
                 return (
-                  mode !== item?.hideAt && (
+                  mode !== item?.hideAt &&
+                  !item.hidden && (
                     <MyInput
                       {...item}
                       key={index}

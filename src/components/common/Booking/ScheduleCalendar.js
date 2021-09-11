@@ -6,33 +6,19 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 // import "react-big-calendar/lib/sass/styles";
 const localizer = momentLocalizer(moment);
 
-const ScheduleCalendar = () => {
-  const [events, setEvents] = React.useState([]);
-
-  const handleSelect = ({ start, end }) => {
-    const title = window.prompt("New Event name");
-    if (title)
-      setEvents([
-        ...events,
-        {
-          start,
-          end,
-          title,
-        },
-      ]);
-  };
+const ScheduleCalendar = ({ events: propsEvents, handleSelect }) => {
   return (
     <Calendar
-      //   selectable
+      // selectable
       localizer={localizer}
-      events={events}
+      events={propsEvents}
       scrollToTime={new Date(1970, 1, 1, 6)}
-      defaultDate={new Date(2015, 3, 12)}
+      defaultDate={new Date()}
       startAccessor="start"
       endAccessor="end"
       style={{ height: 500 }}
       defaultView={Views.DAY}
-      onSelectEvent={(event) => alert(event.title)}
+      onSelectEvent={(event) => handleSelect(event)}
       onSelectSlot={handleSelect}
     />
   );
