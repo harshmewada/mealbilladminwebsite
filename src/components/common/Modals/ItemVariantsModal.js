@@ -46,6 +46,7 @@ const headers = [
   { title: "Price", key: "itemPrice" },
 
   { title: "OnlinePrice", key: "onlinePrice" },
+  { title: "Quantity", key: "currentStock" },
 
   { title: "Description", key: "description", type: "textarea" },
 
@@ -157,6 +158,16 @@ const ItemVariantsModal = ({ open, onClose, data, onSubmit }) => {
                                       disabled={isLoading}
                                       name={`variants.${childindex}.onlinePrice`}
                                       placeholder="Enter Online Price"
+                                      type="number"
+                                      steps="0.0"
+                                      className="form-control"
+                                    />
+                                  </td>
+                                  <td>
+                                    <Field
+                                      disabled={isLoading}
+                                      name={`variants.${childindex}.currentStock`}
+                                      placeholder="Enter Current Quantity"
                                       type="number"
                                       steps="0.0"
                                       className="form-control"

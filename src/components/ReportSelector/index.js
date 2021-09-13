@@ -119,6 +119,7 @@ const ReportSelector = ({
                   ref={register(item.rules)}
                   error={formErrors[item.name]?.message}
                   {...(item?.hasOptions && { options: optionData[item.name] })}
+                  control={control}
                 />
               )
             );

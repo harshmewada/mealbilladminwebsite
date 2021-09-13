@@ -154,8 +154,6 @@ function LeftSidebar({ sidebarData }) {
           </div>
         )}
       </div>
-
-      <script src="assets/js/feather.min.js"></script>
     </>
   );
 }

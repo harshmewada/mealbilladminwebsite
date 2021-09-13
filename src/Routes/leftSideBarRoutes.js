@@ -72,25 +72,32 @@ export const restaurantadmin = [
     link: "/manageusers",
   },
   {
-    title: "Items",
-    role: "restaurantadmin",
-    icon: "mdi mdi-food",
-    link: "/manageitems",
-  },
-  {
-    title: "Bookings",
-    icon: "mdi mdi-calendar-plus",
-    link: "/bookings",
-  },
-  {
-    title: "Manage Categories",
-    icon: "mdi mdi-format-list-bulleted",
-    link: "/managecategories",
-  },
-  {
-    title: "Manage Expenses",
-    icon: "mdi mdi-wallet",
-    link: "/manageexpense",
+    title: "Resources",
+    icon: "mdi mdi-link-variant",
+
+    children: [
+      {
+        title: "Items",
+        role: "restaurantadmin",
+        icon: "mdi mdi-food",
+        link: "/manageitems",
+      },
+      {
+        title: "Bookings",
+        icon: "mdi mdi-calendar-plus",
+        link: "/bookings",
+      },
+      {
+        title: "Manage Categories",
+        icon: "mdi mdi-format-list-bulleted",
+        link: "/managecategories",
+      },
+      {
+        title: "Manage Expenses",
+        icon: "mdi mdi-wallet",
+        link: "/manageexpense",
+      },
+    ],
   },
 
   {

@@ -254,7 +254,7 @@ const EditOrderModal = ({
                 deleteItem={deleteItem}
                 handleSearchAndAddItem={handleSearchAndAddItem}
                 allItems={flattentItemsArray(allItems)}
-                disabled={isViewMode}
+                disabled={isViewMode || activeOrder?.editCount >= 1}
                 hideSearch={isViewMode}
                 makeTableActive={() => {}}
               />

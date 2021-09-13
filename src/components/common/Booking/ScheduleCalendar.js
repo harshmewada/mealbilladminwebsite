@@ -16,7 +16,7 @@ const ScheduleCalendar = ({ events: propsEvents, handleSelect }) => {
       defaultDate={new Date()}
       startAccessor="start"
       endAccessor="end"
-      style={{ height: 500 }}
+      style={{ height: 410 }}
       defaultView={Views.DAY}
       onSelectEvent={(event) => handleSelect(event)}
       onSelectSlot={handleSelect}
