@@ -6,6 +6,7 @@ const OrderButton = ({
   onKOTButtonClick,
   onPrePrint,
   enablePrinting,
+  onSettleClick,
 }) => {
   const orderTypes = TYPESOFPAYMENTS;
   return (
@@ -35,7 +36,15 @@ const OrderButton = ({
           Bill
         </button>
       )}
-      {orderTypes.map((ot, otinex) => {
+      <button
+        onClick={() => onClick()}
+        type="button"
+        class="btn btn-outline-primary"
+      >
+        <i class={`mr-2 mdi mdi-cash-multiple`}></i>
+        Settle
+      </button>
+      {/* {orderTypes.map((ot, otinex) => {
         return (
           <button
             onClick={() => onClick(ot)}
@@ -47,7 +56,7 @@ const OrderButton = ({
             {ot.type}
           </button>
         );
-      })}
+      })} */}
     </div>
   );
 };

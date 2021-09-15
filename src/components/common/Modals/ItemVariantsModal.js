@@ -69,6 +69,7 @@ const ItemVariantsModal = ({ open, onClose, data, onSubmit }) => {
 
   const isLoading = useSelector((state) => state.util.spinner);
   const initialValues = {
+    itemId: data?._id || data?.id,
     variants: data?.variants || [],
   };
 

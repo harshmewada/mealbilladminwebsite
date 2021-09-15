@@ -11,6 +11,33 @@ import {
 import { uuid } from "uuidv4";
 import setLocalPrintEnable from "../../helpers/setLocalPrintEnable";
 import setLocalKOTPrintEnable from "../../helpers/setLocalKOTPrintEnable";
+
+// const checkitemquantity = (item)=>{
+//   if (item.currentStock || item.currentStock === 0) {
+//     if (item.currentStock === 0) {
+//       alert("Item Out of stock");
+//       return null;
+//     }
+
+//     let itemQuant = item.quantity || 0;
+
+//     if (itemQuant || itemQuant === 0) {
+//       let quantityDiff = item.currentStock - itemQuant;
+//       console.log("quantityDiff", quantityDiff);
+//       if (quantityDiff === 0) {
+//         alert("Item Out of stock");
+//         return;
+//       } else {
+//         dispatch(
+//           pushItemToActiveOrder(item, selectedOrderTypeId, isVariant)
+//         );
+//         return;
+//       }
+//     }
+//   } else {
+//     dispatch(pushItemToActiveOrder(item, selectedOrderTypeId, isVariant));
+//   }
+// }
 const datatableTypes = [
   {
     tableTypeName: "Ac",

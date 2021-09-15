@@ -11,10 +11,14 @@ import {
 } from "../../../redux/action/orderActions";
 import OrderButton from "./OrderButton";
 import OrderConfirmModal from "../../../components/common/Modals/OrderConfirmModal";
-import { setKOTPrintData } from "../../../redux/action/utilActions";
+import {
+  setKOTPrintData,
+  setPrintData,
+} from "../../../redux/action/utilActions";
 import moment from "moment";
 import { CURRENCY, DATETIMEFORMAT, TYPESOFORDERS } from "../../../contants";
 import calculateOrderTotals from "../../../helpers/calculateOrderTotals";
+import PaymentSettleModal from "../../../components/common/Modals/PaymentSettleModal";
 
 function parseFloat2Decimals(value) {
   return parseFloat(parseFloat(value).toFixed(2));
@@ -66,6 +70,8 @@ const OrderTotalDisplay = () => {
   const [prePrintOpen, setPrePrintOpen] = React.useState();
 
   const [KOTModalOpen, setKOTModalOpen] = React.useState(false);
+  const [settleOpen, setSettleOpen] = React.useState();
+
   const [KOTData, setKOTData] = React.useState();
 
   const {
@@ -92,6 +98,14 @@ const OrderTotalDisplay = () => {
   //   setDiscount(0);
   // }, [index]);
 
+  const handleCloseSettleModal = () => {
+    setSettleOpen();
+  };
+
+  const handleOpenSettleModal = (data) => {
+    setSettleOpen(data);
+  };
+
   const toggleOrderConfirmModal = () => {
     console.log("tole called");
     setOrderConfirmOpen(!orderConfirmOpen);
@@ -102,8 +116,7 @@ const OrderTotalDisplay = () => {
   };
 
   const handleOpenMdoal = (type) => {
-    console.log("handleOpenMdoal", type);
-    if (activeOrders[index].items.length > 0) setOrderConfirmOpen(type);
+    if (activeOrders[index].items.length > 0) onConfirmOrder();
     else {
       alert("No Items selected");
     }
@@ -224,6 +237,70 @@ const OrderTotalDisplay = () => {
       })
     );
   };
+
+  const onConfirmOrder = (orderData, customerData, paymentData, others) => {
+    const currentOrderType = TYPESOFORDERS.find(
+      (data) => data.value === activeOrders[index].orderType
+    );
+    let orderdata = {
+      ...getData(),
+      otherCharges: parseFloat2Decimals(getData().otherCharges),
+      discount: parseFloat2Decimals(getData().discount),
+      orderTypeName: currentOrderType.key,
+      grandTotal: Math.ceil(getData().grandTotal),
+      orderItems: activeOrders[index].items,
+      orderBy: name,
+
+      paymentType: undefined,
+      paymentTypeId: undefined,
+      tableNumber: activeOrders[index].tableNumber,
+      tableId: activeOrders[index]._id,
+      restaurantId,
+      branchId,
+      orderNumber: lastOrderNumber + (activeOrders.length - index),
+      branchCode: branchCode,
+      orderType: activeOrders[index].orderType,
+      isPaid: false,
+
+      ...customerData,
+      ...paymentData,
+      ...others,
+      ...(activeOrders[index]?.isEdited && {
+        isEdited: true,
+        isOrderConfirmed: true,
+        isPaid: true,
+        _id: activeOrders[index].id || activeOrders[index]._id,
+      }),
+    };
+    toggleOrderConfirmModal();
+    handleOpenSettleModal(orderdata);
+  };
+
+  const onSettlePayment = (paymentData, customerData) => {
+    dispatch(
+      confirmOrder(
+        {
+          ...settleOpen,
+          ...paymentData,
+          ...customerData,
+
+          orderStatus: "completed",
+          isEdited: false,
+          isOrderConfirmed: true,
+          isPaid: true,
+          _id: activeOrders[index].id || activeOrders[index]._id,
+        },
+        (data) => {
+          console.log("after order", data);
+          setOtherCharges(0);
+          setDiscount(0);
+          dispatch(deleteLocalOrder(settleOpen.refId));
+          setSettleOpen();
+        }
+      )
+    );
+  };
+
   const handleUpdateOrder = (payment, customerData) => {
     const paymentData = {
       paymentType: payment.type,
@@ -394,6 +471,7 @@ const OrderTotalDisplay = () => {
       },
     ],
   ];
+  console.log("currentOrder", currentOrders);
   return (
     <div class="row">
       <table class="table table-sm table-bordered col-lg-8 mb-0">
@@ -450,7 +528,18 @@ const OrderTotalDisplay = () => {
           }}
         />
       </div>
-
+      {settleOpen && (
+        <PaymentSettleModal
+          open={settleOpen}
+          data={settleOpen}
+          title={""}
+          // onConfirm={(customerData) => handleConfirmOrder(customerData)}
+          onClose={() => handleCloseSettleModal()}
+          onSubmit={(data, customer) => onSettlePayment(data, customer)}
+          customerName={customerName}
+          customerMobile={customerMobile}
+        />
+      )}
       {prePrintOpen && (
         <OrderConfirmModal
           open={prePrintOpen}
@@ -461,18 +550,18 @@ const OrderTotalDisplay = () => {
           customerMobile={customerMobile}
         />
       )}
-      {orderConfirmOpen && (
+      {/* {orderConfirmOpen && (
         <OrderConfirmModal
           open={orderConfirmOpen}
           text={`Grand total : ${CURRENCY} ${getData().grandTotal}`}
-          onConfirm={(customerData) =>
-            handleUpdateOrder(orderConfirmOpen, customerData)
-          }
+          onConfirm={(customerData) => {
+            onConfirmOrder(orderConfirmOpen, customerData);
+          }}
           onCancel={() => toggleOrderConfirmModal()}
           customerName={customerName}
           customerMobile={customerMobile}
         />
-      )}
+      )} */}
       {enableKOT && KOTModalOpen && (
         <OrderConfirmModal
           enableRemarks

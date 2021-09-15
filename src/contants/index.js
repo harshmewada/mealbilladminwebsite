@@ -63,7 +63,7 @@ export const MEASUREUNITS = [
 ];
 
 export const TYPESOFPAYMENTS = [
-  { type: "Cash", id: 0, icon: "mdi mdi-cash-multiple" },
+  { type: "Cash", id: 0, icon: "mdi mdi mdi-cash-100" },
 
   { type: "Card", id: 1, icon: "mdi mdi-credit-card" },
   { type: "Other", id: 2, icon: "mdi mdi-wallet-outline" },

@@ -67,27 +67,27 @@ export const bulkUploadItems = (data, cb, errorCb) => {
     });
 };
 
-export const updateItemVariants = (data, cb, errorCb) => {
-  return (dispatch) =>
-    checkIfAsyncReqSuccess(dispatch, {
-      successMessage: "Item variants updated successfully",
-      errorMessage: "Failed to update item variants Message",
-      cb: cb,
-      errorCb: errorCb,
-      type: itemTypes.UPDATE_ITEM,
-      enableMessage: true,
-      payload: {
-        request: {
-          url: itemsApi.UPDATE_ITEM_VARIANT,
-          method: "PUT",
-          data: data,
-          headers: {
-            "Content-type": "application/json",
-          },
-        },
-      },
-    });
-};
+// export const updateItemVariants = (data, cb, errorCb) => {
+//   return (dispatch) =>
+//     checkIfAsyncReqSuccess(dispatch, {
+//       successMessage: "Item variants updated successfully",
+//       errorMessage: "Failed to update item variants Message",
+//       cb: cb,
+//       errorCb: errorCb,
+//       type: itemTypes.UPDATE_ITEM,
+//       enableMessage: true,
+//       payload: {
+//         request: {
+//           url: itemsApi.UPDATE_ITEM_VARIANT,
+//           method: "PUT",
+//           data: data,
+//           headers: {
+//             "Content-type": "application/json",
+//           },
+//         },
+//       },
+//     });
+// };
 
 export const updateItemRawMaterials = (data, cb, errorCb) => {
   return (dispatch) =>

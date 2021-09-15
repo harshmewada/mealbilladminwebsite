@@ -20,10 +20,12 @@ import {
   importItems,
   updateItem,
   clearItems,
-  updateItemVariants,
   bulkUploadItems,
   updateItemRawMaterials,
 } from "../../../redux/action/itemActions";
+
+import { updateItemVariant } from "../../../redux/action/itemVariantActions";
+
 import { RootUrl } from "../../../redux/types";
 import { getAllBranches } from "../../../redux/action/branchActions";
 import getErrorMessage from "../../../helpers/getErrorMessage";
@@ -42,6 +44,30 @@ import { getAllRawMaterials } from "../../../redux/action/rawMaterialActions";
 
 const PageTitle = "Items";
 
+const getItemQuantityCal = (row) => {
+  let cul = 0;
+  // console.log("cul", cul);
+
+  // data.forEach((element) => {
+  //   if (element.currentStock) {
+  //     cul = cul + parseInt(element.currentStock);
+  //   }
+  // });
+
+  // if(row.variants){
+
+  // }
+  if (row.variants && row.variants.length > 0) {
+    row.variants.forEach((element) => {
+      if (element.currentStock) {
+        cul = cul + parseInt(element.currentStock);
+      }
+    });
+  } else {
+    cul = row.currentStock;
+  }
+  return cul;
+};
 const ManageItems = () => {
   const isLoading = useSelector((state) => state.util.spinner);
   const {
@@ -481,18 +507,32 @@ const ManageItems = () => {
 
   const onAddNewItemVariants = (e) => {
     if (open === "sub") {
-      let itemData = {
-        id: actionData.id,
-        variants: e.variants,
-        restaurantId: actionData.restaurantId,
-        ...(actionData.branchId && { branchId: actionData.branchId }),
-      };
-      dispatch(
-        updateItemVariants(itemData, () => {
-          getAllData();
-          toggleAdd();
-        })
-      );
+      if (e?.variants?.length > 0) {
+        let variantData = e?.variants.map((i) => {
+          return {
+            ...i,
+            itemId: actionData.id || actionData._id,
+            restaurantId: actionData.restaurantId,
+            ...(actionData.branchId && { branchId: actionData.branchId }),
+          };
+        });
+
+        if (variantData) {
+          dispatch(
+            updateItemVariant(variantData, () => {
+              getAllData();
+              toggleAdd();
+            })
+          );
+        }
+      }
+
+      // dispatch(
+      //   updateItemVariants(itemData, () => {
+      //     getAllData();
+      //     toggleAdd();
+      //   })
+      // );
     }
   };
 
@@ -630,6 +670,12 @@ const ManageItems = () => {
     {
       title: "Quantity",
       key: "currentStock",
+      renderRow: (row) => {
+        return getItemQuantityCal(row);
+      },
+      // row?.variants && row?.variants?.length > 0
+      //   ? getVariantQuantityCal(row?.variants)
+      //   : row.currentStock,
     },
     {
       title: "Average Rating",

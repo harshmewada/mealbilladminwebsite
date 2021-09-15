@@ -232,7 +232,9 @@ const ManageBranches = () => {
           data,
           () => {
             toggleAdd();
-            dispatch(getAllBookings());
+            dispatch(
+              getAllBookings({ branchId: currentBranchId, restaurantId })
+            );
           },
           []
         )
