@@ -2,6 +2,7 @@ import React from "react";
 import OrderTypeSelector from "./OrderTypeSelector";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  activateOrder,
   activateTable,
   setActiveOrder,
 } from "../../../redux/action/orderActions";
@@ -16,7 +17,6 @@ const TopPortion = () => {
   const dispatch = useDispatch();
   const username = useSelector((state) => state.user.name);
   const [tableFilterId, setTableFilterId] = React.useState("all");
-  const active = useSelector((state) => state.order.activeOrderIndex);
 
   const allTables = useSelector((state) => state.order.allTables);
   const activeOrders = useSelector((state) => state.order.activeOrders);
@@ -36,15 +36,7 @@ const TopPortion = () => {
     if (checkactive(data.tableNumber)) {
       dispatch(setActiveOrder(checkactive(data.tableNumber).refId));
     } else {
-      dispatch(
-        activateTable(
-          data.tableTypeId,
-          data.tableNumber,
-          index,
-          username,
-          data.tablePrice
-        )
-      );
+      dispatch(activateOrder(data, username));
     }
   };
 
@@ -62,10 +54,6 @@ const TopPortion = () => {
     } else {
       return allTables.filter((tab) => tab.tableTypeId === tableFilterId);
     }
-  };
-
-  const getOtherOrders = () => {
-    return activeOrders.filter((order) => !order.tableTypeId);
   };
 
   const getParcelOrders = () => {

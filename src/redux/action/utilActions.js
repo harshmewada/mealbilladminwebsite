@@ -8,6 +8,12 @@ export const toggleDrawer = () => {
   };
 };
 
+export const toggleSocketConnected = () => {
+  return {
+    type: utilTypes.SOCKET_CONNECTED,
+  };
+};
+
 export const toggleFullScreen = () => {
   return {
     type: utilTypes.TOGGLE_FULL_SCREEN,

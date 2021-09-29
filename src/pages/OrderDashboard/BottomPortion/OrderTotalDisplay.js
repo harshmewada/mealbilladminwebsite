@@ -72,8 +72,6 @@ const OrderTotalDisplay = () => {
   const [KOTModalOpen, setKOTModalOpen] = React.useState(false);
   const [settleOpen, setSettleOpen] = React.useState();
 
-  const [KOTData, setKOTData] = React.useState();
-
   const {
     activeOrderIndex: index,
     activeOrders,
@@ -107,7 +105,6 @@ const OrderTotalDisplay = () => {
   };
 
   const toggleOrderConfirmModal = () => {
-    console.log("tole called");
     setOrderConfirmOpen(!orderConfirmOpen);
   };
 
@@ -350,7 +347,7 @@ const OrderTotalDisplay = () => {
         customerData,
         paymentData,
         {
-          isPaid: true,
+          isPaid: false,
         },
         () => {
           dispatch(deleteLocalOrder(currentOrder.refId));
@@ -471,7 +468,6 @@ const OrderTotalDisplay = () => {
       },
     ],
   ];
-  console.log("currentOrder", currentOrders);
   return (
     <div class="row">
       <table class="table table-sm table-bordered col-lg-8 mb-0">

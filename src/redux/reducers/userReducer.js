@@ -1,7 +1,12 @@
 import { branchTypes, RootUrl, userTypes } from "../types";
 import setToken from "../../helpers/setToken";
 import removeToken from "../../helpers/removeToken";
-import { CURRENCY } from "../../contants";
+import {
+  CURRENCY,
+  FUNCTIONALITYACCESS,
+  KITCHEN_DISPLAY,
+  ONLINE_ORDERING,
+} from "../../contants";
 import setCurrency from "../../helpers/setCurrency";
 
 const superadmin = "superadmin";
@@ -21,6 +26,10 @@ const initialstate = {
   receiptMessage: null,
   currency: CURRENCY,
   measureUnits: [],
+  allowedFuctionalities: FUNCTIONALITYACCESS.filter(
+    (d) => d !== ONLINE_ORDERING
+  ),
+  [KITCHEN_DISPLAY]: true,
 };
 
 const saveLocallogo = (path) => {

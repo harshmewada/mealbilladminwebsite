@@ -29,13 +29,13 @@ const LeftPortion = () => {
       // alert("Table is already active");
     } else {
       dispatch(
-        activateTable(
-          data.tableTypeId,
-          data.tableNumber,
+        activateTable({
+          tableTypeId: data.tableTypeId,
+          tableNumber: data.tableNumber,
           index,
           username,
-          data.tablePrice
-        )
+          tablePrice: data.tablePrice,
+        })
       );
     }
   };

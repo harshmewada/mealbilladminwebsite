@@ -8,20 +8,10 @@ import CenterPortion from "./CenterPortion/index";
 
 import TopPortion from "./TopPortion";
 
-const styles = {
-  topStyle: {
-    height: "100%",
-    flex: 1,
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-  },
-};
 const OrderDashboard = () => {
   const ready = getOrderNeccesaryData();
   const isFullScreen = useSelector((state) => state.util.isFullScreen);
+
   const ref = React.useRef(null);
 
   const [isFullscreen, setIsFullscreen] = useFullscreenStatus(
@@ -40,10 +30,8 @@ const OrderDashboard = () => {
       }}
     >
       <TopPortion />
-      {/* <LeftPortion /> */}
 
       <CenterPortion />
-      {/* <RightPortion /> */}
 
       <BottomPortion />
     </div>

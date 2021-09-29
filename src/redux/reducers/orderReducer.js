@@ -54,21 +54,6 @@ const datatableTypes = [
   },
 ];
 
-const dummyActive = (payload) => {
-  const { tableNumber, tableTypeId, username, tablePrice } = payload;
-  return {
-    tableNumber: tableNumber,
-    tableTypeId: tableTypeId,
-    associatedPerson: username,
-    items: [],
-    tablePrice: tablePrice || 0,
-    orderType: 0,
-    otherCharges: 0,
-    discount: 0,
-    lastKOTItems: [],
-    refId: uuid(),
-  };
-};
 const initialstate = {
   tableTypes: datatableTypes,
   allTables: [],
@@ -98,17 +83,28 @@ const setOrderType = ({ key, value }) => {
   };
 };
 
-const activateTable = (allTables, index) => {
-  allTables[index].active = true;
-  return allTables;
-};
-
 export const pushItemToActiveOrderRedux = (
   activeOrders,
   activeOrderIndex,
   item,
   isVariant
 ) => {
+  // if (item.currentStock || item.currentStock === 0) {
+  //   if (item.currentStock === 0) {
+  //     alert("Item Out of stock");
+  //     return null;
+  //   }
+
+  //   let itemQuant = item.quantity || 0;
+
+  //   if (itemQuant || itemQuant === 0) {
+  //     let quantityDiff = item.currentStock - itemQuant;
+  //     console.log("quantityDiff", quantityDiff);
+  //     if (quantityDiff === 0) {
+  //       alert("Item Out of stock");
+  //     }
+  //   }
+  // }
   if (isVariant) {
     if (activeOrders[activeOrderIndex]) {
       const iteminde = activeOrders[activeOrderIndex].items.findIndex(
@@ -205,7 +201,7 @@ export const removeItemRedux = (allTables, activeOrderIndex, index) => {
     allTables[activeOrderIndex].items = allTables[
       activeOrderIndex
     ].items.filter((ite, itemindex) => {
-      return itemindex != index;
+      return itemindex !== index;
     });
   }
 
@@ -331,9 +327,7 @@ const orderReducer = (state = initialstate, action) => {
     case orderTypes.ACTIVATE_TABLE:
       return {
         ...state,
-        allTables: [...activateTable(state.allTables, action.payload.index)],
-        activeOrders: [...state.activeOrders, dummyActive(action.payload)],
-        activeOrderIndex: state.activeOrders.length,
+        ...action.payload,
       };
     case orderTypes.ADD_OTHER_ORDER_TYPE:
       return {

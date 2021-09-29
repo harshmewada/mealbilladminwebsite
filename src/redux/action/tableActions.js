@@ -67,6 +67,7 @@ export const deleteTable = (data, cb) => {
 export const getAllTables = (resId, branchId, status) => {
   return {
     type: tableTypes.GET_ALL_TABLES,
+    isSocket: true,
     payload: {
       request: {
         url: tableApi.GET_ALL_TABLES,

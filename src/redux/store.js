@@ -4,13 +4,24 @@ import axios from "axios";
 import axiosMiddleware from "redux-axios-middleware";
 import axiosReduxMiddleware from "./axiosReduxMiddleware";
 import thunk from "redux-thunk";
+import socketMiddleware from "./middlewares/socketMiddleware.js";
+import socketIOClient from "socket.io-client";
+import { SOCKETURL } from "../contants";
 
+let socket = socketIOClient(SOCKETURL);
 export default function initializeStore(initialState = {}) {
   const composeEnhancers =
     (typeof window !== "undefined" &&
       window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
     compose;
 
+  // const store = createStore(
+  //   rootReducer,
+  //   initialState,
+  //   composeEnhancers(
+  //     applyMiddleware(axiosReduxMiddleware, socketMiddleware(socket), thunk)
+  //   )
+  // );
   const store = createStore(
     rootReducer,
     initialState,

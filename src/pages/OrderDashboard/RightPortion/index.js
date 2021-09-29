@@ -22,22 +22,20 @@ const styles = {
 };
 const RightPortion = () => {
   const dispatch = useDispatch();
+
   const [orderFilter, setTableFilterId] = React.useState({
     type: "active",
     tableTypeId: undefined,
   });
   const [clearSearch, setClearSearch] = React.useState(0);
-  const activeOrderIndex = useSelector((state) => state.order.activeOrderIndex);
+  const activeOrder = useSelector((state) => state.order.activeOrder);
   const { lastOrderNumber, selectedOrderTypeId, activeOrders, allItems } =
     useSelector((state) => state.order);
   const branchCode = useSelector((state) => state.user.branchCode);
 
-  const active = activeOrders.find(
-    (order) => order.refId === activeOrders[activeOrderIndex]?.refId
-  );
+  const active = activeOrders.find((order) => order.refId === activeOrder);
 
   const handleTableTypeFilter = (data) => {
-    console.log(data);
     setTableFilterId({
       type: data.type,
       tableTypeId: data.tableTypeId,
@@ -60,10 +58,10 @@ const RightPortion = () => {
       type: "active",
       tableTypeId: undefined,
     });
-  }, [activeOrderIndex]);
+  }, [activeOrder]);
 
-  const handleItemQuantity = (quantity, itemindex) => {
-    dispatch(changeItemQuantity(parseInt(quantity), itemindex));
+  const handleItemQuantity = ({ quantity, itemId }) => {
+    dispatch(changeItemQuantity({ quantity: parseInt(quantity), itemId }));
   };
   const deleteItem = (index) => {
     dispatch(removeItem(index));
@@ -80,24 +78,8 @@ const RightPortion = () => {
   const handleSearchAndAddItem = (selected) => {
     if (selected.length > 0) {
       const item = selected[0];
-      const isVariant = item?.variantId ? true : false;
-
-      if (activeOrderIndex || activeOrderIndex === 0) {
-        if (selectedOrderTypeId === 0) {
-          if (activeOrderIndex || activeOrderIndex === 0) {
-            dispatch(
-              pushItemToActiveOrder(item, selectedOrderTypeId, isVariant)
-            );
-          } else {
-            alert("No Tables Active");
-          }
-        } else {
-          dispatch(pushItemToActiveOrder(item, selectedOrderTypeId, isVariant));
-        }
-        setClearSearch(clearSearch + 1);
-      } else {
-        alert("No Active Order");
-      }
+      const isVariant = item?.isVariant ? true : false;
+      dispatch(pushItemToActiveOrder({ item, isVariant }));
     } else {
       setClearSearch(clearSearch + 1);
     }

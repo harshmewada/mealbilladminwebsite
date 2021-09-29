@@ -33,7 +33,7 @@ const emptyRow = {
 };
 
 const headers = [
-  { title: "Variant Name", key: "itemName" },
+  { title: "Name", key: "itemName" },
 
   // {
   //   title: "Item Image",
@@ -45,20 +45,31 @@ const headers = [
 
   { title: "Price", key: "itemPrice" },
 
-  { title: "OnlinePrice", key: "onlinePrice" },
-  { title: "Quantity", key: "currentStock" },
+  { title: "On.Price", key: "onlinePrice" },
+  { title: "Qty.", key: "currentStock" },
 
   { title: "Description", key: "description", type: "textarea" },
 
   {
-    title: "Item Type",
+    title: "Type",
     key: "isNonVeg",
     renderRow: (row) => (row.isNonVeg ? `Non veg` : "Veg"),
+    width: 100,
+  },
+
+  {
+    title: "CGST",
+    key: "cgst",
+  },
+
+  {
+    title: "SGST",
+    key: "sgst",
   },
 
   { title: "isFeatured", key: "isFeatured", type: "boolean" },
 
-  { title: "Status", key: "status" },
+  { title: "Status", key: "status", width: 100 },
 ];
 
 const ItemVariantsModal = ({ open, onClose, data, onSubmit }) => {
@@ -83,6 +94,7 @@ const ItemVariantsModal = ({ open, onClose, data, onSubmit }) => {
           // reset();
         }}
         title={`${data?.itemName} variants`}
+        size="xl"
         // title={`${mode} ${title}`}
       >
         <Formik
@@ -197,6 +209,24 @@ const ItemVariantsModal = ({ open, onClose, data, onSubmit }) => {
                                         Non veg
                                       </option>
                                     </Field>
+                                  </td>
+                                  <td>
+                                    <Field
+                                      disabled={isLoading}
+                                      type="number"
+                                      steps="0.0"
+                                      className="form-control"
+                                      name={`variants.${childindex}.cgst`}
+                                    />
+                                  </td>
+                                  <td>
+                                    <Field
+                                      disabled={isLoading}
+                                      type="number"
+                                      steps="0.0"
+                                      className="form-control"
+                                      name={`variants.${childindex}.sgst`}
+                                    />
                                   </td>
                                   <td>
                                     <Field

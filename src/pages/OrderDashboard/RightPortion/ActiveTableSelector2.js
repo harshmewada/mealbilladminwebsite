@@ -203,6 +203,7 @@ const ActiveOrderSelector = ({
                 <table class="table table-sm mb-0 ordertable">
                   <tbody>
                     {data.items.map((item, index) => {
+                      const { itemId } = item;
                       return (
                         <tr key={index}>
                           {/* <th scope="row">{index + 1}</th> */}
@@ -214,9 +215,9 @@ const ActiveOrderSelector = ({
                             <ItemQuantitySelector
                               quantity={item.quantity}
                               setQuantity={(quantity) =>
-                                handleItemQuantity(quantity, index)
+                                handleItemQuantity({ quantity, itemId })
                               }
-                              deleteItem={() => deleteItem(index)}
+                              deleteItem={() => deleteItem(itemId)}
                               isOrderConfirmed={disableEverything}
                             />
                           </td>
@@ -230,7 +231,7 @@ const ActiveOrderSelector = ({
                             <td>
                               <a
                                 href="javascript:void(0);"
-                                onClick={() => deleteItem(index)}
+                                onClick={() => deleteItem(itemId)}
                               >
                                 <i class="mdi mdi-close-circle-outline text-danger font-16"></i>
                               </a>

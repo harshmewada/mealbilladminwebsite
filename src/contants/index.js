@@ -6,11 +6,13 @@ import getCurrency from "../helpers/getCurrency";
 //pre- 3.109.130.95
 //TEST -65.1.245.30
 
-export const BASEURL = "http://192.168.0.111:4000";
+// export const BASEURL = "http://192.168.0.111:4000";
+export const SOCKETURL = "ws://192.168.0.111:4001";
+
 // export const BASEURL = "https://pre.mealbill.in/api";
 // export const BASEURL = "https://web.mealbill.in/api";
 
-// export const BASEURL = "https://test.mealbill.in/api";
+export const BASEURL = "https://test.mealbill.in/api";
 // export const BASEURL = "http://34.202.79.31/api";
 // export const BASEURL = "http://localhost:4000";
 
@@ -33,6 +35,27 @@ export const CURRENCYOPTIONS = [
   { title: "Dirham", value: "د.إ" },
   { title: "Yuan", value: "¥" },
 ];
+
+export const ONLINE_ORDERING = "onlineOrdering";
+export const CONTACT_LESS_ORDERING = "contactLessOrdering";
+export const BARCODE_PRODUCTS = "barcodeProducts";
+export const BOOKINS_SYSTEM = "bookingSystem";
+export const ANALYTICS = "analytics";
+export const KITCHEN_DISPLAY = "kitchenDisplay";
+export const OFFLINE_SYSTEM = "offlineSystem";
+export const BILL_PRINTING = "billPrinting";
+export const KOT_PRINTING = "kotPrining";
+
+export const FUNCTIONALITYACCESS = [
+  ONLINE_ORDERING,
+  CONTACT_LESS_ORDERING,
+  BARCODE_PRODUCTS,
+  BOOKINS_SYSTEM,
+  ANALYTICS,
+  KITCHEN_DISPLAY,
+  OFFLINE_SYSTEM,
+];
+
 export const CURRENCYNAME = CURRENCYOPTIONS.find(
   (val) => val.value === CURRENCY
 ).title;

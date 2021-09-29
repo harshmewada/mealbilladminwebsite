@@ -4,20 +4,15 @@ import { TYPESOFORDERS } from "../../../contants";
 import {
   setOrderType,
   addNewOtherOrder,
+  activateOrder,
 } from "../../../redux/action/orderActions";
 
 const OrderTypeSelector = () => {
   const dispatch = useDispatch();
-  const { selectedOrderType, selectedOrderTypeId } = useSelector(
-    (state) => state.order
-  );
+  const { selectedOrderTypeId } = useSelector((state) => state.order);
 
   const handleSelectType = (type) => {
-    if (type.value === 0) {
-      dispatch(setOrderType(type));
-    } else {
-      dispatch(addNewOtherOrder(type.value));
-    }
+    dispatch(activateOrder({ orderType: type.value, orderTypeId: type.key }));
   };
   return (
     <div
@@ -31,9 +26,10 @@ const OrderTypeSelector = () => {
           <button
             type="button"
             onClick={() => handleSelectType(type)}
-            class={`btn  shadow-none btn-${
-              selectedOrderTypeId == type.value ? "primary" : "warning"
-            }`}
+            // class={`btn  shadow-none btn-${
+            //   selectedOrderTypeId === type.value ? "primary" : "warning"
+            // }`}
+            class={`btn  shadow-none btn-warning`}
           >
             {type.key}
           </button>

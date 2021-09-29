@@ -25,12 +25,18 @@ const initialstate = {
   enableAddress: true,
   enableGSTNumber: true,
   enableCustomer: true,
+  isSocketConnected: false,
 };
 
 const utilReducer = (state = initialstate, action) => {
   const getData = () => action.payload.data.user;
 
   switch (action.type) {
+    case utilTypes.SOCKET_CONNECTED:
+      return {
+        ...state,
+        isSocketConnected: true,
+      };
     case utilTypes.TOGGLE_FULL_SCREEN:
       return {
         ...state,

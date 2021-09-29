@@ -18,20 +18,7 @@ function ItemsSearchModal({ open, onClose }) {
     if (selected.length > 0) {
       const item = selected[0];
 
-      if (activeOrderIndex || activeOrderIndex === 0) {
-        if (selectedOrderTypeId === 0) {
-          if (activeOrderIndex || activeOrderIndex === 0) {
-            dispatch(pushItemToActiveOrder(item, selectedOrderTypeId));
-          } else {
-            alert("No Tables Active");
-          }
-        } else {
-          dispatch(pushItemToActiveOrder(item, selectedOrderTypeId));
-        }
-        setSelectedValues([]);
-      } else {
-        alert("No Active Order");
-      }
+      dispatch(pushItemToActiveOrder({ item }));
     } else {
       setSelectedValues([]);
     }

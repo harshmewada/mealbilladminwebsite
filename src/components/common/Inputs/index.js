@@ -15,6 +15,7 @@ export { default as switch } from "./Switch";
 export { default as rating } from "./Rating";
 
 export { default as none } from "./NoneInput";
+export { default as empty } from "./EmptySpace";
 
 export { default as float } from "./Float";
 

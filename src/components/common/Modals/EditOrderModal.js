@@ -65,21 +65,18 @@ const EditOrderModal = ({
   };
 
   const handleSearchAndAddItem = (selected) => {
-    if (selected.length > 0) {
-      const item = selected[0];
-
-      const isVariant = item?.variantId ? true : false;
-
-      setActiveOrders([
-        ...pushItemToActiveOrderRedux(
-          activeOrders,
-          0,
-
-          item,
-          isVariant
-        ),
-      ]);
-    }
+    // if (selected.length > 0) {
+    //   const item = selected[0];
+    //   const isVariant = item?.variantId ? true : false;
+    //   setActiveOrders([
+    //     ...pushItemToActiveOrderRedux(
+    //       activeOrders,
+    //       0,
+    //       item,
+    //       isVariant
+    //     ),
+    //   ]);
+    // }
   };
 
   React.useEffect(() => {

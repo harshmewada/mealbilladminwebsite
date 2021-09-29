@@ -1,9 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  activateTable,
-  pushItemToActiveOrder,
-} from "../../../redux/action/orderActions";
+import { pushItemToActiveOrder } from "../../../redux/action/orderActions";
 import RightPortion from "../RightPortion";
 import AvailableItemsList from "./AvailableItemsList";
 import HotKeySelector from "./HotKeySelector";
@@ -86,15 +83,7 @@ const CenterPortion = () => {
   };
 
   const handleItemClick = (item, isVariant) => {
-    if (selectedOrderTypeId === 0) {
-      if (activeOrderIndex || activeOrderIndex === 0) {
-        dispatch(pushItemToActiveOrder(item, selectedOrderTypeId, isVariant));
-      } else {
-        alert("No Tables Active");
-      }
-    } else {
-      dispatch(pushItemToActiveOrder(item, selectedOrderTypeId, isVariant));
-    }
+    dispatch(pushItemToActiveOrder({ item, isVariant }));
   };
   const handleVariantClick = (item) => {
     handleItemClick(item, true);

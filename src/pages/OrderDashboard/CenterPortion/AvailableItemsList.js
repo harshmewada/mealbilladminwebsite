@@ -46,13 +46,12 @@ const styles = {
 const AvailableItemsList = ({ items, onItemClick, onVariantClick }) => {
   const [variantsItem, setVariantsItem] = React.useState();
 
-  console.log("variantsItem", variantsItem);
   const handleVariantClick = (variant, item) => {
     // delete item.variants;
     onVariantClick({
       ...item,
       ...variant,
-      variantId: variant._id || variant.id,
+      isVariant: true,
       itemName: `${item.itemName} ${variant.itemName}`,
     });
   };

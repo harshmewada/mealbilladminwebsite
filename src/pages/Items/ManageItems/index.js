@@ -63,6 +63,7 @@ const getItemQuantityCal = (row) => {
         cul = cul + parseInt(element.currentStock);
       }
     });
+    cul = cul + row.currentStock;
   } else {
     cul = row.currentStock;
   }
@@ -263,29 +264,6 @@ const ManageItems = () => {
       required: false,
     },
     {
-      type: "switch",
-      name: "isFeatured",
-      size: 2,
-      label: "Is Item Featured",
-      placeholder: "Enter Is Item Featured",
-    },
-    {
-      type: "switch",
-      name: "isOnline",
-      size: 2,
-
-      label: "Is Item Online",
-      placeholder: "Enter Is Item Online",
-    },
-    {
-      type: "switch",
-      name: "hasBarCode",
-      size: 2,
-
-      label: "Barcode",
-      placeholder: "Enter Barcode",
-    },
-    {
       type: "number",
       name: "currentStock",
       size: 2,
@@ -293,6 +271,36 @@ const ManageItems = () => {
       label: "Item Current Quantity",
       placeholder: "Item  Current Quantity",
       required: false,
+    },
+    {
+      type: "float",
+      name: "cgst",
+      label: "CGST",
+      size: 2,
+
+      placeholder: "Enter CGST tax",
+      required: true,
+      rules: {
+        required: {
+          value: true,
+          message: "CGST is required",
+        },
+      },
+    },
+    {
+      type: "float",
+      name: "sgst",
+      label: "SGST",
+      size: 2,
+
+      placeholder: "Enter SGST tax",
+      required: true,
+      rules: {
+        required: {
+          value: true,
+          message: "SGST is required",
+        },
+      },
     },
     {
       type: "rating",
@@ -330,6 +338,34 @@ const ManageItems = () => {
           message: "Branch Name is required",
         },
       },
+    },
+    {
+      type: "empty",
+
+      size: 2,
+    },
+    {
+      type: "switch",
+      name: "isFeatured",
+      size: 2,
+      label: "Is Item Featured",
+      placeholder: "Enter Is Item Featured",
+    },
+    {
+      type: "switch",
+      name: "isOnline",
+      size: 2,
+
+      label: "Is Item Online",
+      placeholder: "Enter Is Item Online",
+    },
+    {
+      type: "switch",
+      name: "hasBarCode",
+      size: 2,
+
+      label: "Barcode",
+      placeholder: "Enter Barcode",
     },
   ];
 
