@@ -15,18 +15,18 @@ export default function initializeStore(initialState = {}) {
       window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
     compose;
 
-  // const store = createStore(
-  //   rootReducer,
-  //   initialState,
-  //   composeEnhancers(
-  //     applyMiddleware(axiosReduxMiddleware, socketMiddleware(socket), thunk)
-  //   )
-  // );
   const store = createStore(
     rootReducer,
     initialState,
-    composeEnhancers(applyMiddleware(axiosReduxMiddleware, thunk))
+    composeEnhancers(
+      applyMiddleware(axiosReduxMiddleware, socketMiddleware(socket), thunk)
+    )
   );
+  // const store = createStore(
+  //   rootReducer,
+  //   initialState,
+  //   composeEnhancers(applyMiddleware(axiosReduxMiddleware, thunk))
+  // );
 
   store.subscribe(() => {
     // const CurrentState = store.getState();

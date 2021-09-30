@@ -51,6 +51,7 @@ const ActiveOrderSelector = ({
   orderDeletable,
   disabled,
   hideSearch,
+  orderType,
 }) => {
   const dispatch = useDispatch();
   const tablesRef = React.useRef([]);
@@ -123,11 +124,7 @@ const ActiveOrderSelector = ({
                         color: isActive ? "white" : undefined,
                       }}
                     >
-                      {
-                        TYPESOFORDERS.find((DATA, INDEX) => {
-                          return DATA.value === data.orderType;
-                        })?.key
-                      }
+                      {active.orderType}
                     </span>
                   )}
                 </div>

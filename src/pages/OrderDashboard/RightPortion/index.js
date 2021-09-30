@@ -23,10 +23,7 @@ const styles = {
 const RightPortion = () => {
   const dispatch = useDispatch();
 
-  const [orderFilter, setTableFilterId] = React.useState({
-    type: "active",
-    tableTypeId: undefined,
-  });
+  const [orderFilter, setTableFilterId] = React.useState("active");
   const [clearSearch, setClearSearch] = React.useState(0);
   const activeOrder = useSelector((state) => state.order.activeOrder);
   const { lastOrderNumber, selectedOrderTypeId, activeOrders, allItems } =
@@ -36,28 +33,21 @@ const RightPortion = () => {
   const active = activeOrders.find((order) => order.refId === activeOrder);
 
   const handleTableTypeFilter = (data) => {
-    setTableFilterId({
-      type: data.type,
-      tableTypeId: data.tableTypeId,
-    });
+    setTableFilterId(data);
   };
 
   const getFilteredTables = () => {
-    if (orderFilter.type === "active") {
+    if (orderFilter === "active") {
       return active ? [active] : [];
-    } else if (orderFilter.tableTypeId) {
-      return activeOrders.filter(
-        (tab) => tab.tableTypeId == orderFilter.tableTypeId
-      );
     } else {
-      return activeOrders.filter((tab) => tab.orderType == orderFilter.type);
+      return activeOrders.filter((tab) => {
+        console.log("getFilteredTables", tab.orderTypeId, orderFilter);
+        return tab.orderTypeId === orderFilter;
+      });
     }
   };
   React.useEffect(() => {
-    setTableFilterId({
-      type: "active",
-      tableTypeId: undefined,
-    });
+    setTableFilterId("active");
   }, [activeOrder]);
 
   const handleItemQuantity = ({ quantity, itemId }) => {
@@ -79,6 +69,7 @@ const RightPortion = () => {
     if (selected.length > 0) {
       const item = selected[0];
       const isVariant = item?.isVariant ? true : false;
+
       dispatch(pushItemToActiveOrder({ item, isVariant }));
     } else {
       setClearSearch(clearSearch + 1);

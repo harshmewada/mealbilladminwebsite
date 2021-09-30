@@ -58,13 +58,13 @@ const TopPortion = () => {
 
   const getParcelOrders = () => {
     return activeOrders.filter(
-      (order) => order.orderType === TYPESOFORDERS[1].value
+      (order) => order.orderTypeId === TYPESOFORDERS[1].value
     );
   };
 
   const getHomeDeliveryOrders = () => {
     return activeOrders.filter(
-      (order) => order.orderType === TYPESOFORDERS[2].value
+      (order) => order.orderTypeId === TYPESOFORDERS[2].value
     );
   };
 

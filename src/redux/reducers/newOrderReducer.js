@@ -10,13 +10,16 @@ import {
 } from "../types";
 import { uuid } from "uuidv4";
 
-const findActiveOrderIndex = (activeOrders, refId) => {
+export const findActiveOrderIndex = (activeOrders, refId) => {
   const foundOrder = activeOrders.findIndex((order) => order.refId === refId);
   if (foundOrder > -1) {
     return foundOrder;
   } else {
     return null;
   }
+};
+export const isThatItemInMyOrder = (activeOrder, myItemId) => {
+  return activeOrder.items.find((d) => d.itemId === myItemId);
 };
 
 const findItemIndex = (items, itemId) => {
@@ -29,6 +32,21 @@ const findItemIndex = (items, itemId) => {
 };
 
 export const pushItemToActiveOrderRedux = ({ activeOrders, refId, item }) => {
+  const myOrder = findActiveOrderIndex(activeOrders, refId);
+
+  if (myOrder >= 0) {
+    activeOrders[myOrder].items.push({
+      ...item,
+      quantity: 1,
+      itemTotal: 1 * item.itemPrice,
+    });
+    return activeOrders;
+  } else {
+    alert("Please select order type");
+    return activeOrders;
+  }
+};
+export const pushItemToActiveOrderSocket = ({ activeOrders, refId, item }) => {
   const myOrder = findActiveOrderIndex(activeOrders, refId);
 
   if (myOrder >= 0) {
@@ -92,6 +110,71 @@ export const removeItemRedux = ({
   }
 };
 
+const changeMiscDetails = (activeOrders, refId, data, variable) => {
+  const myOrderIndex = findActiveOrderIndex(activeOrders, refId);
+
+  if (myOrderIndex >= 0) {
+    activeOrders[myOrderIndex][variable] = parseInt(data);
+    return activeOrders;
+  } else {
+    alert("Please activate an order to change");
+
+    return activeOrders;
+  }
+};
+
+export const addCustomerNameOrMobileToOrder = ({
+  activeOrders,
+  refId,
+  data,
+}) => {
+  const myOrder = findActiveOrderIndex(activeOrders, refId);
+
+  if (myOrder >= 0) {
+    activeOrders[myOrder].customerName = data?.customerName;
+    activeOrders[myOrder].customerMobile = data?.customerMobile;
+
+    return activeOrders;
+  } else {
+    alert("Please select order type");
+    return activeOrders;
+  }
+};
+
+const setKOTITEMSDATA = (activeOrders, refId, data) => {
+  data.forEach((dataitem) => {
+    const myOrder = findActiveOrderIndex(activeOrders, refId);
+    // if()
+    const foundItem = activeOrders[myOrder].lastKOTItems.findIndex(
+      (item) => item.itemId === dataitem.itemId
+    );
+
+    if (foundItem > -1) {
+      activeOrders[myOrder].lastKOTItems[foundItem].quantity +=
+        dataitem.quantity;
+    } else {
+      activeOrders[myOrder].lastKOTItems.push(dataitem);
+    }
+  });
+
+  return activeOrders;
+};
+
+const updateOrderStatus = (orders, data) => {
+  const foundOrder = orders.findIndex((od) => od.refId === data.refId);
+  if (foundOrder >= 0) {
+    orders[foundOrder] = data;
+    orders[foundOrder].orderTypeId = parseInt(data.orderTypeId);
+    orders[foundOrder].items = data.orderItems;
+    orders[foundOrder].tablePrice = data?.tableCharges || 0;
+  }
+  return orders;
+};
+
+const deleteLocalOrder = (activeOrders, refId) => {
+  return activeOrders.filter((order) => order.refId !== refId);
+};
+
 const initialstate = {
   tableTypes: [],
   allTables: [],
@@ -110,6 +193,11 @@ const orderReducer = (state = initialstate, action) => {
   const getPayload = () => action.payload;
 
   switch (action.type) {
+    case orderTypes.GET_SOCKET_ORDERS:
+      return {
+        ...state,
+        activeOrders: action.payload,
+      };
     case userTypes.LOGIN_USER_SUCCESS:
       return {
         ...state,
@@ -155,6 +243,13 @@ const orderReducer = (state = initialstate, action) => {
         previousOrders: getData().data,
       };
 
+    case orderTypes.GET_SOKCET_ORDERS_SUCCESS:
+      return {
+        ...state,
+
+        activeOrders: getData().data,
+      };
+
     case orderTypes.SET_ACTIVE_ORDER:
       return {
         ...state,
@@ -174,12 +269,29 @@ const orderReducer = (state = initialstate, action) => {
         activeOrders: [...state.activeOrders, getPayload()],
         activeOrder: getPayload().refId,
       };
+    case orderTypes.ACTIVATE_ORDER_SOCKET:
+      return {
+        ...state,
+        activeOrders: [...state.activeOrders, getPayload()],
+        activeOrder: getPayload().refId,
+      };
 
     case orderTypes.PUSH_ITEM_TO_ORDER:
       return {
         ...state,
         activeOrders: [
           ...pushItemToActiveOrderRedux({
+            activeOrders: state.activeOrders,
+            refId: getPayload().refId,
+            item: getPayload().item,
+          }),
+        ],
+      };
+    case orderTypes.PUSH_ITEM_TO_ORDER_SOCKET:
+      return {
+        ...state,
+        activeOrders: [
+          ...pushItemToActiveOrderSocket({
             activeOrders: state.activeOrders,
             refId: getPayload().refId,
             item: getPayload().item,
@@ -211,6 +323,88 @@ const orderReducer = (state = initialstate, action) => {
           }),
         ],
       };
+
+    case orderTypes.SET_DISCOUNT:
+      return {
+        ...state,
+        activeOrders: [
+          ...changeMiscDetails(
+            state.activeOrders,
+            state.activeOrder,
+            action.payload,
+            "discount"
+          ),
+        ],
+      };
+
+    case orderTypes.SET_OTHER_CHARGES:
+      return {
+        ...state,
+        activeOrders: [
+          ...changeMiscDetails(
+            state.activeOrders,
+            state.activeOrder,
+            action.payload,
+            "otherCharges"
+          ),
+        ],
+      };
+
+    case orderTypes.SET_KOT_ITEMS:
+      return {
+        ...state,
+        activeOrders: [
+          ...setKOTITEMSDATA(
+            state.activeOrders,
+            state.activeOrder,
+            action.payload
+          ),
+        ],
+      };
+
+    case utilTypes.SET_KOT_PRINT_DATA:
+      if (action.payload.customerName || action.payload.customerMobile) {
+        return {
+          ...state,
+          activeOrders: [
+            ...addCustomerNameOrMobileToOrder({
+              activeOrders: state.activeOrders,
+              refId: state.activeOrder,
+              data: getPayload(),
+            }),
+          ],
+        };
+      }
+      return {
+        ...state,
+      };
+
+    case orderTypes.CONFIRM_ORDER_SUCCESS:
+      return {
+        ...state,
+        activeOrders: [
+          ...updateOrderStatus(state.activeOrders, getData().data),
+        ],
+
+        lastOrderNumber: getData().data.orderNumber,
+      };
+
+    case orderTypes.UPDATE_ORDER_SUCCESS:
+      return {
+        ...state,
+
+        lastOrderNumber: getData().data.orderNumber,
+      };
+
+    case orderTypes.DELETE_LOCAL_ORDER:
+      return {
+        ...state,
+
+        activeOrders: [
+          ...deleteLocalOrder(state.activeOrders, action.payload.refId),
+        ],
+      };
+
     case userTypes.LOGOUT_USER:
       return initialstate;
     default:

@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
+import { TYPESOFORDERS } from "../../../contants";
 
 const TableTypeSelector = ({ selected, setSelected }) => {
   const allTables = useSelector((state) => state.order.allTables);
@@ -19,11 +20,8 @@ const TableTypeSelector = ({ selected, setSelected }) => {
   //     tableTypeId: data.tableTypeId,
   //   };
   // })}
-  const handleSelectType = (e, tableTypeId) => {
-    setSelected({
-      type: e,
-      tableTypeId: tableTypeId,
-    });
+  const handleSelectType = (orderTypeId) => {
+    setSelected(orderTypeId);
   };
   return (
     <div
@@ -35,11 +33,22 @@ const TableTypeSelector = ({ selected, setSelected }) => {
       <button
         type="button"
         onClick={() => handleSelectType("active")}
-        class={`btn btn-${selected.type === "active" ? "primary" : "info"}`}
+        class={`btn btn-${selected === "active" ? "primary" : "info"}`}
       >
         Active
       </button>
-      <button
+      {TYPESOFORDERS.map((t, i) => {
+        return (
+          <button
+            type="button"
+            onClick={() => handleSelectType(t.value)}
+            class={`btn btn-${selected === t.value ? "primary" : "info"}`}
+          >
+            {t.key}
+          </button>
+        );
+      })}
+      {/* <button
         type="button"
         onClick={() => handleSelectType(0)}
         class={`btn btn-${selected.type === 0 ? "primary" : "info"}`}
@@ -59,7 +68,7 @@ const TableTypeSelector = ({ selected, setSelected }) => {
         class={`btn btn-${selected.type === 2 ? "primary" : "info"}`}
       >
         Home Delivery
-      </button>
+      </button> */}
     </div>
   );
 };

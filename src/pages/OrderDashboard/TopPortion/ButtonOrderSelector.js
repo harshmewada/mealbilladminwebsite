@@ -26,9 +26,7 @@ const ButtonOrderSelector = ({
     }
   };
   const findTitle = (orderType) => {
-    return TYPESOFORDERS.find((order) => order.value === orderType).key.charAt(
-      0
-    );
+    return orderType.charAt(0);
   };
 
   return (

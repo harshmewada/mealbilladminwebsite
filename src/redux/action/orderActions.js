@@ -4,6 +4,10 @@ import { orderApi } from "../api/orderApi";
 import checkIfAsyncReqSuccess from "./checkIfAsyncReqSuccess";
 import { uuid } from "uuidv4";
 import { TYPESOFORDERS } from "../../contants";
+import {
+  findActiveOrderIndex,
+  isThatItemInMyOrder,
+} from "../reducers/newOrderReducer";
 const dummyActive = (payload, username) => {
   const { tableNumber, tableTypeId, tablePrice, orderTypeId, orderType } =
     payload;
@@ -13,7 +17,7 @@ const dummyActive = (payload, username) => {
     associatedPerson: username,
     items: [],
     tablePrice: tablePrice || 0,
-    orderTypeId: orderType || TYPESOFORDERS[0].value,
+    orderTypeId: orderTypeId || TYPESOFORDERS[0].value,
     orderType: orderType || TYPESOFORDERS[0].key,
 
     otherCharges: 0,
@@ -57,6 +61,30 @@ export const activateOrder = (data, userName) => {
     type: orderTypes.ACTIVATE_ORDER,
     payload: dummyActive(data, userName),
 
+    isSocket: true,
+  };
+};
+
+export const getSocketOrders = (data) => {
+  return {
+    type: orderTypes.GET_SOCKET_ORDERS,
+    payload: data,
+  };
+
+  // if (i === 0) {
+  //   i = i + 2;
+  //   return dispatch({
+  //     type: "GET_ORDERS",
+  //     isSocket: true,
+  //   });
+  // }
+};
+
+export const activateOrderSocket = (data) => {
+  return {
+    type: orderTypes.ACTIVATE_ORDER_SOCKET,
+    payload: data,
+
     isSocket: false,
   };
 };
@@ -64,21 +92,62 @@ export const activateOrder = (data, userName) => {
 export const pushItemToActiveOrder = ({ item, isVariant }) => {
   return (dispatch, getState) => {
     const refId = getMyState(getState, "order").activeOrder;
-    return dispatch({
-      type: orderTypes.PUSH_ITEM_TO_ORDER,
-      payload: {
-        refId: refId,
-        item: {
-          ...item,
-          itemId: item?.variantId || item?._id || item?.id,
-          isVariant: isVariant,
+    const allOrders = getMyState(getState, "order").activeOrders;
+
+    const myItemId = item?.variantId || item?.id || item?.id;
+    const activeOrder = allOrders[findActiveOrderIndex(allOrders, refId)];
+    const currItem = isThatItemInMyOrder(activeOrder, myItemId);
+
+    if (currItem) {
+      return dispatch(
+        changeItemQuantity({
+          quantity: parseInt(currItem.quantity) + 1,
+          itemId: myItemId,
+        })
+      );
+    } else {
+      return dispatch({
+        type: orderTypes.PUSH_ITEM_TO_ORDER,
+        isSocket: true,
+        payload: {
+          refId: refId,
+          item: {
+            ...item,
+            itemId: item?.variantId || item?._id || item?.id,
+            isVariant: isVariant,
+          },
         },
+      });
+    }
+  };
+};
+
+export const pushItemToActiveOrderSocket = (item) => {
+  return {
+    type: orderTypes.PUSH_ITEM_TO_ORDER_SOCKET,
+    payload: item,
+
+    isSocket: false,
+  };
+};
+
+export const changeItemQuantity = ({ quantity, itemId }) => {
+  return (dispatch, getState) => {
+    const refId = getMyState(getState, "order").activeOrder;
+    return dispatch({
+      type: orderTypes.CHANGE_ITEM_QUANTITY,
+      isSocket: true,
+      payload: {
+        refId,
+
+        quantity,
+        itemId,
       },
     });
   };
 };
 
-export const changeItemQuantity = ({ quantity, itemId }) => {
+export const changeItemQuantitySocket = ({ quantity, itemId }) => {
   return (dispatch, getState) => {
     const refId = getMyState(getState, "order").activeOrder;
     return dispatch({
@@ -98,11 +167,21 @@ export const removeItem = (itemId) => {
     const refId = getMyState(getState, "order").activeOrder;
     return dispatch({
       type: orderTypes.REMOVE_ITEM,
+      isSocket: true,
       payload: {
         refId,
 
         itemId,
       },
+    });
+  };
+};
+
+export const removeItemSocket = (data) => {
+  return (dispatch, getState) => {
+    return dispatch({
+      type: orderTypes.REMOVE_ITEM,
+      payload: data,
     });
   };
 };
@@ -137,6 +216,15 @@ export const setActiveOrder = (refId) => {
 };
 
 export const deleteLocalOrder = (refId) => {
+  return {
+    type: orderTypes.DELETE_LOCAL_ORDER,
+    isSocket: true,
+    payload: {
+      refId,
+    },
+  };
+};
+export const deleteLocalOrderSocket = (refId) => {
   return {
     type: orderTypes.DELETE_LOCAL_ORDER,
     payload: {

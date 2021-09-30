@@ -105,6 +105,7 @@ const AddModal = ({ open, onClose, title }) => {
         {/* )} */}
         <option value="branchadmin">Branch Admin</option>
         <option value="branchuser">Branch User</option>
+        <option value="kitchenuser">Kitchen User</option>
       </select>
     </div>
   );

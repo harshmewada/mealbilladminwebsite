@@ -1,5 +1,5 @@
 import React from "react";
-import { Route, useLocation } from "react-router-dom";
+import { Redirect, Route, useLocation } from "react-router-dom";
 import ProtectedRoute from "./ProtectedRoute";
 import ManageBranches from "../pages/Branches/ManageBranches";
 import ManageItemCategories from "../pages/ItemCategories/ManageItemCategories";
@@ -33,6 +33,7 @@ import ExpiredSubscription from "../pages/ExpiredSubscription";
 // import BranchAdminSettings from "../pages/Settings/BranchAdminSettings";
 import Settings from "../pages/Settings";
 import ManageRawMaterials from "../pages/RawMaterials";
+import KitchenDisplay from "../pages/KitchenDisplay";
 
 const DashBoardRoutes = () => {
   const role = useSelector((state) => state.user.role);
@@ -41,28 +42,45 @@ const DashBoardRoutes = () => {
   const isBranchAdmin = role === "branchadmin";
   const isBranchUser = role === "branchuser";
   const isRestaurantAdmin = role === "restaurantadmin";
+  const isKitchenUser = role === "kitchenuser";
 
   const superadmin = "superadmin";
   const restaurantadmin = "restaurantadmin";
   const branchadmin = "branchadmin";
   const branchuser = "branchuser";
+  const kitchenuser = "kitchenuser";
 
   return (
     <div style={{ height: "100%", display: "flex", flexDirection: "column" }}>
       <TopBar hide={isBranchUser && pathname === "/"} />
       <div className="data-container" style={{ height: "100%" }}>
-        <LeftSideBar />
+        {!isKitchenUser && <LeftSideBar />}
 
         <div
           class="dashboard-container"
           style={{ height: "100%", width: "100%", overflow: "auto" }}
         >
           {isBranchUser && <Route exact path="/" component={OrderDashboard} />}
+          {isKitchenUser && (
+            <ProtectedRoute
+              exact
+              roles={[kitchenuser]}
+              path="/"
+              component={KitchenDisplay}
+            />
+          )}
+
           <ProtectedRoute
             exact
             roles={[branchadmin, branchuser]}
             path="/order"
             component={OrderDashboard}
+          />
+          <ProtectedRoute
+            exact
+            roles={[kitchenuser]}
+            path="/kitchen"
+            component={KitchenDisplay}
           />
           <ProtectedRoute
             exact

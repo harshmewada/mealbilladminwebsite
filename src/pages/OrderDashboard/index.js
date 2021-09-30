@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import LoadingFullPage from "../../components/common/Loading/LoadingFullPage";
 import getOrderNeccesaryData from "../../helpers/getOrderNeccesaryData";
 import useFullscreenStatus from "../../hooks/useFullscreenStatus";
+import useKitchenDisplay from "../../hooks/useKitchenDisplay";
 import BottomPortion from "./BottomPortion";
 import CenterPortion from "./CenterPortion/index";
 
@@ -18,6 +19,8 @@ const OrderDashboard = () => {
     ref,
     isFullScreen
   );
+
+  const data = useKitchenDisplay();
   return ready ? (
     <div
       ref={ref}

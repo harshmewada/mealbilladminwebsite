@@ -62,14 +62,11 @@ const Header = ({
   paymentType,
   logo,
   tableNumber,
-  orderType,
   gstNumber,
   branchAddress,
+  orderType,
+  orderTypeId,
 }) => {
-  const orderTypes = TYPESOFORDERS.find((types) => {
-    console.log("types", types.value, orderType);
-    return types.value == orderType;
-  });
   return (
     <>
       <div class="centered">
@@ -93,7 +90,7 @@ const Header = ({
           <p>Token : {branchOrderNumber}</p>
         </div>
         <div className="subinfo">
-          <p>{orderTypes.key}</p>
+          <p>{orderType}</p>
 
           {tableNumber && <p>Table : {tableNumber}</p>}
         </div>

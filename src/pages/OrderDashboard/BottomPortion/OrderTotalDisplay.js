@@ -19,6 +19,7 @@ import moment from "moment";
 import { CURRENCY, DATETIMEFORMAT, TYPESOFORDERS } from "../../../contants";
 import calculateOrderTotals from "../../../helpers/calculateOrderTotals";
 import PaymentSettleModal from "../../../components/common/Modals/PaymentSettleModal";
+import { findActiveOrderIndex } from "../../../redux/reducers/newOrderReducer";
 
 function parseFloat2Decimals(value) {
   return parseFloat(parseFloat(value).toFixed(2));
@@ -73,23 +74,27 @@ const OrderTotalDisplay = () => {
   const [settleOpen, setSettleOpen] = React.useState();
 
   const {
-    activeOrderIndex: index,
+    activeOrder: refId,
     activeOrders,
     lastOrderNumber,
   } = useSelector((state) => state.order);
 
-  const currentOrders = activeOrders[index];
+  // const currentOrderRef =
+  //   activeOrders[findActiveOrderIndex(activeOrders, activeOrder)];
+  // const currentOrder = currentOrderRef[activeOrder];
 
+  const orderIndex = findActiveOrderIndex(activeOrders, refId);
+  const currentOrder = activeOrders[orderIndex];
   const { name, restaurantId, branchId, branchCode, cgst, sgst } = useSelector(
     (state) => state.user
   );
 
   const { enableKOT, enablePrinting } = useSelector((state) => state.util);
 
-  const discount = activeOrders[index]?.discount || 0;
-  const otherCharges = activeOrders[index]?.otherCharges || 0;
-  const customerName = activeOrders[index]?.customerName;
-  const customerMobile = activeOrders[index]?.customerMobile;
+  const discount = currentOrder?.discount || 0;
+  const otherCharges = currentOrder?.otherCharges || 0;
+  const customerName = currentOrder?.customerName;
+  const customerMobile = currentOrder?.customerMobile;
 
   // React.useEffect(() => {
   //   setOtherCharges(0);
@@ -113,14 +118,14 @@ const OrderTotalDisplay = () => {
   };
 
   const handleOpenMdoal = (type) => {
-    if (activeOrders[index].items.length > 0) onConfirmOrder();
+    if (currentOrder.items.length > 0) onConfirmOrder();
     else {
       alert("No Items selected");
     }
   };
 
   const handleKOTButtonClick = () => {
-    if (!activeOrders[index]) {
+    if (!currentOrder) {
       return alert("No active order");
     }
 
@@ -129,14 +134,14 @@ const OrderTotalDisplay = () => {
   };
 
   const handlePrePrintOpen = () => {
-    if (!activeOrders[index]) {
+    if (!currentOrder) {
       return alert("No active order");
     }
     setPrePrintOpen(true);
   };
 
   const handleConfirmKOTOrder = (customerData) => {
-    const active = activeOrders[index];
+    const active = currentOrder;
     let kotItems = [];
 
     //kot loop
@@ -161,11 +166,11 @@ const OrderTotalDisplay = () => {
     });
 
     let ItemsQuantity = 0;
-    kotItems.map((item) => {
+    kotItems.map((item, index) => {
       ItemsQuantity = ItemsQuantity + item.quantity;
     });
     const kotData = {
-      branchOrderNumber: `# ${lastOrderNumber + index + 1}`,
+      branchOrderNumber: `# ${lastOrderNumber + activeOrders.length + 1}`,
       orderType: active.orderType,
       orderItems: kotItems,
       orderDate: moment().format(DATETIMEFORMAT),
@@ -185,7 +190,7 @@ const OrderTotalDisplay = () => {
 
   const handleConfirmOrder = (customerData, paymentData, others, cb) => {
     const currentOrderType = TYPESOFORDERS.find(
-      (data) => data.value === activeOrders[index].orderType
+      (data) => data.value === currentOrder.orderType
     );
     let orderdata = {
       ...getData(),
@@ -193,28 +198,28 @@ const OrderTotalDisplay = () => {
       discount: parseFloat2Decimals(getData().discount),
       orderTypeName: currentOrderType.key,
       grandTotal: Math.ceil(getData().grandTotal),
-      orderItems: activeOrders[index].items,
+      orderItems: currentOrder.items,
       orderBy: name,
 
       paymentType: undefined,
       paymentTypeId: undefined,
-      tableNumber: activeOrders[index].tableNumber,
-      tableId: activeOrders[index]._id,
+      tableNumber: currentOrder.tableNumber,
+      tableId: currentOrder._id,
       restaurantId,
       branchId,
-      orderNumber: lastOrderNumber + (activeOrders.length - index),
+      orderNumber: lastOrderNumber + (activeOrders.length - orderIndex),
       branchCode: branchCode,
-      orderType: activeOrders[index].orderType,
+      orderType: currentOrder.orderType,
       isPaid: false,
 
       ...customerData,
       ...paymentData,
       ...others,
-      ...(activeOrders[index]?.isEdited && {
+      ...(currentOrder?.isEdited && {
         isEdited: true,
         isOrderConfirmed: true,
         isPaid: true,
-        _id: activeOrders[index].id || activeOrders[index]._id,
+        _id: currentOrder.id || currentOrder._id,
       }),
     };
 
@@ -236,37 +241,33 @@ const OrderTotalDisplay = () => {
   };
 
   const onConfirmOrder = (orderData, customerData, paymentData, others) => {
-    const currentOrderType = TYPESOFORDERS.find(
-      (data) => data.value === activeOrders[index].orderType
-    );
     let orderdata = {
       ...getData(),
       otherCharges: parseFloat2Decimals(getData().otherCharges),
       discount: parseFloat2Decimals(getData().discount),
-      orderTypeName: currentOrderType.key,
+
       grandTotal: Math.ceil(getData().grandTotal),
-      orderItems: activeOrders[index].items,
+      orderItems: currentOrder.items,
       orderBy: name,
 
       paymentType: undefined,
       paymentTypeId: undefined,
-      tableNumber: activeOrders[index].tableNumber,
-      tableId: activeOrders[index]._id,
+      tableNumber: currentOrder.tableNumber,
+      tableId: currentOrder._id,
       restaurantId,
       branchId,
-      orderNumber: lastOrderNumber + (activeOrders.length - index),
+      orderNumber: lastOrderNumber + (activeOrders.length - orderIndex),
       branchCode: branchCode,
-      orderType: activeOrders[index].orderType,
       isPaid: false,
 
       ...customerData,
       ...paymentData,
       ...others,
-      ...(activeOrders[index]?.isEdited && {
+      ...(currentOrder?.isEdited && {
         isEdited: true,
         isOrderConfirmed: true,
         isPaid: true,
-        _id: activeOrders[index].id || activeOrders[index]._id,
+        _id: currentOrder.id || currentOrder._id,
       }),
     };
     toggleOrderConfirmModal();
@@ -285,7 +286,7 @@ const OrderTotalDisplay = () => {
           isEdited: false,
           isOrderConfirmed: true,
           isPaid: true,
-          _id: activeOrders[index].id || activeOrders[index]._id,
+          _id: currentOrder.id || currentOrder._id,
         },
         (data) => {
           console.log("after order", data);
@@ -310,7 +311,7 @@ const OrderTotalDisplay = () => {
       return null;
     }
 
-    const currentOrder = activeOrders[index];
+    const currentOrder = currentOrder;
 
     if (!currentOrder) {
       toggleOrderConfirmModal();
@@ -357,7 +358,7 @@ const OrderTotalDisplay = () => {
   };
   const getData = () => {
     return calculateOrderTotals(
-      activeOrders[index],
+      currentOrder,
       cgst,
       sgst,
       otherCharges,
@@ -376,17 +377,17 @@ const OrderTotalDisplay = () => {
       discount: parseFloat2Decimals(getData().discount),
 
       grandTotal: Math.ceil(getData().grandTotal),
-      orderItems: activeOrders[index].items,
+      orderItems: currentOrder.items,
       orderBy: name,
       paymentType: undefined,
       paymentTypeId: undefined,
-      tableNumber: activeOrders[index].tableNumber,
-      tableId: activeOrders[index]._id,
+      tableNumber: currentOrder.tableNumber,
+      tableId: currentOrder._id,
       restaurantId,
       branchId,
-      orderNumber: lastOrderNumber + (activeOrders.length - index),
+      orderNumber: lastOrderNumber + (activeOrders.length - orderIndex),
       branchCode: branchCode,
-      orderType: activeOrders[index].orderType,
+      orderType: currentOrder.orderType,
 
       ...customerData,
       ...customer,
@@ -414,7 +415,7 @@ const OrderTotalDisplay = () => {
         hasCurrency: true,
         input: () => (
           <input
-            disabled={currentOrders?.isOrderConfirmed}
+            disabled={currentOrder?.isOrderConfirmed}
             className={"form-control"}
             maxLength="6"
             style={styles.input}
@@ -434,7 +435,7 @@ const OrderTotalDisplay = () => {
         hasCurrency: true,
         input: () => (
           <input
-            disabled={currentOrders?.isOrderConfirmed}
+            disabled={currentOrder?.isOrderConfirmed}
             maxLength="6"
             min="0"
             max={"100"}
@@ -442,10 +443,6 @@ const OrderTotalDisplay = () => {
             style={styles.input}
             value={discount}
             onChange={(e) => {
-              console.log(
-                "discount",
-                parseFloat(getData().grandTotalWithoutDiscount)
-              );
               if (
                 parseFloat(e.target.value) >=
                 parseFloat(getData().grandTotalWithoutDiscount)
@@ -609,7 +606,7 @@ export default OrderTotalDisplay;
 //   };
 
 //   const handleOpenMdoal = (type) => {
-//     if (activeOrders[index].items.length > 0) setOrderConfirmOpen(type);
+//     if (currentOrder.items.length > 0) setOrderConfirmOpen(type);
 //     else {
 //       alert("No Items selected");
 //     }
@@ -619,12 +616,12 @@ export default OrderTotalDisplay;
 //     let orderdata = {
 //       ...getData(),
 //       grandTotal: Math.ceil(getData().grandTotal),
-//       orderItems: activeOrders[index].items,
+//       orderItems: currentOrder.items,
 //       orderBy: name,
 //       paymentType: payment.type,
 //       paymentTypeId: payment.id,
-//       tableNumber: activeOrders[index].tableNumber,
-//       tableId: activeOrders[index]._id,
+//       tableNumber: currentOrder.tableNumber,
+//       tableId: currentOrder._id,
 //       restaurantId,
 //       branchId,
 //       orderNumber: lastOrderNumber + (activeOrders.length - index),
@@ -658,15 +655,15 @@ export default OrderTotalDisplay;
 //     let sgstCharges = 0;
 //     let grandTotal = 0;
 //     let tablePrice = 0;
-//     if (activeOrders[index]) {
-//       activeOrders[index].items.forEach((item) => {
+//     if (currentOrder) {
+//       currentOrder.items.forEach((item) => {
 //         itemsTotal += item.itemTotal;
 //       });
 
 //       cgstCharges = (itemsTotal * cgst) / 100;
 
 //       sgstCharges = (itemsTotal * sgst) / 100;
-//       tablePrice = activeOrders[index].tablePrice;
+//       tablePrice = currentOrder.tablePrice;
 //     }
 //     grandTotal =
 //       itemsTotal +

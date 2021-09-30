@@ -12,7 +12,7 @@ const OrderTypeSelector = () => {
   const { selectedOrderTypeId } = useSelector((state) => state.order);
 
   const handleSelectType = (type) => {
-    dispatch(activateOrder({ orderType: type.value, orderTypeId: type.key }));
+    dispatch(activateOrder({ orderType: type.key, orderTypeId: type.value }));
   };
   return (
     <div
@@ -26,9 +26,6 @@ const OrderTypeSelector = () => {
           <button
             type="button"
             onClick={() => handleSelectType(type)}
-            // class={`btn  shadow-none btn-${
-            //   selectedOrderTypeId === type.value ? "primary" : "warning"
-            // }`}
             class={`btn  shadow-none btn-warning`}
           >
             {type.key}
