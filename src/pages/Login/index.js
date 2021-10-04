@@ -19,6 +19,7 @@ const Login = () => {
   const history = useHistory();
   const { register, handleSubmit, watch, errors } = useForm();
   const isLoading = useSelector((state) => state.util.spinner);
+  const isLogged = useSelector((state) => state.user.isLogged);
 
   const dispatch = useDispatch();
 
@@ -37,6 +38,12 @@ const Login = () => {
   const handleForgot = async (data) => {
     history.push("/forgotpassword");
   };
+
+  React.useEffect(() => {
+    if (isLogged) {
+      history.push("/");
+    }
+  }, [isLogged]);
   return (
     <div className="account-body accountbg">
       <div className="container">

@@ -11,6 +11,8 @@ import TopPortion from "./TopPortion";
 
 const OrderDashboard = () => {
   const ready = getOrderNeccesaryData();
+  const kitchen = useKitchenDisplay();
+
   const isFullScreen = useSelector((state) => state.util.isFullScreen);
 
   const ref = React.useRef(null);

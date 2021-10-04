@@ -1,13 +1,35 @@
 import React from "react";
 import ItemQuantitySelector from "../OrderDashboard/RightPortion/ItemQuantitySelector";
-const DisplayList = ({ tableNumber, orderType, items, branchOrderNumber }) => {
+const getColor = (type) => {
+  if (type === 1) {
+    return { backgroundColor: "#ffeaad" };
+  }
+  if (type === 2) {
+    return { backgroundColor: "#c6ffba" };
+  }
+  if (type === 0) {
+    return { backgroundColor: "#e3c8fa" };
+  }
+};
+const DisplayList = ({
+  tableNumber,
+  orderType,
+  orderTypeId,
+  items,
+  branchOrderNumber,
+  onItemClick,
+  remarks,
+  ...props
+}) => {
+  console.log("heheOrder", remarks, props);
+  const bgColor = getColor(orderTypeId);
   return (
-    <div class="card border mb-1 shadow-none">
+    <div class="card border mb-1 shadow-none mb-4">
       <div
-        class={`card-header bg-purple `}
+        class={`card-header ${!bgColor ? "bg-purple" : ""} `}
         style={{
           padding: "10px 10px",
-          // ...getColor(orderType),
+          ...getColor(orderTypeId),
         }}
         // onClick={() => makeTableActive(refId)}
       >
@@ -24,7 +46,7 @@ const DisplayList = ({ tableNumber, orderType, items, branchOrderNumber }) => {
               {tableNumber ? (
                 <span
                   style={{
-                    color: "white",
+                    color: bgColor ? undefined : "white",
                   }}
                 >
                   Table Number: {tableNumber}
@@ -32,7 +54,7 @@ const DisplayList = ({ tableNumber, orderType, items, branchOrderNumber }) => {
               ) : (
                 <span
                   style={{
-                    color: "white",
+                    color: bgColor ? undefined : "white",
                   }}
                 >
                   {orderType}
@@ -40,15 +62,30 @@ const DisplayList = ({ tableNumber, orderType, items, branchOrderNumber }) => {
               )}
             </div>
             <div className="col-md-4">
-              <span style={{ color: "white" }}>{items?.length} Items</span>
+              <span style={{ color: bgColor ? undefined : "white" }}>
+                {items?.length} Items
+              </span>
             </div>
 
             {/* </div> */}
             <div className="col-md-12">
-              <span className={"badge badge-dark"} style={{ color: "white" }}>
+              <span
+                className={"badge badge-dark"}
+                style={{ color: bgColor ? undefined : "white" }}
+              >
                 {branchOrderNumber}
               </span>
             </div>
+            {remarks && (
+              <div className="col-md-12 mt-1">
+                <span
+                  className={"badge badge-danger p-1"}
+                  style={{ color: bgColor ? undefined : "white" }}
+                >
+                  Remarks - {remarks}
+                </span>
+              </div>
+            )}
           </div>
         </a>
       </div>
@@ -60,7 +97,13 @@ const DisplayList = ({ tableNumber, orderType, items, branchOrderNumber }) => {
               {items.map((item, index) => {
                 const { itemId } = item;
                 return (
-                  <tr key={index}>
+                  <tr
+                    key={index}
+                    style={{
+                      cursor: "pointer",
+                    }}
+                    onClick={() => onItemClick(item.itemId)}
+                  >
                     {/* <th scope="row">{index + 1}</th> */}
                     <td>{item.itemName}</td>
 

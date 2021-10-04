@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { CURRENCY, TYPESOFORDERS } from "../../../contants";
+import { CURRENCY, ITEMSTATUS, TYPESOFORDERS } from "../../../contants";
 
 import ItemQuantitySelector from "./ItemQuantitySelector";
 import { Button, Collapse } from "react-bootstrap";
@@ -16,6 +16,10 @@ const getColor = (type) => {
   if (type === 0) {
     return { backgroundColor: "#e3c8fa" };
   }
+};
+
+const getBgColor = (type) => {
+  return ITEMSTATUS.find((d) => d.value === type).bgColor;
 };
 const styles = {
   container: {
@@ -95,7 +99,7 @@ const ActiveOrderSelector = ({
             class={`card-header ${isActive ? "bg-purple " : ""}`}
             style={{
               padding: "10px 10px",
-              ...getColor(data.orderType),
+              ...getColor(data.orderTypeId),
             }}
             onClick={() => makeTableActive(data.refId)}
           >
@@ -124,7 +128,7 @@ const ActiveOrderSelector = ({
                         color: isActive ? "white" : undefined,
                       }}
                     >
-                      {active.orderType}
+                      {data?.orderType}
                     </span>
                   )}
                 </div>
@@ -158,9 +162,7 @@ const ActiveOrderSelector = ({
                     }
                     style={{ color: isActive ? "white" : undefined }}
                   >
-                    {isActive && active?.branchOrderNumber
-                      ? `#${active?.branchOrderNumber}`
-                      : ` # ${branchCode + (lastOrderNumber + index + 1)}`}
+                    {data?.branchOrderNumber}
                   </span>
                 </div>
                 <div className="col-md-4">
@@ -202,7 +204,12 @@ const ActiveOrderSelector = ({
                     {data.items.map((item, index) => {
                       const { itemId } = item;
                       return (
-                        <tr key={index}>
+                        <tr
+                          key={index}
+                          style={{
+                            backgroundColor: getBgColor(item.itemStatusId),
+                          }}
+                        >
                           {/* <th scope="row">{index + 1}</th> */}
                           <td>{item.itemName}</td>
                           <td>

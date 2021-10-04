@@ -9,6 +9,8 @@ import {
   utilTypes,
 } from "../types";
 import { uuid } from "uuidv4";
+import calculateBranchOrderNumber from "../../helpers/calculateBranchOrderNumber";
+import { ITEMSTATUS } from "../../contants";
 
 export const findActiveOrderIndex = (activeOrders, refId) => {
   const foundOrder = activeOrders.findIndex((order) => order.refId === refId);
@@ -33,13 +35,9 @@ const findItemIndex = (items, itemId) => {
 
 export const pushItemToActiveOrderRedux = ({ activeOrders, refId, item }) => {
   const myOrder = findActiveOrderIndex(activeOrders, refId);
-
+  console.log("pushItemToActiveOrderRedux", item);
   if (myOrder >= 0) {
-    activeOrders[myOrder].items.push({
-      ...item,
-      quantity: 1,
-      itemTotal: 1 * item.itemPrice,
-    });
+    activeOrders[myOrder].items.push(item);
     return activeOrders;
   } else {
     alert("Please select order type");
@@ -50,10 +48,11 @@ export const pushItemToActiveOrderSocket = ({ activeOrders, refId, item }) => {
   const myOrder = findActiveOrderIndex(activeOrders, refId);
 
   if (myOrder >= 0) {
+    console.log("pushItemToActiveOrderSocket", item);
     activeOrders[myOrder].items.push({
       ...item,
-      quantity: 1,
-      itemTotal: 1 * item.itemPrice,
+      // quantity: 1,
+      // itemTotal: 1 * item.itemPrice,
     });
     return activeOrders;
   } else {
@@ -69,7 +68,14 @@ export const changeItemQuantityRedux = ({
   itemId,
 }) => {
   const myOrderIndex = findActiveOrderIndex(activeOrders, refId);
+
   if (myOrderIndex >= 0) {
+    console.log(
+      "changeItemQuantityRedux",
+      myOrderIndex,
+      findActiveOrderIndex(activeOrders, refId),
+      activeOrders.length
+    );
     const foundItem = activeOrders[myOrderIndex].items.findIndex(
       (a) => a.itemId === itemId
     );
@@ -78,6 +84,25 @@ export const changeItemQuantityRedux = ({
 
     activeOrders[myOrderIndex].items[foundItem].itemTotal =
       quantity * activeOrders[myOrderIndex].items[foundItem].itemPrice;
+    return activeOrders;
+  } else {
+    alert("Please select order type");
+    return activeOrders;
+  }
+};
+
+export const saveItemAsPreparedRedux = ({ activeOrders, refId, itemId }) => {
+  const myOrderIndex = findActiveOrderIndex(activeOrders, refId);
+
+  if (myOrderIndex >= 0) {
+    const foundItem = activeOrders[myOrderIndex].items.findIndex(
+      (a) => a.itemId === itemId
+    );
+
+    activeOrders[myOrderIndex].items[foundItem].itemStatus = ITEMSTATUS[2].key;
+    activeOrders[myOrderIndex].items[foundItem].itemStatusId =
+      ITEMSTATUS[2].value;
+
     return activeOrders;
   } else {
     alert("Please select order type");
@@ -95,12 +120,6 @@ export const removeItemRedux = ({
   if (myOrderIndex >= 0) {
     activeOrders[myOrderIndex].items = activeOrders[myOrderIndex].items.filter(
       (a) => a.itemId !== itemId
-    );
-
-    console.log(
-      "hehe",
-      itemId,
-      activeOrders[myOrderIndex].items.filter((a) => a.itemId !== itemId)
     );
 
     return activeOrders;
@@ -141,7 +160,7 @@ export const addCustomerNameOrMobileToOrder = ({
   }
 };
 
-const setKOTITEMSDATA = (activeOrders, refId, data) => {
+const setKOTITEMSDATA = (activeOrders, refId, data, customerData) => {
   data.forEach((dataitem) => {
     const myOrder = findActiveOrderIndex(activeOrders, refId);
     // if()
@@ -149,11 +168,32 @@ const setKOTITEMSDATA = (activeOrders, refId, data) => {
       (item) => item.itemId === dataitem.itemId
     );
 
+    activeOrders[myOrder].customerName = customerData?.customerName;
+    activeOrders[myOrder].customerMobile = customerData?.customerMobile;
+    activeOrders[myOrder].remarks = customerData?.remarks;
+
     if (foundItem > -1) {
+      // console.log("setKOTITEMSDATA if", dataitem);
+
       activeOrders[myOrder].lastKOTItems[foundItem].quantity +=
         dataitem.quantity;
     } else {
-      activeOrders[myOrder].lastKOTItems.push(dataitem);
+      // console.log("setKOTITEMSDATA else", dataitem);
+      const foundmyItem = activeOrders[myOrder].items.findIndex(
+        (item) => item.itemId === dataitem.itemId
+      );
+      activeOrders[myOrder].items[foundmyItem].itemStatus = ITEMSTATUS[1].key;
+      activeOrders[myOrder].items[foundmyItem].itemStatusId =
+        ITEMSTATUS[1].value;
+      activeOrders[myOrder].items[foundmyItem].kotQuantity =
+        activeOrders[myOrder].items[foundmyItem].quantity + dataitem.quantity;
+
+      activeOrders[myOrder].lastKOTItems.push({
+        ...dataitem,
+
+        itemStatus: ITEMSTATUS[1].key,
+        itemStatusId: ITEMSTATUS[1].value,
+      });
     }
   });
 
@@ -171,8 +211,19 @@ const updateOrderStatus = (orders, data) => {
   return orders;
 };
 
-const deleteLocalOrder = (activeOrders, refId) => {
-  return activeOrders.filter((order) => order.refId !== refId);
+const deleteLocalOrder = (activeOrders, refId, branchCode) => {
+  return activeOrders
+    .filter((order) => order.refId !== refId)
+    .map((i) => {
+      return {
+        ...i,
+        // orderNumber: i.orderNumber - 1,
+        // branchOrderNumber: calculateBranchOrderNumber(
+        //   branchCode,
+        //   i.orderNumber - 1
+        // ),
+      };
+    });
 };
 
 const initialstate = {
@@ -186,6 +237,7 @@ const initialstate = {
   selectedOrderType: "Dine In",
   selectedOrderTypeId: 0,
   previousOrders: [],
+  orderNumberCount: 0,
 };
 
 const orderReducer = (state = initialstate, action) => {
@@ -287,6 +339,7 @@ const orderReducer = (state = initialstate, action) => {
           }),
         ],
       };
+
     case orderTypes.PUSH_ITEM_TO_ORDER_SOCKET:
       return {
         ...state,
@@ -308,6 +361,18 @@ const orderReducer = (state = initialstate, action) => {
             refId: getPayload().refId,
             itemId: getPayload().itemId,
             quantity: getPayload().quantity,
+          }),
+        ],
+      };
+
+    case orderTypes.SET_ITEM_AS_PREPARED:
+      return {
+        ...state,
+        activeOrders: [
+          ...saveItemAsPreparedRedux({
+            activeOrders: state.activeOrders,
+            refId: getPayload().refId,
+            itemId: getPayload().itemId,
           }),
         ],
       };
@@ -356,8 +421,9 @@ const orderReducer = (state = initialstate, action) => {
         activeOrders: [
           ...setKOTITEMSDATA(
             state.activeOrders,
-            state.activeOrder,
-            action.payload
+            action.payload.refId,
+            action.payload.data,
+            action.payload.customerData
           ),
         ],
       };
@@ -401,8 +467,20 @@ const orderReducer = (state = initialstate, action) => {
         ...state,
 
         activeOrders: [
-          ...deleteLocalOrder(state.activeOrders, action.payload.refId),
+          ...deleteLocalOrder(
+            state.activeOrders,
+            action.payload.refId,
+            action.payload.branchCode
+          ),
         ],
+        orderNumberCount: state.orderNumberCount - 1,
+      };
+
+    case orderTypes.INCREMENT_ORDER_NUMBER_COUNT:
+      return {
+        ...state,
+
+        orderNumberCount: state.orderNumberCount + 1,
       };
 
     case userTypes.LOGOUT_USER:

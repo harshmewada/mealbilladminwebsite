@@ -147,7 +147,7 @@ const OrderTotalDisplay = () => {
     //kot loop
     active.items.forEach((data) => {
       const foundItemIndex = active.lastKOTItems.findIndex(
-        (lastitem) => lastitem.id === data.id
+        (lastitem) => lastitem.itemId === data.itemId
       );
       if (foundItemIndex > -1) {
         const foundItem = active.lastKOTItems[foundItemIndex];
@@ -184,19 +184,16 @@ const OrderTotalDisplay = () => {
         ...customerData,
       })
     );
-    dispatch(setKOTitemsData(kotItems));
+    dispatch(setKOTitemsData({ data: kotItems, customerData }));
     toggleKOTConfirmModal();
   };
 
   const handleConfirmOrder = (customerData, paymentData, others, cb) => {
-    const currentOrderType = TYPESOFORDERS.find(
-      (data) => data.value === currentOrder.orderType
-    );
     let orderdata = {
       ...getData(),
       otherCharges: parseFloat2Decimals(getData().otherCharges),
       discount: parseFloat2Decimals(getData().discount),
-      orderTypeName: currentOrderType.key,
+
       grandTotal: Math.ceil(getData().grandTotal),
       orderItems: currentOrder.items,
       orderBy: name,
@@ -215,27 +212,13 @@ const OrderTotalDisplay = () => {
       ...customerData,
       ...paymentData,
       ...others,
-      ...(currentOrder?.isEdited && {
-        isEdited: true,
-        isOrderConfirmed: true,
-        isPaid: true,
-        _id: currentOrder.id || currentOrder._id,
-      }),
     };
-
     setPrePrintOpen(false);
     dispatch(
       confirmOrder(orderdata, (data) => {
         setOtherCharges(0);
         setDiscount(0);
-        if (!enablePrinting) {
-          toggleOrderConfirmModal();
-
-          // console.log("confirmdata", data);
-          dispatch(deleteLocalOrder(orderdata.refId));
-        }
-        cb && cb();
-        //
+        toggleOrderConfirmModal();
       })
     );
   };
@@ -276,7 +259,7 @@ const OrderTotalDisplay = () => {
 
   const onSettlePayment = (paymentData, customerData) => {
     dispatch(
-      confirmOrder(
+      updateOrder(
         {
           ...settleOpen,
           ...paymentData,
@@ -289,7 +272,6 @@ const OrderTotalDisplay = () => {
           _id: currentOrder.id || currentOrder._id,
         },
         (data) => {
-          console.log("after order", data);
           setOtherCharges(0);
           setDiscount(0);
           dispatch(deleteLocalOrder(settleOpen.refId));
@@ -299,63 +281,6 @@ const OrderTotalDisplay = () => {
     );
   };
 
-  const handleUpdateOrder = (payment, customerData) => {
-    const paymentData = {
-      paymentType: payment.type,
-      paymentTypeId: payment.id,
-    };
-    if (!enablePrinting) {
-      handleConfirmOrder(customerData, paymentData, {
-        isPaid: true,
-      });
-      return null;
-    }
-
-    const currentOrder = currentOrder;
-
-    if (!currentOrder) {
-      toggleOrderConfirmModal();
-
-      return alert("No active order");
-    }
-    if (
-      currentOrder?.isPaid === false &&
-      currentOrder?.isOrderConfirmed === true
-    ) {
-      const updateData = {
-        refId: currentOrder.refId,
-        paymentType: payment.type,
-        paymentTypeId: payment.id,
-        restaurantId: currentOrder.restaurantId,
-
-        _id: currentOrder._id,
-        isPaid: true,
-        ...customerData,
-      };
-
-      dispatch(
-        updateOrder(updateData, () => {
-          setOtherCharges(0);
-          setDiscount(0);
-          toggleOrderConfirmModal();
-          dispatch(deleteLocalOrder(currentOrder.refId));
-        })
-      );
-    } else {
-      toggleOrderConfirmModal();
-
-      handleConfirmOrder(
-        customerData,
-        paymentData,
-        {
-          isPaid: false,
-        },
-        () => {
-          dispatch(deleteLocalOrder(currentOrder.refId));
-        }
-      );
-    }
-  };
   const getData = () => {
     return calculateOrderTotals(
       currentOrder,
@@ -366,38 +291,6 @@ const OrderTotalDisplay = () => {
     );
   };
 
-  const onPrePrint = (customer) => {
-    const customerData = {
-      customerName,
-      customerMobile,
-    };
-    let orderdata = {
-      ...getData(),
-      otherCharges: parseFloat2Decimals(getData().otherCharges),
-      discount: parseFloat2Decimals(getData().discount),
-
-      grandTotal: Math.ceil(getData().grandTotal),
-      orderItems: currentOrder.items,
-      orderBy: name,
-      paymentType: undefined,
-      paymentTypeId: undefined,
-      tableNumber: currentOrder.tableNumber,
-      tableId: currentOrder._id,
-      restaurantId,
-      branchId,
-      orderNumber: lastOrderNumber + (activeOrders.length - orderIndex),
-      branchCode: branchCode,
-      orderType: currentOrder.orderType,
-
-      ...customerData,
-      ...customer,
-    };
-    dispatch(prePrintOrder(orderdata));
-    setOtherCharges(0);
-    setDiscount(0);
-    setPrePrintOpen(false);
-  };
-  const grandTotal = getData().grandTotal;
   const rendertableData = [
     [
       { title: "SubTotal", hasCurrency: true, value: getData().itemsTotal },
@@ -571,6 +464,96 @@ const OrderTotalDisplay = () => {
 };
 
 export default OrderTotalDisplay;
+
+//other functions
+// const handleUpdateOrder = (payment, customerData) => {
+//   const paymentData = {
+//     paymentType: payment.type,
+//     paymentTypeId: payment.id,
+//   };
+//   if (!enablePrinting) {
+//     handleConfirmOrder(customerData, paymentData, {
+//       isPaid: true,
+//     });
+//     return null;
+//   }
+
+//   const currentOrder = currentOrder;
+
+//   if (!currentOrder) {
+//     toggleOrderConfirmModal();
+
+//     return alert("No active order");
+//   }
+//   if (
+//     currentOrder?.isPaid === false &&
+//     currentOrder?.isOrderConfirmed === true
+//   ) {
+//     const updateData = {
+//       refId: currentOrder.refId,
+
+//       restaurantId: currentOrder.restaurantId,
+
+//       _id: currentOrder._id,
+//       isPaid: true,
+//       ...customerData,
+//     };
+
+//     dispatch(
+//       updateOrder(updateData, () => {
+//         setOtherCharges(0);
+//         setDiscount(0);
+//         toggleOrderConfirmModal();
+//         dispatch(deleteLocalOrder(currentOrder.refId));
+//       })
+//     );
+//   } else {
+//     toggleOrderConfirmModal();
+
+//     handleConfirmOrder(
+//       customerData,
+//       paymentData,
+//       {
+//         isPaid: false,
+//       },
+//       () => {
+//         dispatch(deleteLocalOrder(currentOrder.refId));
+//       }
+//     );
+//   }
+// };
+
+// const onPrePrint = (customer) => {
+//   const customerData = {
+//     customerName,
+//     customerMobile,
+//   };
+//   let orderdata = {
+//     ...getData(),
+//     otherCharges: parseFloat2Decimals(getData().otherCharges),
+//     discount: parseFloat2Decimals(getData().discount),
+
+//     grandTotal: Math.ceil(getData().grandTotal),
+//     orderItems: currentOrder.items,
+//     orderBy: name,
+//     paymentType: undefined,
+//     paymentTypeId: undefined,
+//     tableNumber: currentOrder.tableNumber,
+//     tableId: currentOrder._id,
+//     restaurantId,
+//     branchId,
+//     orderNumber: lastOrderNumber + (activeOrders.length - orderIndex),
+//     branchCode: branchCode,
+//     orderType: currentOrder.orderType,
+
+//     ...customerData,
+//     ...customer,
+//   };
+//   dispatch(prePrintOrder(orderdata));
+//   setOtherCharges(0);
+//   setDiscount(0);
+//   setPrePrintOpen(false);
+// };
 
 // import React from "react";
 // import { useDispatch, useSelector } from "react-redux";

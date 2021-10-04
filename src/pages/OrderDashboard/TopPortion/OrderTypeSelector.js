@@ -25,8 +25,12 @@ const OrderTypeSelector = () => {
         return (
           <button
             type="button"
-            onClick={() => handleSelectType(type)}
-            class={`btn  shadow-none btn-warning`}
+            onClick={() => index !== 0 && handleSelectType(type)}
+            class={
+              index === 0
+                ? `btn  shadow-none btn-primary`
+                : `btn  shadow-none btn-warning`
+            }
           >
             {type.key}
           </button>

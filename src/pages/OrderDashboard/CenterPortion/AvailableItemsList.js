@@ -51,8 +51,9 @@ const AvailableItemsList = ({ items, onItemClick, onVariantClick }) => {
     onVariantClick({
       ...item,
       ...variant,
+
       isVariant: true,
-      variantId: item?.id || item?._id,
+      variantId: variant?.id || variant?._id,
       itemName: `${item.itemName} ${variant.itemName}`,
     });
   };

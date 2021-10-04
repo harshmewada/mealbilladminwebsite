@@ -65,6 +65,7 @@ const initialstate = {
   selectedOrderType: "Dine In",
   selectedOrderTypeId: 0,
   previousOrders: [],
+  orderNumberCount: 0,
 };
 
 const findActiveOrder = (activeOrders, refId) => {

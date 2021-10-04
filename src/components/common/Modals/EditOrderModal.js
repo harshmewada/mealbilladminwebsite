@@ -9,7 +9,7 @@ import {
   changeItemQuantityRedux,
   pushItemToActiveOrderRedux,
   removeItemRedux,
-} from "../../../redux/reducers/orderReducer";
+} from "../../../redux/reducers/newOrderReducer";
 
 import getOrderNeccesaryData from "../../../helpers/getOrderNeccesaryData";
 import moment from "moment";

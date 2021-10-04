@@ -12,7 +12,7 @@ import TableTypeSelector from "./TableTypeSelector";
 import { Col, Row } from "react-bootstrap";
 import ShortCutList from "./ShortCutList";
 import { TYPESOFORDERS } from "../../../contants";
-
+import calculateBranchOrderNumber from "../../../helpers/calculateBranchOrderNumber";
 const TopPortion = () => {
   const dispatch = useDispatch();
   const username = useSelector((state) => state.user.name);
@@ -20,6 +20,9 @@ const TopPortion = () => {
 
   const allTables = useSelector((state) => state.order.allTables);
   const activeOrders = useSelector((state) => state.order.activeOrders);
+  const branchCode = useSelector((state) => state.order.branchCode);
+
+  const orderNumberCount = useSelector((state) => state.order.orderNumberCount);
 
   const checkactive = (tableNumber) => {
     let myIndex = activeOrders.find((table) => {
@@ -36,7 +39,18 @@ const TopPortion = () => {
     if (checkactive(data.tableNumber)) {
       dispatch(setActiveOrder(checkactive(data.tableNumber).refId));
     } else {
-      dispatch(activateOrder(data, username));
+      dispatch(
+        activateOrder(
+          {
+            ...data,
+            branchOrderNumber: calculateBranchOrderNumber(
+              branchCode,
+              orderNumberCount
+            ),
+          },
+          username
+        )
+      );
     }
   };
 

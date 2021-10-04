@@ -98,10 +98,6 @@ const Header = ({
   gstNumber,
   branchAddress,
 }) => {
-  const orderTypes = TYPESOFORDERS.find((types) => {
-    console.log("types", types.value, orderType);
-    return types.value == orderType;
-  });
   return (
     <>
       <div class="centered">
@@ -125,7 +121,7 @@ const Header = ({
           <p>{orderDate}</p>
         </div>
         <div className="subinfo">
-          <p>{orderTypes.key}</p>
+          <p>{orderType}</p>
           <p>{orderNumber}</p>
 
           <p>{tableNumber}</p>

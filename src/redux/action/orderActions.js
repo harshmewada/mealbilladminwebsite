@@ -3,12 +3,13 @@ import branchApi from "../api/branchApi";
 import { orderApi } from "../api/orderApi";
 import checkIfAsyncReqSuccess from "./checkIfAsyncReqSuccess";
 import { uuid } from "uuidv4";
-import { TYPESOFORDERS } from "../../contants";
+import { ITEMSTATUS, TYPESOFORDERS } from "../../contants";
 import {
   findActiveOrderIndex,
   isThatItemInMyOrder,
 } from "../reducers/newOrderReducer";
-const dummyActive = (payload, username) => {
+import calculateBranchOrderNumber from "../../helpers/calculateBranchOrderNumber";
+const dummyActive = (payload, username, orderNumber, branchOrderNumber) => {
   const { tableNumber, tableTypeId, tablePrice, orderTypeId, orderType } =
     payload;
   return {
@@ -19,6 +20,8 @@ const dummyActive = (payload, username) => {
     tablePrice: tablePrice || 0,
     orderTypeId: orderTypeId || TYPESOFORDERS[0].value,
     orderType: orderType || TYPESOFORDERS[0].key,
+    branchOrderNumber: branchOrderNumber,
+    orderNumber: orderNumber,
 
     otherCharges: 0,
     discount: 0,
@@ -57,11 +60,23 @@ export const setOrderType = (type) => {
 };
 
 export const activateOrder = (data, userName) => {
-  return {
-    type: orderTypes.ACTIVATE_ORDER,
-    payload: dummyActive(data, userName),
+  return (dispatch, getState) => {
+    const branchCode = getMyState(getState, "user").branchCode;
+    const orderNumberCount = getMyState(getState, "order").orderNumberCount;
 
-    isSocket: true,
+    const orderNumber =
+      getMyState(getState, "order").lastOrderNumber + orderNumberCount;
+    const branchOrderNumber = calculateBranchOrderNumber(
+      branchCode,
+      orderNumber
+    );
+    dispatch(incrementOrderNumberCount());
+    return dispatch({
+      type: orderTypes.ACTIVATE_ORDER,
+      payload: dummyActive(data, userName, orderNumber, branchOrderNumber),
+
+      isSocket: true,
+    });
   };
 };
 
@@ -115,6 +130,13 @@ export const pushItemToActiveOrder = ({ item, isVariant }) => {
             ...item,
             itemId: item?.variantId || item?._id || item?.id,
             isVariant: isVariant,
+            quantity: 1,
+
+            itemTotal: 1 * item.itemPrice,
+            itemStatus: ITEMSTATUS[0].key,
+            itemStatusId: ITEMSTATUS[0].value,
+            kotQuantity: 0,
+            kotTotal: 0,
           },
         },
       });
@@ -162,6 +184,26 @@ export const changeItemQuantitySocket = ({ quantity, itemId }) => {
   };
 };
 
+export const setItemAsPrepared = ({ refId, itemId }) => {
+  return {
+    isSocket: true,
+    type: orderTypes.SET_ITEM_AS_PREPARED,
+    payload: {
+      refId,
+      itemId,
+    },
+  };
+};
+
+export const setItemAsPreparedSocket = ({ refId, itemId }) => {
+  return {
+    type: orderTypes.SET_ITEM_AS_PREPARED,
+    payload: {
+      refId,
+      itemId,
+    },
+  };
+};
 export const removeItem = (itemId) => {
   return (dispatch, getState) => {
     const refId = getMyState(getState, "order").activeOrder;
@@ -216,12 +258,16 @@ export const setActiveOrder = (refId) => {
 };
 
 export const deleteLocalOrder = (refId) => {
-  return {
-    type: orderTypes.DELETE_LOCAL_ORDER,
-    isSocket: true,
-    payload: {
-      refId,
-    },
+  return (dispatch, getState) => {
+    const branchCode = getMyState(getState, "user").branchCode;
+    return dispatch({
+      type: orderTypes.DELETE_LOCAL_ORDER,
+      isSocket: true,
+      payload: {
+        refId,
+        branchCode,
+      },
+    });
   };
 };
 export const deleteLocalOrderSocket = (refId) => {
@@ -239,10 +285,28 @@ export const prePrintOrder = (data) => {
     payload: data,
   };
 };
-export const setKOTitemsData = (data) => {
-  return {
-    type: orderTypes.SET_KOT_ITEMS,
-    payload: data,
+export const setKOTitemsData = ({ data, customerData }) => {
+  return (dispatch, getState) => {
+    const refId = getMyState(getState, "order").activeOrder;
+    return dispatch({
+      type: orderTypes.SET_KOT_ITEMS,
+      isSocket: true,
+      payload: {
+        refId,
+
+        data,
+        customerData,
+      },
+    });
+  };
+};
+
+export const setKOTitemsDataRedux = (data) => {
+  return (dispatch, getState) => {
+    return dispatch({
+      type: orderTypes.SET_KOT_ITEMS,
+      payload: data,
+    });
   };
 };
 
@@ -331,6 +395,12 @@ export const getPreviosOrders = (data) => {
         },
       },
     },
+  };
+};
+
+export const incrementOrderNumberCount = () => {
+  return {
+    type: orderTypes.INCREMENT_ORDER_NUMBER_COUNT,
   };
 };
 
