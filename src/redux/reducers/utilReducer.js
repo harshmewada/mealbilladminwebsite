@@ -19,6 +19,7 @@ const initialstate = {
   KOTprintData: undefined,
   enablePrinting: true,
   enableKOT: true,
+  enableKDS: true,
   enableLogo: true,
   enableBranchName: true,
 

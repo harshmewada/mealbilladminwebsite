@@ -13,7 +13,7 @@ import {
 
 import getOrderNeccesaryData from "../../../helpers/getOrderNeccesaryData";
 import moment from "moment";
-import { CURRENCY, DATETIMEFORMAT } from "../../../contants";
+import { CURRENCY, DATETIMEFORMAT, ITEMSTATUS } from "../../../contants";
 import calculateOrderTotals from "../../../helpers/calculateOrderTotals";
 import flattentItemsArray from "../../../helpers/flattenItemsArray";
 
@@ -35,28 +35,29 @@ const EditOrderModal = ({
   const { allItems } = useSelector((state) => state.order);
   const { enablePrinting } = useSelector((state) => state.util);
 
+  const activeOrder = activeOrders[0];
+  const activeOldOrder = activeOldOrders[0];
   const formatData = (data) => {
     const orderItems = data.orderItems;
 
     return {
       ...data,
       tablePrice: data?.tablePrice || 0,
-      items: orderItems,
+      orderItems: orderItems,
       orderType: parseInt(data.orderType),
       ...(mode === "EditOrder" && { isEdited: true }),
     };
   };
 
-  const handleItemQuantity = (quantity, itemindex) => {
+  const handleItemQuantity = ({ quantity, itemId }) => {
     // dispatch(changeItemQuantity(parseInt(quantity), itemindex));
-
     setActiveOrders([
-      ...changeItemQuantityRedux(
+      ...changeItemQuantityRedux({
         activeOrders,
-        0,
-        parseInt(quantity),
-        itemindex
-      ),
+        refId: activeOrder.refId,
+        quantity: parseInt(quantity),
+        itemId,
+      }),
     ]);
   };
   const deleteItem = (index) => {
@@ -65,18 +66,29 @@ const EditOrderModal = ({
   };
 
   const handleSearchAndAddItem = (selected) => {
-    // if (selected.length > 0) {
-    //   const item = selected[0];
-    //   const isVariant = item?.variantId ? true : false;
-    //   setActiveOrders([
-    //     ...pushItemToActiveOrderRedux(
-    //       activeOrders,
-    //       0,
-    //       item,
-    //       isVariant
-    //     ),
-    //   ]);
-    // }
+    if (selected.length > 0) {
+      const item = selected[0];
+      const isVariant = item?.variantId ? true : false;
+      let newItem = {
+        ...item,
+        itemId: item?.variantId || item?._id || item?.id,
+        isVariant: isVariant,
+        quantity: 1,
+
+        itemTotal: 1 * item.itemPrice,
+        itemStatus: ITEMSTATUS[0].key,
+        itemStatusId: ITEMSTATUS[0].value,
+        kotQuantity: 0,
+        kotTotal: 0,
+      };
+      setActiveOrders([
+        ...pushItemToActiveOrderRedux({
+          activeOrders,
+          refId: activeOrder.refId,
+          item: newItem,
+        }),
+      ]);
+    }
   };
 
   React.useEffect(() => {
@@ -90,9 +102,6 @@ const EditOrderModal = ({
       }
     }
   }, [open]);
-
-  const activeOrder = activeOrders[0];
-  const activeOldOrder = activeOldOrders[0];
 
   const getData = (orderData) => {
     let mydata = orderData || activeOrder;

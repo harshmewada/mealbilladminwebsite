@@ -79,7 +79,9 @@ const ManageItems = () => {
     rawMaterials,
   } = useSelector((state) => state.branch);
 
-  const { role, restaurantId, branchId } = useSelector((state) => state.user);
+  const { role, restaurantId, branchId, cgst, sgst } = useSelector(
+    (state) => state.user
+  );
   const [open, setOpen] = React.useState();
 
   const branches = useSelector((state) => state.branch.allBranches);
@@ -610,7 +612,16 @@ const ManageItems = () => {
 
   const AddAction = () => {
     return (
-      <AddCommonAction onClick={() => toggleAdd("Add")} title={PageTitle} />
+      <AddCommonAction
+        onClick={() => {
+          toggleAdd("Add");
+          setActionData({
+            sgst,
+            cgst,
+          });
+        }}
+        title={PageTitle}
+      />
     );
   };
   const handleBulkUpload = (file) => {
@@ -825,7 +836,6 @@ const ManageItems = () => {
           onClose={() => toggleAdd()}
           onConfirm={() => confirmDelete()}
         />
-
         <SmartTable
           headerComponents={headerComponents[role]}
           title={PageTitle}

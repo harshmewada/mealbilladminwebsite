@@ -20,7 +20,14 @@ import { CURRENCY, DATETIMEFORMAT, TYPESOFORDERS } from "../../../contants";
 import calculateOrderTotals from "../../../helpers/calculateOrderTotals";
 import PaymentSettleModal from "../../../components/common/Modals/PaymentSettleModal";
 import { findActiveOrderIndex } from "../../../redux/reducers/newOrderReducer";
-
+const getPaymentType = (types) => {
+  console.log("getPaymentType", types);
+  return types
+    .map((t) => {
+      return t.paymentMethodType;
+    })
+    .join(", ");
+};
 function parseFloat2Decimals(value) {
   return parseFloat(parseFloat(value).toFixed(2));
 }
@@ -89,7 +96,9 @@ const OrderTotalDisplay = () => {
     (state) => state.user
   );
 
-  const { enableKOT, enablePrinting } = useSelector((state) => state.util);
+  const { enableKOT, enablePrinting, enableKDS } = useSelector(
+    (state) => state.util
+  );
 
   const discount = currentOrder?.discount || 0;
   const otherCharges = currentOrder?.otherCharges || 0;
@@ -118,7 +127,7 @@ const OrderTotalDisplay = () => {
   };
 
   const handleOpenMdoal = (type) => {
-    if (currentOrder.items.length > 0) onConfirmOrder();
+    if (currentOrder.orderItems.length > 0) onConfirmOrder();
     else {
       alert("No Items selected");
     }
@@ -141,61 +150,19 @@ const OrderTotalDisplay = () => {
   };
 
   const handleConfirmKOTOrder = (customerData) => {
-    const active = currentOrder;
-    let kotItems = [];
-
-    //kot loop
-    active.items.forEach((data) => {
-      const foundItemIndex = active.lastKOTItems.findIndex(
-        (lastitem) => lastitem.itemId === data.itemId
-      );
-      if (foundItemIndex > -1) {
-        const foundItem = active.lastKOTItems[foundItemIndex];
-        const diffrence = data.quantity - foundItem.quantity;
-        if (diffrence === 0) {
-        }
-        if (diffrence > 0) {
-          kotItems.push({ ...data, quantity: diffrence });
-        }
-        // else {
-        //   kotItems.push({ ...data, quantity: diffrence });
-        // }
-      } else {
-        kotItems.push({ ...data });
-      }
-    });
-
-    let ItemsQuantity = 0;
-    kotItems.map((item, index) => {
-      ItemsQuantity = ItemsQuantity + item.quantity;
-    });
-    const kotData = {
-      branchOrderNumber: `# ${lastOrderNumber + activeOrders.length + 1}`,
-      orderType: active.orderType,
-      orderItems: kotItems,
-      orderDate: moment().format(DATETIMEFORMAT),
-      tableNumber: active?.tableNumber,
-
-      totalQuantity: ItemsQuantity,
-    };
-    dispatch(
-      setKOTPrintData({
-        ...kotData,
-        ...customerData,
-      })
-    );
-    dispatch(setKOTitemsData({ data: kotItems, customerData }));
+    dispatch(setKOTitemsData({ customerData }));
     toggleKOTConfirmModal();
   };
 
   const handleConfirmOrder = (customerData, paymentData, others, cb) => {
     let orderdata = {
+      ...currentOrder,
       ...getData(),
       otherCharges: parseFloat2Decimals(getData().otherCharges),
       discount: parseFloat2Decimals(getData().discount),
 
       grandTotal: Math.ceil(getData().grandTotal),
-      orderItems: currentOrder.items,
+      orderItems: currentOrder.orderItems,
       orderBy: name,
 
       paymentType: undefined,
@@ -207,10 +174,13 @@ const OrderTotalDisplay = () => {
       orderNumber: lastOrderNumber + (activeOrders.length - orderIndex),
       branchCode: branchCode,
       orderType: currentOrder.orderType,
+      orderTypeId: currentOrder.orderTypeId,
+
       isPaid: false,
 
       ...customerData,
       ...paymentData,
+
       ...others,
     };
     setPrePrintOpen(false);
@@ -219,18 +189,20 @@ const OrderTotalDisplay = () => {
         setOtherCharges(0);
         setDiscount(0);
         toggleOrderConfirmModal();
+        cb && cb();
       })
     );
   };
 
   const onConfirmOrder = (orderData, customerData, paymentData, others) => {
     let orderdata = {
+      ...currentOrder,
       ...getData(),
       otherCharges: parseFloat2Decimals(getData().otherCharges),
       discount: parseFloat2Decimals(getData().discount),
 
       grandTotal: Math.ceil(getData().grandTotal),
-      orderItems: currentOrder.items,
+      orderItems: currentOrder.orderItems,
       orderBy: name,
 
       paymentType: undefined,
@@ -245,6 +217,7 @@ const OrderTotalDisplay = () => {
 
       ...customerData,
       ...paymentData,
+
       ...others,
       ...(currentOrder?.isEdited && {
         isEdited: true,
@@ -258,27 +231,50 @@ const OrderTotalDisplay = () => {
   };
 
   const onSettlePayment = (paymentData, customerData) => {
-    dispatch(
-      updateOrder(
-        {
-          ...settleOpen,
-          ...paymentData,
-          ...customerData,
-
-          orderStatus: "completed",
-          isEdited: false,
-          isOrderConfirmed: true,
-          isPaid: true,
-          _id: currentOrder.id || currentOrder._id,
-        },
-        (data) => {
-          setOtherCharges(0);
-          setDiscount(0);
-          dispatch(deleteLocalOrder(settleOpen.refId));
-          setSettleOpen();
-        }
-      )
-    );
+    if (settleOpen.isOrderConfirmed) {
+      dispatch(
+        updateOrder(
+          {
+            ...settleOpen,
+            ...paymentData,
+            ...customerData,
+            paymentType: getPaymentType(paymentData.paymentMethods),
+            orderStatus: "completed",
+            isEdited: false,
+            isOrderConfirmed: true,
+            isPaid: true,
+            _id: currentOrder.id || currentOrder._id,
+          },
+          (data) => {
+            setOtherCharges(0);
+            setDiscount(0);
+            dispatch(deleteLocalOrder(settleOpen.refId));
+            setSettleOpen();
+          }
+        )
+      );
+    } else {
+      dispatch(
+        confirmOrder(
+          {
+            ...settleOpen,
+            ...paymentData,
+            ...customerData,
+            paymentType: getPaymentType(paymentData.paymentMethods),
+            orderStatus: "completed",
+            isEdited: false,
+            isOrderConfirmed: true,
+            isPaid: true,
+          },
+          (data) => {
+            setOtherCharges(0);
+            setDiscount(0);
+            dispatch(deleteLocalOrder(settleOpen.refId));
+            setSettleOpen();
+          }
+        )
+      );
+    }
   };
 
   const getData = () => {
@@ -404,6 +400,7 @@ const OrderTotalDisplay = () => {
 
       <div className="col-md-4 mb-0">
         <OrderButton
+          enableKDS={enableKDS}
           enableKOT={enableKOT}
           enablePrinting={enablePrinting}
           onKOTButtonClick={() => handleKOTButtonClick()}
@@ -448,7 +445,7 @@ const OrderTotalDisplay = () => {
           customerMobile={customerMobile}
         />
       )} */}
-      {enableKOT && KOTModalOpen && (
+      {KOTModalOpen && (
         <OrderConfirmModal
           enableRemarks
           open={KOTModalOpen}

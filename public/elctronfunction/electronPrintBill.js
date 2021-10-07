@@ -12,7 +12,7 @@ const insert = (arr, index, newItem) => [
   ...arr.slice(index),
 ];
 const commonBordlessTableCellStyle = ({ style, textAlign }) => {
-  return `border:1px solid transparent;text-align:${textAlign};padding-bottom:0px;${style}`;
+  return `border:1px solid transparent;text-align:${textAlign};padding-bottom:0px;font-size:12px;font-weight:600;${style}`;
 };
 const CURRENCY = "₹";
 
@@ -24,7 +24,7 @@ const commonBodyHeaderStyle = ({ style, textAlign, width }) => {
 };
 
 const commonBodyCellStyle = ({ style, textAlign, width }) => {
-  return `text-align:${textAlign};border-bottom:0.1rem solid #aaa;font-size:11px;color:#000;${style}`;
+  return `text-align:${textAlign};border-bottom:0.1rem solid #aaa;font-size:12px;color:#000;font-weight:600;${style}`;
 };
 
 const TYPESOFORDERS = [
@@ -103,9 +103,7 @@ const electronPrintBill = async (printdata, printerName) => {
   } = printdata.printSetting;
   // const files = fs.readdirSync(filepath);
   // console.log("dir files", process.cwd());
-  const currentOrderType = TYPESOFORDERS.find((types) => {
-    return types.value == printdata.printData.orderType;
-  });
+
   const options = {
     preview: false, // Preview in window or print
     width: "250px", //  width of content body
@@ -129,7 +127,7 @@ const electronPrintBill = async (printdata, printerName) => {
             type: "text",
             value: text,
             style: `text-align:center; font-weight:600;
-                      font-size: 13px;
+                      font-size: 14px;
                      border:1px solid transparent`,
           },
         ],
@@ -167,7 +165,7 @@ const electronPrintBill = async (printdata, printerName) => {
                   type: "text",
                   value: printdata.restaurant,
                   style: `text-align:center; font-weight:600;
-                      font-size: 13px;
+                      font-size: 14px;
                       margin-bottom: 10px;border:1px solid transparent`,
                 },
               ],
@@ -274,7 +272,7 @@ const electronPrintBill = async (printdata, printerName) => {
         [
           {
             type: "text",
-            value: currentOrderType.key,
+            value: printdata.printData.orderType,
             style: commonBordlessTableCellStyle({ textAlign: "left" }),
           },
           {

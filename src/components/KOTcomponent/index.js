@@ -37,10 +37,32 @@ const KOTPrintComponent = (props) => {
   }`;
 
   React.useEffect(() => {
+    console.log("window kot", KOTprintData);
     if (isElectron && KOTprintData) {
+      const {
+        branchOrderNumber,
+        customerMobile,
+        customerName,
+        orderDate,
+        orderItems,
+        orderType,
+        remarks,
+        tableNumber,
+        totalQuantity,
+      } = KOTprintData;
       window.api.printKOTSilently({
         logo,
-        printData: KOTprintData,
+        printData: {
+          branchOrderNumber,
+          customerMobile,
+          customerName,
+          orderDate,
+          orderItems,
+          orderType,
+          remarks,
+          tableNumber,
+          totalQuantity,
+        },
         restaurant,
         branchAddress,
         printSetting,

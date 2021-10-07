@@ -15,7 +15,7 @@ const DisplayList = ({
   tableNumber,
   orderType,
   orderTypeId,
-  items,
+  orderItems,
   branchOrderNumber,
   onItemClick,
   remarks,
@@ -63,7 +63,7 @@ const DisplayList = ({
             </div>
             <div className="col-md-4">
               <span style={{ color: bgColor ? undefined : "white" }}>
-                {items?.length} Items
+                {orderItems?.length} Items
               </span>
             </div>
 
@@ -76,7 +76,20 @@ const DisplayList = ({
                 {branchOrderNumber}
               </span>
             </div>
-            {remarks && (
+            {remarks &&
+              remarks.map((a) => {
+                return (
+                  <div className="col-md-12 mt-1">
+                    <span
+                      className={"badge badge-danger p-1"}
+                      style={{ color: bgColor ? undefined : "white" }}
+                    >
+                      Remarks - {a}
+                    </span>
+                  </div>
+                );
+              })}
+            {/* {remarks && (
               <div className="col-md-12 mt-1">
                 <span
                   className={"badge badge-danger p-1"}
@@ -85,16 +98,16 @@ const DisplayList = ({
                   Remarks - {remarks}
                 </span>
               </div>
-            )}
+            )} */}
           </div>
         </a>
       </div>
 
       <div class=" mt-0 pt-0 pl-1 pr-1 ">
-        {items?.length > 0 ? (
+        {orderItems?.length > 0 ? (
           <table class="table table-sm mb-0 ordertable">
             <tbody>
-              {items.map((item, index) => {
+              {orderItems.map((item, index) => {
                 const { itemId } = item;
                 return (
                   <tr
@@ -102,7 +115,7 @@ const DisplayList = ({
                     style={{
                       cursor: "pointer",
                     }}
-                    onClick={() => onItemClick(item.itemId)}
+                    onClick={() => onItemClick(item.itemId, item.kotId)}
                   >
                     {/* <th scope="row">{index + 1}</th> */}
                     <td>{item.itemName}</td>

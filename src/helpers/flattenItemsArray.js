@@ -1,6 +1,6 @@
-const flattentItemsArray = (items) => {
+const flattentItemsArray = (orderItems) => {
   let emptyItems = [];
-  items.forEach((element) => {
+  orderItems.forEach((element) => {
     if (element?.variants && element.variants.length > 0) {
       element.variants.forEach((variant) =>
         emptyItems.push({

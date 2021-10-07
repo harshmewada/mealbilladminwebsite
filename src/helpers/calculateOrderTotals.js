@@ -15,14 +15,18 @@ const calculateOrderTotals = (
   let tablePrice = 0;
   let taxTotal = 0;
 
-  if (activeOrder?.items) {
-    activeOrder?.items.forEach((item) => {
+  if (activeOrder?.orderItems) {
+    activeOrder?.orderItems.forEach((item) => {
       itemsTotal += item.itemTotal;
+      let itemcgst = item?.cgst || 0;
+      let itemsgst = item?.sgst || 0;
+      cgstCharges += (item.itemTotal * itemcgst) / 100;
+      sgstCharges += (item.itemTotal * itemsgst) / 100;
     });
 
-    cgstCharges = (itemsTotal * cgst) / 100;
+    // cgstCharges = (itemsTotal * cgst) / 100;
 
-    sgstCharges = (itemsTotal * sgst) / 100;
+    // sgstCharges = (itemsTotal * sgst) / 100;
     tablePrice = activeOrder.tablePrice;
   }
   grandTotal =

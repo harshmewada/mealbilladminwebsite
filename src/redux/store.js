@@ -8,7 +8,7 @@ import socketMiddleware from "./middlewares/socketMiddleware.js";
 import socketIOClient from "socket.io-client";
 import { SOCKETURL } from "../contants";
 
-let socket = socketIOClient(SOCKETURL);
+let socket = socketIOClient(SOCKETURL, { secure: true });
 export default function initializeStore(initialState = {}) {
   const composeEnhancers =
     (typeof window !== "undefined" &&

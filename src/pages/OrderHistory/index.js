@@ -91,7 +91,7 @@ const OrderHistory = () => {
           ...data,
 
           grandTotal: Math.ceil(data.grandTotal),
-          orderItems: data.items,
+          orderItems: data.orderItems,
         },
         () => {
           toggleAdd();
@@ -105,7 +105,11 @@ const OrderHistory = () => {
   };
 
   const EditAction = (action) => (
-    <EditCommonAction onClick={() => handleEdit(action.data, "EditOrder")} />
+    <EditCommonAction
+      onClick={() => {
+        handleEdit(action.data, "EditOrder");
+      }}
+    />
   );
   const ViewAction = (action) => (
     <ViewCommonAction onClick={() => handleEdit(action.data, "View")} />
@@ -224,10 +228,10 @@ const OrderHistory = () => {
           headerComponents={headerComponents[role]}
           title={PageTitle}
           searchByLabel="Order Number"
-          searchByField="orderNumber"
+          searchByField="branchOrderNumber"
           // headActions={[AddAction]}
           actions={[EditAction, ViewAction]}
-          tableData={previousOrders.reverse()}
+          tableData={previousOrders}
           headers={headers}
           sortable={true}
           paginated={true}

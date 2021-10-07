@@ -45,6 +45,8 @@ const PrintComponent = (props) => {
       ? currReceiptMessage
       : undefined;
   React.useEffect(() => {
+    console.log("window bill", printData);
+
     if (isElectron && printData) {
       window.api.printBillSilently({
         logo: enableLogo && logo,

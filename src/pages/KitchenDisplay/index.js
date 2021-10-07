@@ -5,6 +5,48 @@ import useKitchenDisplay from "../../hooks/useKitchenDisplay";
 import { setItemAsPrepared } from "../../redux/action/orderActions";
 import DisplayList from "./DisplayList";
 
+const getNotPrepared = (newData) => {
+  const data = [...newData];
+  // if (data.length !== 1) {
+  //   delete data[data.length - 1];
+  // }
+
+  let notPrepared = [];
+  data.forEach((i) => {
+    i.orderItems.forEach((h) => {
+      // console.log("notPrepared", i.id, h.itemName, h.itemStatusId);
+      const isExist = notPrepared.findIndex((d) => d.itemId === h.itemId);
+      if (h.itemStatusId !== 2) {
+        if (isExist > -1) {
+          notPrepared[isExist].quantity =
+            notPrepared[isExist].quantity + h.quantity;
+          notPrepared[isExist].kotId = [...notPrepared[isExist].kotId, i.id];
+        } else {
+          notPrepared.push({ ...h, kotId: [i.id] });
+        }
+      }
+    });
+  });
+  return notPrepared;
+};
+
+const getRemarks = (newData) => {
+  const data = [...newData];
+  // if (data.length !== 1) {
+  //   delete data[data.length - 1];
+  // }
+
+  let notPrepared = [];
+  data.forEach((i) => {
+    const find = notPrepared.findIndex((a) => a.remarks === i.remarks);
+
+    if (find < 0) {
+      notPrepared.push(i.remarks);
+    }
+  });
+  return notPrepared;
+};
+
 const KitchenDisplay = () => {
   const { getAllOrders } = useKitchenDisplay();
   const dispatch = useDispatch();
@@ -15,23 +57,25 @@ const KitchenDisplay = () => {
   const myActiveOrders = activeOrders.map((d) => {
     return {
       ...d,
-      items: d.items.filter((i) => i.itemStatusId !== 2),
+      orderItems: d.orderItems.filter((i) => i.itemStatusId !== 2),
     };
   });
+  console.log("myActiveOrders", myActiveOrders);
   const getFilteredItems = () => {
     let itemList = [];
 
     myActiveOrders.forEach((element) => {
-      element.items.forEach((i) => {
+      const notPrepared = getNotPrepared(element.KOTS);
+
+      notPrepared.forEach((i) => {
         const found = itemList.findIndex((a) => a.itemId === i.itemId);
-        console.log("found", found);
         if (found > -1) {
           itemList[found] = {
             ...itemList[found],
             quantity: itemList[found].quantity + i.quantity,
           };
         } else {
-          itemList.push(i);
+          itemList.push({ ...i });
         }
       });
     });
@@ -39,8 +83,8 @@ const KitchenDisplay = () => {
     return itemList;
   };
 
-  const handleItemClick = (refId, itemId) => {
-    dispatch(setItemAsPrepared({ refId, itemId }));
+  const handleItemClick = (refId, itemId, kotId) => {
+    dispatch(setItemAsPrepared({ refId, itemId, kotId }));
   };
   return (
     <div>
@@ -49,7 +93,7 @@ const KitchenDisplay = () => {
           {" "}
           <DisplayList
             orderType="All Orders"
-            items={getFilteredItems()}
+            orderItems={getFilteredItems()}
             onItemClick={() => {}}
           />
         </Col>
@@ -57,14 +101,21 @@ const KitchenDisplay = () => {
         <Col md="9">
           <Row>
             {myActiveOrders.map((o, i) => {
+              const notPrepared = getNotPrepared(o.KOTS);
+              const remarks = getRemarks(o.KOTS);
+
               return (
-                o.items.length > 0 && (
+                o.KOTS.length > 0 && (
                   <Col md={4}>
                     <DisplayList
                       {...o}
+                      orderItems={[...notPrepared]}
+                      remarks={remarks}
                       key={i}
                       orderType={o.orderType}
-                      onItemClick={(itemId) => handleItemClick(o.refId, itemId)}
+                      onItemClick={(itemId, kotId) =>
+                        handleItemClick(o.refId, itemId, kotId)
+                      }
                     />
                   </Col>
                 )

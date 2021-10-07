@@ -1,7 +1,9 @@
 const socketMiddleware = (socket) => (store) => (next) => (action) => {
-  const { branchId, restaurantId, id, kitchenDisplay } = store.getState().user;
+  const { branchId, restaurantId, id } = store.getState().user;
+  const { enableKDS } = store.getState().util;
+
   if (action.isSocket) {
-    if (kitchenDisplay && Boolean(branchId)) {
+    if (enableKDS && Boolean(branchId)) {
       if (socket.connected === false) {
         socket.on("connect", async () => {
           socket.emit("JOIN_ROOM", branchId);
@@ -18,9 +20,9 @@ const socketMiddleware = (socket) => (store) => (next) => (action) => {
           });
         });
 
-        console.log("socket emit", action.type);
+        // console.log("socket emit", action.type);
       } else {
-        console.log("socket emit", action.type);
+        // console.log("socket emit", action.type);
         socket.emit(action.type, {
           branchId,
           restaurantId,
@@ -28,6 +30,8 @@ const socketMiddleware = (socket) => (store) => (next) => (action) => {
           ...action.payload,
         });
       }
+    } else {
+      next(action);
     }
   } else {
     next(action);

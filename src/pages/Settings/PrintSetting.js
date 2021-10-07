@@ -17,6 +17,7 @@ const PrintSetting = () => {
     enablePrinting,
     enableBranchName,
     enableKOT,
+    enableKDS,
     enableLogo,
     enableAddress,
     enableGSTNumber,
@@ -47,7 +48,7 @@ const PrintSetting = () => {
     <div>
       <Card>
         <Card.Header class="card-header bg-primary">
-          <h5 class="text-white">Printer Setting</h5>
+          <h5 class="text-white"> Setting</h5>
         </Card.Header>
         <Card.Body>
           {renderCheckboxInput({
@@ -62,6 +63,12 @@ const PrintSetting = () => {
             value: enableKOT,
             onChange: (name, value) => handleChangeCheckBox(name, value),
             label: "Enable KOT",
+          })}
+          {renderCheckboxInput({
+            name: "enableKDS",
+            value: enableKDS,
+            onChange: (name, value) => handleChangeCheckBox(name, value),
+            label: "Enable Kitchen Display System",
           })}
 
           {renderCheckboxInput({

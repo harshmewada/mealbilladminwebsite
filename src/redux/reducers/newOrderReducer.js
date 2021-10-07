@@ -21,11 +21,19 @@ export const findActiveOrderIndex = (activeOrders, refId) => {
   }
 };
 export const isThatItemInMyOrder = (activeOrder, myItemId) => {
-  return activeOrder.items.find((d) => d.itemId === myItemId);
+  return activeOrder.orderItems.find((d) => d.itemId === myItemId);
 };
 
-const findItemIndex = (items, itemId) => {
-  const foundOrder = items.findIndex((order) => order.itemId === itemId);
+export const checkIfQuantityExceeds = (item, quantity) => {
+  if (item.currentStock && quantity > item.currentStock) {
+    alert("Not Enought Quantity");
+    return true;
+  } else {
+    return false;
+  }
+};
+export const findItemIndex = (orderItems, itemId) => {
+  const foundOrder = orderItems.findIndex((order) => order.itemId === itemId);
   if (foundOrder > -1) {
     return foundOrder;
   } else {
@@ -35,9 +43,8 @@ const findItemIndex = (items, itemId) => {
 
 export const pushItemToActiveOrderRedux = ({ activeOrders, refId, item }) => {
   const myOrder = findActiveOrderIndex(activeOrders, refId);
-  console.log("pushItemToActiveOrderRedux", item);
   if (myOrder >= 0) {
-    activeOrders[myOrder].items.push(item);
+    activeOrders[myOrder].orderItems.push(item);
     return activeOrders;
   } else {
     alert("Please select order type");
@@ -48,8 +55,7 @@ export const pushItemToActiveOrderSocket = ({ activeOrders, refId, item }) => {
   const myOrder = findActiveOrderIndex(activeOrders, refId);
 
   if (myOrder >= 0) {
-    console.log("pushItemToActiveOrderSocket", item);
-    activeOrders[myOrder].items.push({
+    activeOrders[myOrder].orderItems.push({
       ...item,
       // quantity: 1,
       // itemTotal: 1 * item.itemPrice,
@@ -70,20 +76,14 @@ export const changeItemQuantityRedux = ({
   const myOrderIndex = findActiveOrderIndex(activeOrders, refId);
 
   if (myOrderIndex >= 0) {
-    console.log(
-      "changeItemQuantityRedux",
-      myOrderIndex,
-      findActiveOrderIndex(activeOrders, refId),
-      activeOrders.length
-    );
-    const foundItem = activeOrders[myOrderIndex].items.findIndex(
+    const foundItem = activeOrders[myOrderIndex].orderItems.findIndex(
       (a) => a.itemId === itemId
     );
 
-    activeOrders[myOrderIndex].items[foundItem].quantity = quantity;
+    activeOrders[myOrderIndex].orderItems[foundItem].quantity = quantity;
 
-    activeOrders[myOrderIndex].items[foundItem].itemTotal =
-      quantity * activeOrders[myOrderIndex].items[foundItem].itemPrice;
+    activeOrders[myOrderIndex].orderItems[foundItem].itemTotal =
+      quantity * activeOrders[myOrderIndex].orderItems[foundItem].itemPrice;
     return activeOrders;
   } else {
     alert("Please select order type");
@@ -95,12 +95,13 @@ export const saveItemAsPreparedRedux = ({ activeOrders, refId, itemId }) => {
   const myOrderIndex = findActiveOrderIndex(activeOrders, refId);
 
   if (myOrderIndex >= 0) {
-    const foundItem = activeOrders[myOrderIndex].items.findIndex(
+    const foundItem = activeOrders[myOrderIndex].orderItems.findIndex(
       (a) => a.itemId === itemId
     );
 
-    activeOrders[myOrderIndex].items[foundItem].itemStatus = ITEMSTATUS[2].key;
-    activeOrders[myOrderIndex].items[foundItem].itemStatusId =
+    activeOrders[myOrderIndex].orderItems[foundItem].itemStatus =
+      ITEMSTATUS[2].key;
+    activeOrders[myOrderIndex].orderItems[foundItem].itemStatusId =
       ITEMSTATUS[2].value;
 
     return activeOrders;
@@ -118,9 +119,9 @@ export const removeItemRedux = ({
 }) => {
   const myOrderIndex = findActiveOrderIndex(activeOrders, refId);
   if (myOrderIndex >= 0) {
-    activeOrders[myOrderIndex].items = activeOrders[myOrderIndex].items.filter(
-      (a) => a.itemId !== itemId
-    );
+    activeOrders[myOrderIndex].orderItems = activeOrders[
+      myOrderIndex
+    ].orderItems.filter((a) => a.itemId !== itemId);
 
     return activeOrders;
   } else {
@@ -160,52 +161,65 @@ export const addCustomerNameOrMobileToOrder = ({
   }
 };
 
-const setKOTITEMSDATA = (activeOrders, refId, data, customerData) => {
-  data.forEach((dataitem) => {
-    const myOrder = findActiveOrderIndex(activeOrders, refId);
-    // if()
-    const foundItem = activeOrders[myOrder].lastKOTItems.findIndex(
-      (item) => item.itemId === dataitem.itemId
-    );
-
-    activeOrders[myOrder].customerName = customerData?.customerName;
-    activeOrders[myOrder].customerMobile = customerData?.customerMobile;
-    activeOrders[myOrder].remarks = customerData?.remarks;
-
-    if (foundItem > -1) {
-      // console.log("setKOTITEMSDATA if", dataitem);
-
-      activeOrders[myOrder].lastKOTItems[foundItem].quantity +=
-        dataitem.quantity;
-    } else {
-      // console.log("setKOTITEMSDATA else", dataitem);
-      const foundmyItem = activeOrders[myOrder].items.findIndex(
-        (item) => item.itemId === dataitem.itemId
-      );
-      activeOrders[myOrder].items[foundmyItem].itemStatus = ITEMSTATUS[1].key;
-      activeOrders[myOrder].items[foundmyItem].itemStatusId =
-        ITEMSTATUS[1].value;
-      activeOrders[myOrder].items[foundmyItem].kotQuantity =
-        activeOrders[myOrder].items[foundmyItem].quantity + dataitem.quantity;
-
-      activeOrders[myOrder].lastKOTItems.push({
-        ...dataitem,
-
-        itemStatus: ITEMSTATUS[1].key,
-        itemStatusId: ITEMSTATUS[1].value,
-      });
-    }
-  });
+const setKOTITEMSDATA = (activeOrders, refId, order, customerData) => {
+  const myOrder = findActiveOrderIndex(activeOrders, refId);
+  activeOrders[myOrder] = order;
 
   return activeOrders;
 };
+
+// const setKOTITEMSDATA = (activeOrders, refId, data, customerData) => {
+//   const myOrder = findActiveOrderIndex(activeOrders, refId);
+//   data.forEach((dataitem) => {
+//     // if()
+
+//     activeOrders[myOrder].customerName = customerData?.customerName;
+//     activeOrders[myOrder].customerMobile = customerData?.customerMobile;
+//     activeOrders[myOrder].remarks = customerData?.remarks;
+
+//     const foundmyItem = activeOrders[myOrder].orderItems.findIndex(
+//       (item) => item.itemId === dataitem.itemId
+//     );
+//     activeOrders[myOrder].orderItems[foundmyItem].itemStatus = ITEMSTATUS[1].key;
+//     activeOrders[myOrder].orderItems[foundmyItem].itemStatusId = ITEMSTATUS[1].value;
+//     activeOrders[myOrder].orderItems[foundmyItem].kotQuantity =
+//       activeOrders[myOrder].orderItems[foundmyItem].quantity + dataitem.quantity;
+
+//     // const foundItem = activeOrders[myOrder].lastKOTItems.findIndex(
+//     //   (item) => item.itemId === dataitem.itemId
+//     // );
+//     // if (foundItem > -1) {
+//     //   // console.log("setKOTITEMSDATA if", dataitem);
+
+//     //   activeOrders[myOrder].lastKOTItems[foundItem].quantity +=
+//     //     dataitem.quantity;
+//     // } else {
+//     //   // console.log("setKOTITEMSDATA else", dataitem);
+
+//     //   activeOrders[myOrder].lastKOTItems.push({
+//     //     ...dataitem,
+
+//     //     itemStatus: ITEMSTATUS[1].key,
+//     //     itemStatusId: ITEMSTATUS[1].value,
+//     //   });
+//     // }
+//   });
+//   activeOrders[myOrder].KOTS.push({
+//     id:uuid(),
+//     status: ITEMSTATUS[1].key,
+//     statusId: ITEMSTATUS[1].value,
+//     orderItems: data,
+//   });
+
+//   return activeOrders;
+// };
 
 const updateOrderStatus = (orders, data) => {
   const foundOrder = orders.findIndex((od) => od.refId === data.refId);
   if (foundOrder >= 0) {
     orders[foundOrder] = data;
     orders[foundOrder].orderTypeId = parseInt(data.orderTypeId);
-    orders[foundOrder].items = data.orderItems;
+    orders[foundOrder].orderItems = data.orderItems;
     orders[foundOrder].tablePrice = data?.tableCharges || 0;
   }
   return orders;
@@ -365,16 +379,10 @@ const orderReducer = (state = initialstate, action) => {
         ],
       };
 
-    case orderTypes.SET_ITEM_AS_PREPARED:
+    case orderTypes.SET_ITEM_AS_PREPARED_SOCKET:
       return {
         ...state,
-        activeOrders: [
-          ...saveItemAsPreparedRedux({
-            activeOrders: state.activeOrders,
-            refId: getPayload().refId,
-            itemId: getPayload().itemId,
-          }),
-        ],
+        activeOrders: [...action.payload],
       };
 
     case orderTypes.REMOVE_ITEM:
@@ -422,8 +430,7 @@ const orderReducer = (state = initialstate, action) => {
           ...setKOTITEMSDATA(
             state.activeOrders,
             action.payload.refId,
-            action.payload.data,
-            action.payload.customerData
+            action.payload.order
           ),
         ],
       };
@@ -513,8 +520,8 @@ export default orderReducer;
 //   }
 // };
 
-// const findItemIndex = (items, itemId) => {
-//   const foundOrder = items.findIndex((order) => order.itemId === itemId);
+// const findItemIndex = (orderItems, itemId) => {
+//   const foundOrder = orderItems.findIndex((order) => order.itemId === itemId);
 //   if (foundOrder > -1) {
 //     return foundOrder;
 //   } else {
@@ -526,7 +533,7 @@ export default orderReducer;
 //   const myOrder = findActiveOrderIndex(activeOrders, activeOrder);
 
 //   if (myOrder >= 0) {
-//     activeOrders[myOrder].items.push({
+//     activeOrders[myOrder].orderItems.push({
 //       ...item,
 //       quantity: 1,
 //       itemTotal: 1 * item.itemPrice,

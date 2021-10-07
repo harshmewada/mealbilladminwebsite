@@ -41,7 +41,7 @@ const useKitchenDisplay = (roomId) => {
     });
 
     socketRef.current.on("connect", async () => {
-      console.log("socket socketRef.current.id", socketRef.current.id);
+      // console.log("socket socketRef.current.id", socketRef.current.id);
 
       await socketRef.current.emit("JOIN_ROOM", branchId);
       await getAllOrders();
@@ -87,7 +87,7 @@ const useKitchenDisplay = (roomId) => {
       dispatch(setItemAsPreparedSocket(message));
     });
     socketRef.current.on("GET_ORDERS", (message) => {
-      console.log("getsocket", message);
+      // console.log("getsocket", message);
       setCustomerMessages(message);
       dispatch(getSocketOrders(message));
     });

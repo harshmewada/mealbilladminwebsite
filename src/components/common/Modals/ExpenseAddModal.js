@@ -199,6 +199,9 @@ const CommonAddModal = ({
           setSubExpenseTypes(founddata.subExpenseTypes);
           return null;
         } else {
+          if (founddata && founddata.includeQuantity) {
+            setShowQuantityOptions(true);
+          }
           setSubExpenseTypes([]);
         }
       } else if (founddata && founddata.includeQuantity) {

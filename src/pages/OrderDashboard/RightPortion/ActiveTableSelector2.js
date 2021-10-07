@@ -18,7 +18,11 @@ const getColor = (type) => {
   }
 };
 
-const getBgColor = (type) => {
+const getBgColor = (type, kotQuantity, quantity) => {
+  const percentage = (kotQuantity / quantity) * 100;
+  if (type === 1) {
+    return `linear-gradient(90deg,yellow ${percentage}%, #fff ${percentage}%)`;
+  }
   return ITEMSTATUS.find((d) => d.value === type).bgColor;
 };
 const styles = {
@@ -134,7 +138,7 @@ const ActiveOrderSelector = ({
                 </div>
                 <div className="col-md-2">
                   <span style={{ color: isActive ? "white" : undefined }}>
-                    {data?.items?.length} Items
+                    {data?.orderItems?.length} Items
                   </span>
                 </div>
                 {orderDeletable && (
@@ -198,16 +202,20 @@ const ActiveOrderSelector = ({
           </div>
           <Collapse in={isActive}>
             <div class=" mt-0 pt-0 pl-1 pr-1 ">
-              {data?.items?.length > 0 ? (
+              {data?.orderItems?.length > 0 ? (
                 <table class="table table-sm mb-0 ordertable">
                   <tbody>
-                    {data.items.map((item, index) => {
+                    {data.orderItems.map((item, index) => {
                       const { itemId } = item;
                       return (
                         <tr
                           key={index}
                           style={{
-                            backgroundColor: getBgColor(item.itemStatusId),
+                            background: getBgColor(
+                              item.itemStatusId,
+                              item.kotQuantity,
+                              item.quantity
+                            ),
                           }}
                         >
                           {/* <th scope="row">{index + 1}</th> */}

@@ -2,7 +2,6 @@ import React from "react";
 import { CURRENCY } from "../../contants";
 
 const IconsGrid = ({ headers, data, headerVariable, isCurrency }) => {
-  console.log("iconsgrid ", data);
   return (
     <div class="row">
       {data ? (

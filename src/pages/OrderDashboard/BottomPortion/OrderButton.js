@@ -3,11 +3,18 @@ import { TYPESOFPAYMENTS } from "../../../contants/index";
 const OrderButton = ({
   onClick,
   enableKOT,
+  enableKDS,
   onKOTButtonClick,
   onPrePrint,
   enablePrinting,
   onSettleClick,
 }) => {
+  const showButton = () => {
+    if (!enableKDS && !enableKOT && enablePrinting) {
+      return false;
+    }
+    return true;
+  };
   const orderTypes = TYPESOFPAYMENTS;
   return (
     <div
@@ -16,19 +23,20 @@ const OrderButton = ({
       role="group"
       aria-label="Basic example"
     >
-      {enableKOT && (
+      {showButton() && (
         <button
-          onClick={() => onKOTButtonClick()}
+          onClick={() => onKOTButtonClick({ enableKOT })}
           type="button"
           class="btn btn-outline-primary"
         >
-          <i class={`dripicons-print mr-2`}></i>
+          {enableKOT && <i class={`dripicons-print mr-2`}></i>}
           KOT
         </button>
       )}
+
       {enablePrinting && (
         <button
-          onClick={() => onPrePrint()}
+          onClick={() => onPrePrint({ enablePrinting })}
           type="button"
           class="btn btn-outline-primary"
         >
@@ -37,7 +45,7 @@ const OrderButton = ({
         </button>
       )}
       <button
-        onClick={() => onClick()}
+        onClick={() => onClick({ enableKOT, enablePrinting })}
         type="button"
         class="btn btn-outline-primary"
       >

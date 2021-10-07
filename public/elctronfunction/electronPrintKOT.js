@@ -82,9 +82,7 @@ const electronPrintKOT = async (printdata, printerName) => {
     enableGSTNumber,
     enableCustomer,
   } = printdata?.printSetting;
-  const currentOrderType = TYPESOFORDERS.find((types) => {
-    return types.value == printdata.printData.orderType;
-  });
+
   const options = {
     preview: false, // Preview in window or print
     width: "250px", //  width of content body
@@ -206,7 +204,7 @@ const electronPrintKOT = async (printdata, printerName) => {
         [
           {
             type: "text",
-            value: currentOrderType.key,
+            value: printdata.printData.orderType,
             style: commonBordlessTableCellStyle({ textAlign: "left" }),
           },
 
@@ -267,7 +265,7 @@ const electronPrintKOT = async (printdata, printerName) => {
       return { status: 200 };
     })
     .catch((error) => {
-      console.error(error);
+      console.error("print error", error);
       return { status: 400, message: error };
     });
 };

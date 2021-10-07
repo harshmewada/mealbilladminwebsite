@@ -3,12 +3,68 @@ import branchApi from "../api/branchApi";
 import { orderApi } from "../api/orderApi";
 import checkIfAsyncReqSuccess from "./checkIfAsyncReqSuccess";
 import { uuid } from "uuidv4";
-import { ITEMSTATUS, TYPESOFORDERS } from "../../contants";
+import { DATETIMEFORMAT, ITEMSTATUS, TYPESOFORDERS } from "../../contants";
 import {
+  checkIfQuantityExceeds,
   findActiveOrderIndex,
+  findItemIndex,
   isThatItemInMyOrder,
 } from "../reducers/newOrderReducer";
 import calculateBranchOrderNumber from "../../helpers/calculateBranchOrderNumber";
+import moment from "moment";
+import { setKOTPrintData } from "./utilActions";
+
+const calculateKOT = ({ active, lastOrderNumber, activeOrders }) => {
+  let kotItems = [];
+  active.orderItems.forEach((data) => {
+    let lastkotquantity = 0;
+    active.KOTS.forEach((d) => {
+      d.orderItems.forEach((i) => {
+        if (i.itemId === data.itemId) {
+          lastkotquantity = lastkotquantity + i.quantity;
+        }
+      });
+    });
+    const diffrence = data.quantity - lastkotquantity;
+    if (diffrence > 0) {
+      kotItems.push({
+        ...data,
+        itemStatus: ITEMSTATUS[1].key,
+        itemStatusId: ITEMSTATUS[1].value,
+        quantity: diffrence,
+        itemTotal: diffrence * data.itemPrice,
+      });
+    } else {
+      kotItems.push({
+        ...data,
+        itemStatus: ITEMSTATUS[1].key,
+        itemStatusId: ITEMSTATUS[1].value,
+        quantity: diffrence,
+        itemTotal: diffrence * data.itemPrice,
+      });
+    }
+  });
+
+  let ItemsQuantity = 0;
+  kotItems.map((item, index) => {
+    ItemsQuantity = ItemsQuantity + item.quantity;
+  });
+  const kotData = {
+    branchOrderNumber: `# ${lastOrderNumber + activeOrders.length + 1}`,
+    orderType: active.orderType,
+    orderItems: kotItems,
+    orderDate: moment().format(DATETIMEFORMAT),
+    tableNumber: active?.tableNumber,
+
+    totalQuantity: ItemsQuantity,
+  };
+
+  return {
+    kotItems,
+    kotData,
+  };
+};
+
 const dummyActive = (payload, username, orderNumber, branchOrderNumber) => {
   const { tableNumber, tableTypeId, tablePrice, orderTypeId, orderType } =
     payload;
@@ -16,7 +72,7 @@ const dummyActive = (payload, username, orderNumber, branchOrderNumber) => {
     tableNumber: tableNumber,
     tableTypeId: tableTypeId,
     associatedPerson: username,
-    items: [],
+    orderItems: [],
     tablePrice: tablePrice || 0,
     orderTypeId: orderTypeId || TYPESOFORDERS[0].value,
     orderType: orderType || TYPESOFORDERS[0].key,
@@ -26,6 +82,7 @@ const dummyActive = (payload, username, orderNumber, branchOrderNumber) => {
     otherCharges: 0,
     discount: 0,
     lastKOTItems: [],
+    KOTS: [],
     refId: uuid(),
   };
 };
@@ -85,14 +142,6 @@ export const getSocketOrders = (data) => {
     type: orderTypes.GET_SOCKET_ORDERS,
     payload: data,
   };
-
-  // if (i === 0) {
-  //   i = i + 2;
-  //   return dispatch({
-  //     type: "GET_ORDERS",
-  //     isSocket: true,
-  //   });
-  // }
 };
 
 export const activateOrderSocket = (data) => {
@@ -111,9 +160,21 @@ export const pushItemToActiveOrder = ({ item, isVariant }) => {
 
     const myItemId = item?.variantId || item?.id || item?.id;
     const activeOrder = allOrders[findActiveOrderIndex(allOrders, refId)];
+
+    if (!activeOrder) {
+      alert("No Active Order");
+      return dispatch({
+        type: "asdasd",
+      });
+    }
     const currItem = isThatItemInMyOrder(activeOrder, myItemId);
 
     if (currItem) {
+      if (checkIfQuantityExceeds(currItem, currItem.quantity + 1)) {
+        return dispatch({
+          type: "asdasd",
+        });
+      }
       return dispatch(
         changeItemQuantity({
           quantity: parseInt(currItem.quantity) + 1,
@@ -121,6 +182,11 @@ export const pushItemToActiveOrder = ({ item, isVariant }) => {
         })
       );
     } else {
+      if (checkIfQuantityExceeds(item, item.quantity + 1)) {
+        return dispatch({
+          type: "asdasd",
+        });
+      }
       return dispatch({
         type: orderTypes.PUSH_ITEM_TO_ORDER,
         isSocket: true,
@@ -156,6 +222,22 @@ export const pushItemToActiveOrderSocket = (item) => {
 export const changeItemQuantity = ({ quantity, itemId }) => {
   return (dispatch, getState) => {
     const refId = getMyState(getState, "order").activeOrder;
+    const allOrders = getMyState(getState, "order").activeOrders;
+    const activeOrder = allOrders[findActiveOrderIndex(allOrders, refId)];
+    const itemIndex = findItemIndex(activeOrder.orderItems, itemId);
+    const foundItem = activeOrder.orderItems[itemIndex];
+    const diff = quantity - foundItem.quantity;
+    if (
+      checkIfQuantityExceeds(
+        foundItem,
+        diff > 0 ? foundItem.quantity + 1 : foundItem.quantity
+      )
+    ) {
+      return dispatch({
+        type: "asdasd",
+      });
+    }
+
     return dispatch({
       type: orderTypes.CHANGE_ITEM_QUANTITY,
       isSocket: true,
@@ -184,24 +266,22 @@ export const changeItemQuantitySocket = ({ quantity, itemId }) => {
   };
 };
 
-export const setItemAsPrepared = ({ refId, itemId }) => {
+export const setItemAsPrepared = ({ refId, itemId, kotId }) => {
   return {
     isSocket: true,
     type: orderTypes.SET_ITEM_AS_PREPARED,
     payload: {
       refId,
       itemId,
+      kotId,
     },
   };
 };
 
-export const setItemAsPreparedSocket = ({ refId, itemId }) => {
+export const setItemAsPreparedSocket = (orders) => {
   return {
-    type: orderTypes.SET_ITEM_AS_PREPARED,
-    payload: {
-      refId,
-      itemId,
-    },
+    type: orderTypes.SET_ITEM_AS_PREPARED_SOCKET,
+    payload: orders,
   };
 };
 export const removeItem = (itemId) => {
@@ -285,17 +365,61 @@ export const prePrintOrder = (data) => {
     payload: data,
   };
 };
-export const setKOTitemsData = ({ data, customerData }) => {
+
+export const setKOTitemsData = ({ customerData }) => {
   return (dispatch, getState) => {
-    const refId = getMyState(getState, "order").activeOrder;
+    const orderData = getMyState(getState, "order");
+    const enableKOT = getMyState(getState, "util").enableKOT;
+
+    const refId = orderData.activeOrder;
+    const activeOrders = orderData.activeOrders;
+    const myOrderIndex = findActiveOrderIndex(activeOrders, refId);
+    const active = activeOrders[myOrderIndex];
+    const lastOrderNumber = orderData.lastOrderNumber;
+
+    const { kotItems, kotData } = calculateKOT({
+      active,
+      lastOrderNumber,
+      activeOrders,
+    });
+
+    //kot loop
+
+    if (enableKOT) {
+      dispatch(
+        setKOTPrintData({
+          ...kotData,
+          ...customerData,
+        })
+      );
+    }
+    active.customerName = customerData?.customerName;
+    active.customerMobile = customerData?.customerMobile;
+    active.remarks = customerData?.remarks;
+
+    kotItems.forEach((dataitem) => {
+      const foundmyItem = active.orderItems.findIndex(
+        (item) => item.itemId === dataitem.itemId
+      );
+      active.orderItems[foundmyItem].itemStatus = ITEMSTATUS[1].key;
+      active.orderItems[foundmyItem].itemStatusId = ITEMSTATUS[1].value;
+      active.orderItems[foundmyItem].kotQuantity =
+        active.orderItems[foundmyItem].quantity;
+    });
+    active.KOTS.push({
+      id: uuid(),
+      status: ITEMSTATUS[1].key,
+      statusId: ITEMSTATUS[1].value,
+      orderItems: kotItems,
+      remarks: customerData?.remarks,
+    });
+
     return dispatch({
       type: orderTypes.SET_KOT_ITEMS,
       isSocket: true,
       payload: {
         refId,
-
-        data,
-        customerData,
+        order: active,
       },
     });
   };
@@ -308,10 +432,51 @@ export const setKOTitemsDataRedux = (data) => {
       payload: data,
     });
   };
+  // return (dispatch, getState) => {
+  //   return dispatch({
+  //     type: orderTypes.SET_KOT_ITEMS_SOCKET,
+  //     payload: data,
+  //   });
+  // };
 };
 
 export const confirmOrder = (data, cb, errorCb) => {
-  return (dispatch) =>
+  return (dispatch, getState) => {
+    const orderData = getMyState(getState, "order");
+    const enableKOT = getMyState(getState, "util").enableKOT;
+
+    const refId = orderData.activeOrder;
+    const activeOrders = orderData.activeOrders;
+    const myOrderIndex = findActiveOrderIndex(activeOrders, refId);
+    const active = activeOrders[myOrderIndex];
+    const lastOrderNumber = orderData.lastOrderNumber;
+
+    const { kotItems, kotData } = calculateKOT({
+      active,
+      lastOrderNumber,
+      activeOrders,
+    });
+    if (enableKOT && kotItems.length > 0) {
+      setTimeout(() => {
+        dispatch(
+          setKOTPrintData({
+            ...data,
+
+            ...kotData,
+          })
+        );
+      }, 1000);
+    }
+    // if (enableKOT) {
+    //   dispatch(
+    //     setKOTPrintData({
+    //       ...data,
+
+    //       ...kotData,
+    //     })
+    //   );
+    // }
+
     checkIfAsyncReqSuccess(dispatch, {
       successMessage: "Order Successfull",
       errorMessage: "Failed To Order",
@@ -331,6 +496,7 @@ export const confirmOrder = (data, cb, errorCb) => {
         },
       },
     });
+  };
 };
 
 export const updateOrder = (
@@ -340,7 +506,33 @@ export const updateOrder = (
   successMessage,
   errorMessage
 ) => {
-  return (dispatch) =>
+  return (dispatch, getState) => {
+    const orderData = getMyState(getState, "order");
+    const enableKOT = getMyState(getState, "util").enableKOT;
+
+    const refId = orderData.activeOrder;
+    const activeOrders = orderData.activeOrders;
+    const myOrderIndex = findActiveOrderIndex(activeOrders, refId);
+    const active = activeOrders[myOrderIndex];
+    const lastOrderNumber = orderData.lastOrderNumber;
+
+    const { kotItems, kotData } = calculateKOT({
+      active,
+      lastOrderNumber,
+      activeOrders,
+    });
+    if (enableKOT && kotItems.length > 0) {
+      setTimeout(() => {
+        dispatch(
+          setKOTPrintData({
+            ...data,
+
+            ...kotData,
+          })
+        );
+      }, 1000);
+    }
+
     checkIfAsyncReqSuccess(dispatch, {
       successMessage: successMessage || "Order Payment Received",
       errorMessage: errorMessage || "Failed To Add Payment",
@@ -359,6 +551,7 @@ export const updateOrder = (
         },
       },
     });
+  };
 };
 
 export const editOrder = (data, cb, errorCb, successMessage, errorMessage) => {
@@ -463,7 +656,7 @@ export const incrementOrderNumberCount = () => {
 //     type: orderTypes.ACTIVATE_ORDER,
 //     payload: dummyActive(data, userName),
 
-//     isSocket: true,
+//isSocket: true,
 //   };
 // };
 
