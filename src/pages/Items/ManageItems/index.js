@@ -63,7 +63,7 @@ const getItemQuantityCal = (row) => {
         cul = cul + parseInt(element.currentStock);
       }
     });
-    cul = cul + row.currentStock;
+    // cul = cul + row.currentStock;
   } else {
     cul = row.currentStock;
   }
@@ -385,7 +385,7 @@ const ManageItems = () => {
   const handleEdit = (data) => {
     toggleAdd("Edit");
     // delete data.itemImage;
-
+    data.currentStock = getItemQuantityCal(data);
     setActionData(data);
   };
 

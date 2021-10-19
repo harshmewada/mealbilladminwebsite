@@ -10,10 +10,18 @@ const OrderButton = ({
   onSettleClick,
 }) => {
   const showButton = () => {
-    if (!enableKDS && !enableKOT && enablePrinting) {
-      return false;
+    if (enableKOT) {
+      return true;
     }
-    return true;
+    if (enableKDS) {
+      return true;
+    }
+    return false;
+
+    // if (!enableKDS && !enableKOT && enablePrinting) {
+    //   return false;
+    // }
+    // return true;
   };
   const orderTypes = TYPESOFPAYMENTS;
   return (

@@ -16,22 +16,6 @@ const Nodata = () => (
   </td>
 );
 
-const emptyRow = {
-  itemName: "",
-
-  itemImage: undefined,
-
-  isNonVeg: false,
-
-  itemPrice: undefined,
-  onlinePrice: undefined,
-
-  description: undefined,
-
-  hotKey: undefined,
-  status: true,
-};
-
 const headers = [
   { title: "Name", key: "itemName" },
 
@@ -73,6 +57,24 @@ const headers = [
 ];
 
 const ItemVariantsModal = ({ open, onClose, data, onSubmit }) => {
+  const { cgst, sgst } = useSelector((state) => state.user);
+  const emptyRow = {
+    itemName: "",
+
+    itemImage: undefined,
+
+    isNonVeg: false,
+
+    itemPrice: undefined,
+    onlinePrice: undefined,
+
+    description: undefined,
+
+    hotKey: undefined,
+    status: true,
+    cgst: cgst,
+    sgst: sgst,
+  };
   const [rows, setRows] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);

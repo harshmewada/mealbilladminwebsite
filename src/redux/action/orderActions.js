@@ -26,6 +26,8 @@ const calculateKOT = ({ active, lastOrderNumber, activeOrders }) => {
       });
     });
     const diffrence = data.quantity - lastkotquantity;
+
+    //  console.log("setKOTitemsData", data.itemName, diffrence);
     if (diffrence > 0) {
       kotItems.push({
         ...data,
@@ -34,15 +36,16 @@ const calculateKOT = ({ active, lastOrderNumber, activeOrders }) => {
         quantity: diffrence,
         itemTotal: diffrence * data.itemPrice,
       });
-    } else {
-      kotItems.push({
-        ...data,
-        itemStatus: ITEMSTATUS[1].key,
-        itemStatusId: ITEMSTATUS[1].value,
-        quantity: diffrence,
-        itemTotal: diffrence * data.itemPrice,
-      });
     }
+    // else {
+    //   kotItems.push({
+    //     ...data,
+    //     itemStatus: ITEMSTATUS[1].key,
+    //     itemStatusId: ITEMSTATUS[1].value,
+    //     quantity: diffrence,
+    //     itemTotal: diffrence * data.itemPrice,
+    //   });
+    // }
   });
 
   let ItemsQuantity = 0;

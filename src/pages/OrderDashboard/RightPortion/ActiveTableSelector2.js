@@ -220,7 +220,7 @@ const ActiveOrderSelector = ({
                         >
                           {/* <th scope="row">{index + 1}</th> */}
                           <td>{item.itemName}</td>
-                          <td>
+                          <td style={{ whiteSpace: "nowrap" }}>
                             {CURRENCY} {item.itemPrice}
                           </td>
                           <td>
