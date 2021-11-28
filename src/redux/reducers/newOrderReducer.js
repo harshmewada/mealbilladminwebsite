@@ -25,12 +25,21 @@ export const isThatItemInMyOrder = (activeOrder, myItemId) => {
 };
 
 export const checkIfQuantityExceeds = (item, quantity) => {
-  if (item.currentStock && quantity > item.currentStock) {
-    alert("Not Enought Quantity");
-    return true;
+  if (item.currentStock >= 0) {
+    if (quantity > item.currentStock) {
+      alert("Not Enought Quantity");
+      return true;
+    }
+    return false;
   } else {
     return false;
   }
+  // if (item.currentStock && quantity > item.currentStock) {
+  //   alert("Not Enought Quantity");
+  //   return true;
+  // } else {
+  //   return false;
+  // }
 };
 export const findItemIndex = (orderItems, itemId) => {
   const foundOrder = orderItems.findIndex((order) => order.itemId === itemId);

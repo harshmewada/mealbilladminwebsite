@@ -166,12 +166,8 @@ export const pushItemToActiveOrder = ({ item, isVariant }) => {
 
     if (!activeOrder) {
       alert("No Active Order");
-      return dispatch({
-        type: "asdasd",
-      });
     }
     const currItem = isThatItemInMyOrder(activeOrder, myItemId);
-
     if (currItem) {
       if (checkIfQuantityExceeds(currItem, currItem.quantity + 1)) {
         return dispatch({
@@ -185,7 +181,7 @@ export const pushItemToActiveOrder = ({ item, isVariant }) => {
         })
       );
     } else {
-      if (checkIfQuantityExceeds(item, item.quantity + 1)) {
+      if (checkIfQuantityExceeds(item, 1)) {
         return dispatch({
           type: "asdasd",
         });

@@ -507,10 +507,12 @@ const ManageItems = () => {
       importItems({
         restaurantId: restaurantId,
         data: data.map((item) => {
+          let itemId = item.id || item._id;
           delete item.id;
           delete item._id;
           return {
             ...item,
+            itemId: itemId,
             restaurantId: restaurantId,
             branchId: currBranchId,
           };

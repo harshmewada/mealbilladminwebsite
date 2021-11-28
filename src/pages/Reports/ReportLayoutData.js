@@ -3,9 +3,11 @@ import {
   MONTHSARRAY,
   CURRENCY,
   CURRENCYNAME,
+  DATETIMEFORMAT,
 } from "../../contants";
 
 import CustomCashRow from "../../components/ReportLayouts/CustomCashRow";
+import formatDate from "../../helpers/formatDate";
 
 export default {
   superadmin: {},
@@ -162,7 +164,7 @@ export default {
             },
             {
               title: "Tax",
-              key: "totalTax",
+              key: "totatTax",
               icon: "mdi mdi-home-currency-usd",
             },
             { title: "Expenses", key: "totalExpense", icon: "mdi mdi-wallet" },
@@ -399,8 +401,16 @@ export default {
           width: 12,
 
           headers: [
-            { title: "Expense Title", key: "expenseTitle" },
+            {
+              title: "Date",
+              key: "createdAt",
+              renderRow: (r) => formatDate(r.createdAt, DATETIMEFORMAT),
+            },
             { title: "Expense Type", key: "expenseType" },
+            { title: "Sub Expense Type", key: "subExpenseType" },
+
+            // { title: "Expense Title", key: "expenseTitle" },
+            // { title: "Expense Type", key: "expenseType" },
             { title: "Amount", key: "expensePrice", isCurrency: true },
             {
               title: "Quantity",

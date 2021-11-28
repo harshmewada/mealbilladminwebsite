@@ -1,8 +1,6 @@
 import React from "react";
 import { Typeahead } from "react-bootstrap-typeahead";
 import "react-bootstrap-typeahead/css/Typeahead.css";
-import { useDispatch, useSelector } from "react-redux";
-import { pushItemToActiveOrder } from "../../../redux/action/orderActions";
 
 const ListItemSelector = ({ allItems, clearCount, handleSearchAndAddItem }) => {
   const [selectValues, setSelectedValues] = React.useState([]);

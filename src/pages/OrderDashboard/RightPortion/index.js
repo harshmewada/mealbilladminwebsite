@@ -53,8 +53,8 @@ const RightPortion = () => {
   const handleItemQuantity = ({ quantity, itemId }) => {
     dispatch(changeItemQuantity({ quantity: parseInt(quantity), itemId }));
   };
-  const deleteItem = (index) => {
-    dispatch(removeItem(index));
+  const deleteItem = (itemId) => {
+    dispatch(removeItem(itemId));
   };
 
   const deleteOrder = (refId) => {
@@ -105,7 +105,6 @@ const RightPortion = () => {
             lastOrderNumber={lastOrderNumber}
             activeOrdersLength={activeOrders.length}
             scrollable
-            orderDeletable
             active={active}
             branchCode={branchCode}
             handleItemQuantity={handleItemQuantity}

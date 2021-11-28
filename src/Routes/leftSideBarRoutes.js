@@ -99,6 +99,12 @@ export const restaurantadmin = [
       },
     ],
   },
+  {
+    title: "Order History",
+    icon: "mdi mdi-history",
+
+    link: "/orderhistory",
+  },
 
   {
     title: "Reports",

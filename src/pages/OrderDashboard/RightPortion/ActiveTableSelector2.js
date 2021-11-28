@@ -56,10 +56,10 @@ const ActiveOrderSelector = ({
   allItems,
   clearCount,
   handleSearchAndAddItem,
-  orderDeletable,
   disabled,
   hideSearch,
   orderType,
+  isEditMode,
 }) => {
   const dispatch = useDispatch();
   const tablesRef = React.useRef([]);
@@ -83,7 +83,9 @@ const ActiveOrderSelector = ({
   }, [active]);
   return [...tables].reverse().map((data, dataIndex) => {
     const index = activeOrdersLength - 1 - dataIndex;
+    const orderDeletable = data.KOTS.length === 0;
 
+    console.log("orderData", data);
     const isActive = data.refId === active?.refId;
 
     const disableEverything = disabled
@@ -91,7 +93,6 @@ const ActiveOrderSelector = ({
       : data?.isEdited
       ? false
       : data.isOrderConfirmed;
-
     return (
       <>
         <div
@@ -124,7 +125,7 @@ const ActiveOrderSelector = ({
                         color: isActive ? "white" : undefined,
                       }}
                     >
-                      Table Number: {data.tableNumber}
+                      Table Number: {data.tableNumber}{" "}
                     </span>
                   ) : (
                     <span
@@ -141,7 +142,7 @@ const ActiveOrderSelector = ({
                     {data?.orderItems?.length} Items
                   </span>
                 </div>
-                {orderDeletable && (
+                {orderDeletable && !isEditMode && (
                   <div className="col-md-2 d-flex justify-content-end">
                     <span>
                       <a
@@ -207,6 +208,9 @@ const ActiveOrderSelector = ({
                   <tbody>
                     {data.orderItems.map((item, index) => {
                       const { itemId } = item;
+                      const isConfirmed =
+                        !isEditMode &&
+                        item.itemStatusId === ITEMSTATUS[1].value;
                       return (
                         <tr
                           key={index}
@@ -221,7 +225,7 @@ const ActiveOrderSelector = ({
                           {/* <th scope="row">{index + 1}</th> */}
                           <td>{item.itemName}</td>
                           <td style={{ whiteSpace: "nowrap" }}>
-                            {CURRENCY} {item.itemPrice}
+                            {CURRENCY} {item.itemPrice}{" "}
                           </td>
                           <td>
                             <ItemQuantitySelector
@@ -239,7 +243,7 @@ const ActiveOrderSelector = ({
                             {item.itemTotal}
                           </td>
 
-                          {!disableEverything && (
+                          {!isConfirmed && (
                             <td>
                               <a
                                 href="javascript:void(0);"

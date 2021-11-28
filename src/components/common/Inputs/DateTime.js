@@ -1,5 +1,4 @@
 import React from "react";
-import DateRangePicker from "react-bootstrap-daterangepicker";
 import "bootstrap-daterangepicker/daterangepicker.css";
 import moment from "moment";
 import InputContainer from "./InputContainer";
@@ -50,6 +49,7 @@ const DateTime = (props) => {
               value={props.value}
               dateFormat={DATEFORMAT}
               timeFormat={TIMEONLYFORMAT}
+              inputProps={{ readOnly: true }}
             />
           );
         }}

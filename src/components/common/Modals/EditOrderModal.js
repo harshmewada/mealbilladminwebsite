@@ -7,6 +7,8 @@ import ActiveTableSelector from "../../../pages/OrderDashboard/RightPortion/Acti
 
 import {
   changeItemQuantityRedux,
+  checkIfQuantityExceeds,
+  isThatItemInMyOrder,
   pushItemToActiveOrderRedux,
   removeItemRedux,
 } from "../../../redux/reducers/newOrderReducer";
@@ -30,6 +32,15 @@ const EditOrderModal = ({
 
   const isLoading = useSelector((state) => state.util.spinner);
   const [activeOrders, setActiveOrders] = React.useState([]);
+  const [remarks, setRemarks] = React.useState(undefined);
+
+  const handleChangeRemarks = (e) => {
+    const {
+      target: { value },
+    } = e;
+
+    setRemarks(value);
+  };
   const [activeOldOrders, setActiveOldOrders] = React.useState([]);
 
   const { allItems } = useSelector((state) => state.order);
@@ -60,34 +71,70 @@ const EditOrderModal = ({
       }),
     ]);
   };
-  const deleteItem = (index) => {
+  const deleteItem = (itemId) => {
     // dispatch(removeItem(index));
-    setActiveOrders([...removeItemRedux(activeOrders, 0, index)]);
+
+    if (activeOrder.orderItems.length < 2) {
+      alert("Can not remove only item from the order");
+    } else {
+      setActiveOrders([
+        ...removeItemRedux({
+          activeOrders,
+          refId: activeOrder.refId,
+
+          itemId,
+        }),
+      ]);
+    }
   };
 
   const handleSearchAndAddItem = (selected) => {
     if (selected.length > 0) {
       const item = selected[0];
-      const isVariant = item?.variantId ? true : false;
-      let newItem = {
-        ...item,
-        itemId: item?.variantId || item?._id || item?.id,
-        isVariant: isVariant,
-        quantity: 1,
+      const isVariant = item?.isVariant ? true : false;
+      const refId = activeOrder.refId;
 
-        itemTotal: 1 * item.itemPrice,
-        itemStatus: ITEMSTATUS[0].key,
-        itemStatusId: ITEMSTATUS[0].value,
-        kotQuantity: 0,
-        kotTotal: 0,
-      };
-      setActiveOrders([
-        ...pushItemToActiveOrderRedux({
-          activeOrders,
-          refId: activeOrder.refId,
-          item: newItem,
-        }),
-      ]);
+      const itemId = item?.variantId || item?.id || item?.id;
+
+      const currItem = isThatItemInMyOrder(activeOrder, itemId);
+      if (currItem) {
+        if (checkIfQuantityExceeds(currItem, currItem.quantity + 1)) {
+          return null;
+        }
+        setActiveOrders([
+          ...changeItemQuantityRedux({
+            activeOrders,
+            refId: refId,
+            quantity: parseInt(currItem.quantity) + 1,
+            itemId,
+          }),
+        ]);
+      } else {
+        if (checkIfQuantityExceeds(item, 1)) {
+          return null;
+        }
+
+        const netItem = {
+          ...item,
+          itemId: item?.variantId || item?._id || item?.id,
+          isVariant: isVariant,
+          quantity: 1,
+
+          itemTotal: 1 * item.itemPrice,
+          itemStatus: ITEMSTATUS[0].key,
+          itemStatusId: ITEMSTATUS[0].value,
+          kotQuantity: 0,
+          kotTotal: 0,
+        };
+
+        setActiveOrders([
+          ...pushItemToActiveOrderRedux({
+            activeOrders,
+            refId: activeOrder.refId,
+            item: netItem,
+          }),
+        ]);
+      }
     }
   };
 
@@ -229,6 +276,7 @@ const EditOrderModal = ({
           {activeOldOrder && (
             <div className="col-md-6">
               <h5>Old Order </h5>
+
               <ActiveTableSelector
                 tables={activeOldOrders}
                 activeOrdersLength={1}
@@ -263,12 +311,24 @@ const EditOrderModal = ({
                 disabled={isViewMode || activeOrder?.editCount >= 1}
                 hideSearch={isViewMode}
                 makeTableActive={() => {}}
+                isEditMode
               />
               <BottomTable tableData={bottomTableData(activeOrder)} />
             </div>
           )}
         </div>
-
+        <div class="form-group mt-3 mb-3">
+          <div class={`form-group col-md-${"12"}`}>
+            <label>Remarks</label>
+            <textarea
+              type="text"
+              class="form-control"
+              placeholder={" Type Remarks"}
+              rows={2}
+              value={remarks || activeOrder?.remarks}
+            />
+          </div>
+        </div>
         <div class="form-group mb-0 mt-3 d-flex justify-content-center">
           {!isViewMode && activeOrder?.editCount < 1 && (
             <button
@@ -276,7 +336,11 @@ const EditOrderModal = ({
               disabled={isLoading}
               class="btn btn-gradient-primary waves-effect waves-light"
               onClick={() => {
-                onSubmit({ ...activeOrders[0], ...getData() });
+                onSubmit({
+                  ...activeOrders[0],
+                  remarks: remarks || activeOrder?.remarks,
+                  ...getData(),
+                });
               }}
             >
               {isLoading && (
@@ -303,7 +367,7 @@ const EditOrderModal = ({
               class="btn btn-outline-primary ml-3"
             >
               <i class={`dripicons-print mr-2`}></i>
-              Bill
+              Print
             </button>
           )}
         </div>

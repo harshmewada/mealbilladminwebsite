@@ -115,7 +115,7 @@ const ManageExpense = () => {
 
   const getAllData = (selectedBranch) => {
     if (isBranchAdmin || isBranchUser) {
-      dispatch(getRestaurantExpenseType(restaurantId));
+      dispatch(getRestaurantExpenseType(restaurantId, branchId));
       dispatch(getAllExpenses(state));
     }
   };

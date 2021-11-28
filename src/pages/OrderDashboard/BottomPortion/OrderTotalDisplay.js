@@ -20,6 +20,7 @@ import { CURRENCY, DATETIMEFORMAT, TYPESOFORDERS } from "../../../contants";
 import calculateOrderTotals from "../../../helpers/calculateOrderTotals";
 import PaymentSettleModal from "../../../components/common/Modals/PaymentSettleModal";
 import { findActiveOrderIndex } from "../../../redux/reducers/newOrderReducer";
+import calculateBranchOrderNumber from "../../../helpers/calculateBranchOrderNumber";
 const getPaymentType = (types) => {
   console.log("getPaymentType", types);
   return types
@@ -104,7 +105,7 @@ const OrderTotalDisplay = () => {
   const otherCharges = currentOrder?.otherCharges || 0;
   const customerName = currentOrder?.customerName;
   const customerMobile = currentOrder?.customerMobile;
-
+  const orderNumberCount = useSelector((state) => state.order.orderNumberCount);
   // React.useEffect(() => {
   //   setOtherCharges(0);
   //   setDiscount(0);
@@ -214,7 +215,10 @@ const OrderTotalDisplay = () => {
       orderNumber: lastOrderNumber + (activeOrders.length - orderIndex),
       branchCode: branchCode,
       isPaid: false,
-
+      branchOrderNumber: calculateBranchOrderNumber(
+        branchCode,
+        orderNumberCount
+      ),
       ...customerData,
       ...paymentData,
 
@@ -226,6 +230,7 @@ const OrderTotalDisplay = () => {
         _id: currentOrder.id || currentOrder._id,
       }),
     };
+
     toggleOrderConfirmModal();
     handleOpenSettleModal(orderdata);
   };

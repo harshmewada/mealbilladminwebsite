@@ -24,6 +24,7 @@ import ViewCommonAction from "../../components/common/Actions/ViewCommonAction";
 
 import { setPrintData } from "../../redux/action/utilActions";
 import { uuid } from "uuidv4";
+import { getAllBranches } from "../../redux/action/branchActions";
 
 const PageTitle = "Order History";
 
@@ -43,10 +44,11 @@ const OrderHistory = () => {
 
   const getAllData = () => {
     if (isRestaurantAdmin) {
-      dispatch(getPreviosOrders(state));
+      dispatch(getPreviosOrders({ ...state, branchId: currBranchId }));
+      dispatch(getAllBranches(restaurantId, true));
     }
     if (isBranchAdmin) {
-      dispatch(getPreviosOrders(state));
+      dispatch(getPreviosOrders({ ...state, branchId: currBranchId }));
     }
   };
 
@@ -230,7 +232,7 @@ const OrderHistory = () => {
           searchByLabel="Order Number"
           searchByField="branchOrderNumber"
           // headActions={[AddAction]}
-          actions={[EditAction, ViewAction]}
+          actions={[...(branchId ? [EditAction] : []), ViewAction]}
           tableData={previousOrders}
           headers={headers}
           sortable={true}

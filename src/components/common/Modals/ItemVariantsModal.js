@@ -5,10 +5,11 @@ import ModalContainer from "../ModalContainer";
 import { getEntriesOptions } from "../SmartTable/functions";
 import TableHeading from "../SmartTable/TableHeading";
 import TableTitle from "../SmartTable/TableTitle";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Formik, Field, Form, ErrorMessage, FieldArray } from "formik";
 import { MEASUREUNITS } from "../../../contants";
 import { RootUrl } from "../../../redux/types";
+import { deleteItemVariant } from "../../../redux/action/itemVariantActions";
 
 const Nodata = () => (
   <td colSpan={"8"} className="text-center">
@@ -58,6 +59,7 @@ const headers = [
 
 const ItemVariantsModal = ({ open, onClose, data, onSubmit }) => {
   const { cgst, sgst } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const emptyRow = {
     itemName: "",
 
@@ -86,6 +88,9 @@ const ItemVariantsModal = ({ open, onClose, data, onSubmit }) => {
     variants: data?.variants || [],
   };
 
+  const onRemove = (d, cb) => {
+    dispatch(deleteItemVariant(d, cb));
+  };
   return (
     <div>
       <ModalContainer
@@ -285,7 +290,13 @@ const ItemVariantsModal = ({ open, onClose, data, onSubmit }) => {
                                     <DeleteCommonAction
                                       title="New Sub Expense Type"
                                       onClick={() => {
-                                        !isLoading && remove(childindex);
+                                        if (!isLoading) {
+                                          onRemove(item, () => {
+                                            remove(childindex);
+                                          });
+                                        }
+
+                                        // !isLoading && remove(childindex);
                                       }}
                                     />
                                   </td>

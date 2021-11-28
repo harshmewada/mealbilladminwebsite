@@ -86,44 +86,60 @@ const KitchenDisplay = () => {
   const handleItemClick = (refId, itemId, kotId) => {
     dispatch(setItemAsPrepared({ refId, itemId, kotId }));
   };
+  const { enableKDS } = useSelector((state) => state.util);
   return (
     <div>
-      <Row>
-        <Col md="3">
-          {" "}
-          <DisplayList
-            orderType="All Orders"
-            orderItems={getFilteredItems()}
-            onItemClick={() => {}}
-          />
-        </Col>
+      {enableKDS ? (
+        <Row>
+          <Col md="3">
+            {" "}
+            <DisplayList
+              orderType="All Orders"
+              orderItems={getFilteredItems()}
+              onItemClick={() => {}}
+            />
+          </Col>
 
-        <Col md="9">
-          <Row>
-            {myActiveOrders.map((o, i) => {
-              const notPrepared = getNotPrepared(o.KOTS);
-              const remarks = getRemarks(o.KOTS);
+          <Col md="9">
+            <Row>
+              {myActiveOrders.map((o, i) => {
+                const notPrepared = getNotPrepared(o.KOTS);
+                const remarks = getRemarks(o.KOTS);
 
-              return (
-                o.KOTS.length > 0 && (
-                  <Col md={4}>
-                    <DisplayList
-                      {...o}
-                      orderItems={[...notPrepared]}
-                      remarks={remarks}
-                      key={i}
-                      orderType={o.orderType}
-                      onItemClick={(itemId, kotId) =>
-                        handleItemClick(o.refId, itemId, kotId)
-                      }
-                    />
-                  </Col>
-                )
-              );
-            })}
-          </Row>
-        </Col>
-      </Row>
+                return (
+                  o.KOTS.length > 0 && (
+                    <Col md={4}>
+                      <DisplayList
+                        {...o}
+                        orderItems={[...notPrepared]}
+                        remarks={remarks}
+                        key={i}
+                        orderType={o.orderType}
+                        onItemClick={(itemId, kotId) =>
+                          handleItemClick(o.refId, itemId, kotId)
+                        }
+                      />
+                    </Col>
+                  )
+                );
+              })}
+            </Row>
+          </Col>
+        </Row>
+      ) : (
+        <div
+          style={{
+            height: "80vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "red",
+            fontSize: 30,
+          }}
+        >
+          Kitchen Display Sysytem is not enabled
+        </div>
+      )}
     </div>
   );
 };

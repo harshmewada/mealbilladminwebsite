@@ -12,6 +12,7 @@ import {
   setOtherCharges,
 } from "../../../redux/action/orderActions";
 import calculateOrderTotals from "../../../helpers/calculateOrderTotals";
+import calculateBranchOrderNumber from "../../../helpers/calculateBranchOrderNumber";
 const calculatePayment = (usermethods, cartTotal) => {
   let methods = {};
   methods.payment = 0;
@@ -57,10 +58,14 @@ const PaymentModal = ({
   const active = activeOrders.find((od) => od.refId === activeOrder);
   let discount = active?.discount;
   let otherCharges = active?.otherCharges;
+
+  const orderNumberCount = useSelector((state) => state.order.orderNumberCount);
+
   const getData = () => {
     return calculateOrderTotals(active, cgst, sgst, otherCharges, discount);
   };
-
+  const branchOrderNumber = () =>
+    calculateBranchOrderNumber(branchCode, orderNumberCount);
   const data = getData();
 
   const [paymentMethods, setPaymentMethods] = React.useState([]);
@@ -74,6 +79,7 @@ const PaymentModal = ({
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
     setState({
       ...state,
       [name]: value,
@@ -149,6 +155,8 @@ const PaymentModal = ({
         totalPayment: payment,
         totalBalance: balance,
         totalCashReturn: cashReturn,
+        discount,
+        otherCharges,
       },
       state
     );
@@ -169,6 +177,9 @@ const PaymentModal = ({
   let grandTotalWithoutDiscount = data?.grandTotalWithoutDiscount;
   let grandTotal = data?.grandTotal;
 
+  React.useEffect(() => {
+    setAmount(balance);
+  }, [balance]);
   const renderUpTableRow = (title, value, isCurrency) => {
     return (
       <tr>
@@ -322,14 +333,13 @@ const PaymentModal = ({
       </div>
     );
   };
-
   return (
     <ModalContainer
       open={open}
       onClose={() => {
         handleClose();
       }}
-      title={`Complete Order #${data?.orderNumber}`}
+      title={`Complete Order #${branchOrderNumber()}`}
     >
       <Row>
         <Col md={6}>
@@ -394,6 +404,10 @@ const PaymentModal = ({
                       placeholder="O.Charges"
                       value={otherCharges}
                       onChange={(e) => {
+                        if (e.target.value === "") {
+                          dispatch(setOtherCharges(parseFloat(0)));
+                          return;
+                        }
                         if (parseFloat(e.target.value) >= 0) {
                           dispatch(setOtherCharges(e.target.value));
                         } else {
@@ -414,6 +428,10 @@ const PaymentModal = ({
                       placeholder="O.Charges"
                       value={discount}
                       onChange={(e) => {
+                        if (e.target.value === "") {
+                          dispatch(setDiscount(parseFloat(0)));
+                          return;
+                        }
                         if (
                           parseFloat(e.target.value) >=
                           parseFloat(grandTotalWithoutDiscount)
@@ -425,6 +443,7 @@ const PaymentModal = ({
                               parseFloat(discount) + parseFloat(grandTotal)
                             )
                           );
+                          return;
                         } else {
                           console.log("discount else");
 
