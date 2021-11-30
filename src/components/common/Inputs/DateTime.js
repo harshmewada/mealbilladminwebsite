@@ -27,6 +27,7 @@ const DateTime = (props) => {
     noPadding,
     defaultValue,
     control,
+    isValidDate,
   } = props;
   return (
     <InputContainer
@@ -50,6 +51,7 @@ const DateTime = (props) => {
               dateFormat={DATEFORMAT}
               timeFormat={TIMEONLYFORMAT}
               inputProps={{ readOnly: true }}
+              {...options}
             />
           );
         }}

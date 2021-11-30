@@ -15,7 +15,10 @@ const PrintComponent = (props) => {
     enableAddress,
     enableGSTNumber,
     enableCustomer,
+    printType,
   } = useSelector((state) => state.util);
+  const role = useSelector((state) => state.user.role);
+  const isRestaurantAdmin = role === "restaurantadmin";
 
   const printSetting = {
     enableLogo,
@@ -45,8 +48,6 @@ const PrintComponent = (props) => {
       ? currReceiptMessage
       : undefined;
   React.useEffect(() => {
-    console.log("window bill", printData);
-
     if (isElectron && printData) {
       window.api.printBillSilently({
         logo: enableLogo && logo,
@@ -59,8 +60,20 @@ const PrintComponent = (props) => {
       });
     }
   }, [printData, enablePrinting]);
-
-  return !enablePrinting ? (
+  console.log("printData", isRestaurantAdmin, printData);
+  return isRestaurantAdmin ? (
+    <BrowserComponent
+      printData={printData}
+      logo={enableLogo && logo}
+      restaurant={restaurant}
+      gstNumber={(enableGSTNumber || isRestaurantAdmin) && gstNumber}
+      branchAddress={enableAddress && branchAddress}
+      receiptMessage={receiptMessage}
+      printSetting={printSetting}
+      printType={printType}
+      isRestaurantAdmin={isRestaurantAdmin}
+    />
+  ) : !enablePrinting ? (
     <div />
   ) : isElectron ? (
     <div />
@@ -73,6 +86,8 @@ const PrintComponent = (props) => {
       branchAddress={enableAddress && branchAddress}
       receiptMessage={receiptMessage}
       printSetting={printSetting}
+      printType={printType}
+      isRestaurantAdmin={isRestaurantAdmin}
     />
   );
   // return <BrowserComponent {...props} />;

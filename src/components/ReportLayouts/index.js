@@ -1,4 +1,6 @@
 export { default as table } from "./Table";
+export { default as printbutton } from "./PrintButton";
+
 export { default as cashbooktable } from "./CashBookTable";
 
 // export { default as searchText } from "./SearchText";

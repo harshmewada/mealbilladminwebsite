@@ -17,6 +17,7 @@ const initialstate = {
   isFullScreen: false,
   printData: undefined,
   KOTprintData: undefined,
+  printType: "",
   enablePrinting: true,
   enableKOT: true,
   enableKDS: true,
@@ -99,12 +100,14 @@ const utilReducer = (state = initialstate, action) => {
     case orderTypes.PRE_PRINT_ORDER:
       return {
         ...state,
-        printData: action.payload,
+        printData: action.payload.data,
+        printType: action.payload.printType,
       };
     case utilTypes.SET_PRINT_DATA:
       return {
         ...state,
-        printData: action.payload,
+        printData: action.payload.data,
+        printType: action.payload.printType,
       };
     case utilTypes.SET_KOT_PRINT_DATA:
       return {

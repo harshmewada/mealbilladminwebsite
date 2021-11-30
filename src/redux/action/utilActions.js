@@ -32,10 +32,10 @@ export const toggleKOT = () => {
   };
 };
 
-export const setPrintData = (data) => {
+export const setPrintData = (data, printType) => {
   return {
     type: utilTypes.SET_PRINT_DATA,
-    payload: data,
+    payload: { data: data, printType: printType },
   };
 };
 

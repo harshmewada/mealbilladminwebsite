@@ -11,15 +11,6 @@ function App() {
   return (
     <HashRouter>
       <Provider store={Store()}>
-        {/* <button
-          onClick={(_) => {
-            console.log("isElectron window", window.api);
-            window.api.notify("this is mesaage");
-          }}
-        >
-          <i class="mdi-wallet">cloud</i>
-          Notify
-        </button> */}
         <Routes />
       </Provider>
     </HashRouter>

@@ -176,3 +176,8 @@ th.amount {
     display: none !important;
   }
 }
+@media only screen and (max-device-width: 480px) {
+  .logo {
+    width: 80px;
+  }
+}

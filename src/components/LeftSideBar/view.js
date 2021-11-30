@@ -18,6 +18,8 @@ function LeftSidebar({ sidebarData }) {
     }
     data?.children && history.push(data.children[0].link);
   };
+
+  const isMobile = window.innerWidth < 700;
   return (
     <>
       <div class="leftbar-tab-menu">

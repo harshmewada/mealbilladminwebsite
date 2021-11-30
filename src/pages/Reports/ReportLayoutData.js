@@ -25,8 +25,8 @@ export default {
           placeholder: "Type Table Number",
           required: true,
           options: {
-            singleDatePicker: true,
-            hideRanges: true,
+            singleDatePicker: false,
+            hideRanges: false,
           },
           rules: {
             required: {
@@ -74,6 +74,12 @@ export default {
               ),
             },
           ],
+        },
+        {
+          type: "printbutton",
+          dataVariable: "cashbook",
+          printType: "cashbook",
+          width: 12,
         },
       ],
     },

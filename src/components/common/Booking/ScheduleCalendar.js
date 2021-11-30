@@ -6,7 +6,11 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 // import "react-big-calendar/lib/sass/styles";
 const localizer = momentLocalizer(moment);
 
-const ScheduleCalendar = ({ events: propsEvents, handleSelect }) => {
+const ScheduleCalendar = ({
+  events: propsEvents,
+  handleSelect,
+  onRangeChange,
+}) => {
   return (
     <Calendar
       // selectable
@@ -20,6 +24,7 @@ const ScheduleCalendar = ({ events: propsEvents, handleSelect }) => {
       defaultView={Views.DAY}
       onSelectEvent={(event) => handleSelect(event)}
       onSelectSlot={handleSelect}
+      onRangeChange={(e) => onRangeChange(e)}
     />
   );
 };

@@ -46,7 +46,9 @@ const ManageBranches = () => {
   const { bookings } = useSelector((state) => state.common);
 
   const currentBranchId = branchId || selectedBranch || branches[0]?._id;
-
+  function valid(current) {
+    return current.isAfter(moment().subtract("1", "day"));
+  }
   const formData = [
     {
       hidden: !isRestaurantAdmin,
@@ -157,8 +159,7 @@ const ManageBranches = () => {
       placeholder: "Event Start Date & Time",
       required: true,
       options: {
-        singleDatePicker: true,
-        hideRanges: true,
+        isValidDate: valid,
       },
       rules: {
         required: {
@@ -175,8 +176,7 @@ const ManageBranches = () => {
       placeholder: "Event End Date & Time",
       required: true,
       options: {
-        singleDatePicker: true,
-        hideRanges: true,
+        isValidDate: valid,
       },
       rules: {
         required: {
@@ -223,13 +223,47 @@ const ManageBranches = () => {
     setActionData(data);
   };
 
+  const onRangeChange = (e) => {
+    if (e?.start && e?.end) {
+      dispatch(
+        getAllBookings({
+          branchId: currentBranchId,
+          restaurantId,
+          start: e.start,
+          end: e.end,
+        })
+      );
+    }
+    if (Array.isArray(e)) {
+      if (e.length > 5) {
+        dispatch(
+          getAllBookings({
+            branchId: currentBranchId,
+            restaurantId,
+            start: e[0],
+            end: e[6],
+          })
+        );
+      }
+      if (e.length === 1) {
+        dispatch(
+          getAllBookings({
+            branchId: currentBranchId,
+            restaurantId,
+            start: e[0],
+          })
+        );
+      }
+    }
+  };
+
   const confirmDelete = (data) => {};
 
   const onAdd = (data) => {
     if (open === "Add") {
       dispatch(
         createBooking(
-          data,
+          { ...data, branchId: currentBranchId },
           () => {
             toggleAdd();
             dispatch(
@@ -244,6 +278,7 @@ const ManageBranches = () => {
       let editData = {
         ...actionData,
         ...data,
+        branchId: currentBranchId,
       };
 
       dispatch(
@@ -263,22 +298,6 @@ const ManageBranches = () => {
       />
     );
   };
-
-  const EditAction = (action) => (
-    <EditCommonAction onClick={() => handleEdit(action.data)} />
-  );
-
-  const DeleteAction = (action) => (
-    <DeleteCommonAction onClick={() => handleDelete(action.data)} />
-  );
-
-  const ScheduleAddAction = (action) => (
-    <IconCommonAction
-      title="Schedule Booking"
-      icon="mdi mdi-calendar-plus"
-      onClick={() => handleSchedule(action.data)}
-    />
-  );
 
   const headers = [
     { title: "Booking Space name", key: "bookingSpace" },
@@ -324,6 +343,7 @@ const ManageBranches = () => {
     dispatch(getAllBranches(restaurantId));
     dispatch(getAllBookings({ branchId: currentBranchId, restaurantId }));
     dispatch(getAllTables(restaurantId, currentBranchId));
+    dispatch(getBranchItems(currentBranchId));
   }, [currentBranchId]);
   return (
     <div class="page-content-tab">
@@ -368,6 +388,7 @@ const ManageBranches = () => {
                     : []
                 }
                 handleSelect={(data) => handleEdit(data)}
+                onRangeChange={(data) => onRangeChange(data)}
               />
             </div>
           </div>

@@ -25,6 +25,7 @@ const Select = React.forwardRef((props, ref) => {
     defaultValue,
     value,
     onSelect,
+    onCustomChange,
   } = props;
 
   return (
@@ -50,10 +51,14 @@ const Select = React.forwardRef((props, ref) => {
               // {...props}
               value={props.value}
               size={undefined}
-              onChange={({ target: { value } }) => {
+              onChange={(e) => {
+                const {
+                  target: { value },
+                } = e;
                 onSelect && onSelect(value);
 
                 props.onChange(value);
+                onCustomChange && onCustomChange(e);
               }}
             >
               {defaultOption && defaultOption()}

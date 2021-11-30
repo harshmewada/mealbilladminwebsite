@@ -17,6 +17,8 @@ const ReportCreator = ({
 
   const reportLayouts = reportInfo?.layouts;
 
+  const [selectedParams, setSelectedParams] = React.useState();
+
   return (
     <div class="page-content-tab">
       {title && (
@@ -31,6 +33,7 @@ const ReportCreator = ({
         <ReportSelector
           getReportData={(data) => {
             getData(data);
+            setSelectedParams(data);
           }}
           formData={selectorData}
           initialEffectFunction={initialEffectFunction}
@@ -50,9 +53,10 @@ const ReportCreator = ({
                     {...lay}
                     data={reportData[lay.dataVariable] || []}
                     headerVariable={reportData[lay.headerVariable]}
+                    selectedParams={selectedParams}
                   />
                 ) : (
-                  <div>not Layout Found</div>
+                  <div>no Layout Found</div>
                 )}
               </div>
             );
