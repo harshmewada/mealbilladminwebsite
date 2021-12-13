@@ -12,33 +12,33 @@ const InputContainer = ({
   ...props
 }) => {
   // // console.log("props", props);
-  // const [show, setShow] = React.useState(true);
-  // let watchField = useWatch({
-  //   control,
-  //   name: props.dependentOn, // without supply name will watch the entire form, or ['firstName', 'lastName'] to watch both
-  // });
+  const [show, setShow] = React.useState(true);
+  let watchField = useWatch({
+    control,
+    name: props.dependentOn, // without supply name will watch the entire form, or ['firstName', 'lastName'] to watch both
+  });
 
-  // const shouldRender = typeof watchField === "string";
+  const shouldRender = typeof watchField === "string";
 
-  // // console.log("watchField", watchField, props.dependentOn);
-  // // let formValues = props.dependentOn
-  // //   ? props.getValues(props.dependentOn)
-  // //   : undefined;
-  // React.useEffect(() => {
-  //   if (props.dependentOn) {
-  //     if (shouldRender) {
-  //       console.log("watchField", watchField, props.dependentOn);
-  //       if (watchField) {
-  //         // setShow(true);
-  //       }
-  //     } else {
-  //       setShow(false);
-  //     }
-  //     // setShow(false);
-  //   } else {
-  //     setShow(true);
-  //   }
-  // }, [shouldRender]);
+  // console.log("watchField", watchField, props.dependentOn);
+  // let formValues = props.dependentOn
+  //   ? props.getValues(props.dependentOn)
+  //   : undefined;
+  React.useEffect(() => {
+    if (props.dependentOn) {
+      if (shouldRender) {
+        console.log("watchField", watchField, props.dependentOn);
+        if (watchField) {
+          // setShow(true);
+        }
+      } else {
+        setShow(false);
+      }
+      // setShow(false);
+    } else {
+      setShow(true);
+    }
+  }, [shouldRender]);
 
   return (
     <div

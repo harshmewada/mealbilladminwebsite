@@ -170,7 +170,7 @@ export default {
             },
             {
               title: "Tax",
-              key: "totatTax",
+              key: "totalTax",
               icon: "mdi mdi-home-currency-usd",
             },
             { title: "Expenses", key: "totalExpense", icon: "mdi mdi-wallet" },
