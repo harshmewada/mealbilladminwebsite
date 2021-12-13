@@ -290,6 +290,7 @@ const EditOrderModal = ({
                 disabled={true}
                 hideSearch={true}
                 makeTableActive={() => {}}
+                isEditMode
               />
               <BottomTable tableData={bottomTableData(activeOldOrder)} />
             </div>
@@ -308,7 +309,9 @@ const EditOrderModal = ({
                 deleteItem={deleteItem}
                 handleSearchAndAddItem={handleSearchAndAddItem}
                 allItems={flattentItemsArray(allItems)}
-                disabled={isViewMode || activeOrder?.editCount >= 1}
+                disabled={
+                  activeOldOrder || isViewMode || activeOrder?.editCount >= 1
+                }
                 hideSearch={isViewMode}
                 makeTableActive={() => {}}
                 isEditMode
@@ -325,7 +328,9 @@ const EditOrderModal = ({
               class="form-control"
               placeholder={" Type Remarks"}
               rows={2}
+              readOnly={activeOldOrder}
               value={remarks || activeOrder?.remarks}
+              onChange={handleChangeRemarks}
             />
           </div>
         </div>

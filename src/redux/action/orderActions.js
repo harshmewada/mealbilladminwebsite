@@ -166,6 +166,7 @@ export const pushItemToActiveOrder = ({ item, isVariant }) => {
 
     if (!activeOrder) {
       alert("No Active Order");
+      return;
     }
     const currItem = isThatItemInMyOrder(activeOrder, myItemId);
     if (currItem) {

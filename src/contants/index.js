@@ -115,7 +115,10 @@ export const MONTHSARRAY = [
   "Dec",
 ];
 export const SHORTCUTKEYS = [{ key: "Search and add item", value: "CTRL+S" }];
-
+export const EXPENSEPAYMENTTYPES = [
+  { key: "Cash", value: 0, bgColor: "#fff" },
+  { key: "Bank", value: 1, bgColor: `#f9ff42` },
+];
 export const dateRanges = {
   Today: [moment().toDate(), moment().toDate()],
   Yesterday: [

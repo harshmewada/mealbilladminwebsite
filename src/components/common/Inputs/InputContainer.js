@@ -10,7 +10,7 @@ const InputContainer = ({
 
   ...props
 }) => {
-  // // console.log("props", props);
+  console.log("props", control);
   const [show, setShow] = React.useState(true);
   const watchField = useFormWatch({
     control: control,

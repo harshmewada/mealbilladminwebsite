@@ -6,12 +6,11 @@ import ModalContainer from "../ModalContainer";
 // import { useForm, Controller, FormProvider,  } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import * as Inputs from "../Inputs";
-import { MEASUREUNITS } from "../../../contants";
+import { MEASUREUNITS, EXPENSEPAYMENTTYPES } from "../../../contants";
 import { useFormik, Field } from "formik";
-import InputContainer from "../Inputs/InputContainer";
+import InputContainer from "../Inputs/NormalInputContainer";
 
 import FileInput from "../Inputs/File";
-
 const CommonAddModal = ({
   open,
   onClose,
@@ -32,17 +31,6 @@ const CommonAddModal = ({
   const [file, setFile] = React.useState();
 
   const localSubmit = (values) => {
-    console.log("values", {
-      ...defaultValues,
-      ...values,
-      ...(quantityLabel && { quantityType: quantityLabel }),
-      ...(file && { attachment: file }),
-      ...(selectedSubExpenseType && { subExpenseType: selectedSubExpenseType }),
-
-      cgst,
-      sgst,
-      expenseTotal,
-    });
     onSubmit({
       ...defaultValues,
       ...values,
@@ -354,6 +342,24 @@ const CommonAddModal = ({
                     : undefined
                 }
               />
+            </InputContainer>
+
+            <InputContainer label={"Payment Type"} size={3}>
+              <select
+                className="form-control"
+                name={`paymentType`}
+                label="Payment Type"
+                disabled={mode === "Edit"}
+                value={values.subExpenseType}
+                onChange={handleChange}
+              >
+                <option selected disabled>
+                  Select Payment Type
+                </option>
+                {EXPENSEPAYMENTTYPES.map((unit) => (
+                  <option value={unit.key}>{unit.key}</option>
+                ))}
+              </select>
             </InputContainer>
             <InputContainer label={"CGST"} size={3}>
               <input

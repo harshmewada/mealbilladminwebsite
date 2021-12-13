@@ -2,7 +2,7 @@ import { useWatch } from "react-hook-form";
 
 const useFormWatch = ({ control, fieldName }) => {
   const watch = useWatch({
-    control,
+    control: control || null,
     name: fieldName && fieldName.key,
   });
 

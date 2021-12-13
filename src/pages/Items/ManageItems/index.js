@@ -270,8 +270,8 @@ const ManageItems = () => {
       name: "isQuantityChecked",
       size: 2,
 
-      label: "Check Quantity",
-      placeholder: "Enter Check Quantity",
+      label: "Is Quantity Available",
+      placeholder: "Enter Quantity",
     },
 
     {
@@ -735,7 +735,7 @@ const ManageItems = () => {
       title: "Quantity",
       key: "currentStock",
       renderRow: (row) => {
-        return getItemQuantityCal(row);
+        return row.isQuantityChecked ? getItemQuantityCal(row) : "-";
       },
       // row?.variants && row?.variants?.length > 0
       //   ? getVariantQuantityCal(row?.variants)
