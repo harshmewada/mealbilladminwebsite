@@ -85,7 +85,6 @@ const ActiveOrderSelector = ({
     const index = activeOrdersLength - 1 - dataIndex;
     const orderDeletable = data.KOTS.length === 0;
 
-    console.log("orderData", data);
     const isActive = data.refId === active?.refId;
 
     const disableEverything = disabled
@@ -94,7 +93,6 @@ const ActiveOrderSelector = ({
       ? false
       : data.isOrderConfirmed;
 
-    console.log("disableEverything", disableEverything);
     return (
       <>
         <div
