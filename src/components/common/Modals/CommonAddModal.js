@@ -101,6 +101,7 @@ const CommonAddModal = ({
                       {...(item?.hasOptions && {
                         options: optionsData[item.name],
                       })}
+                      watch={watch}
                     />
                   )
                 );

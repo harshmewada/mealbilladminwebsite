@@ -1,6 +1,5 @@
 import React from "react";
-import { useWatch } from "react-hook-form";
-
+import useFormWatch from "../../../hooks/useFormWatch";
 const InputContainer = ({
   label,
   size,
@@ -13,51 +12,45 @@ const InputContainer = ({
 }) => {
   // // console.log("props", props);
   const [show, setShow] = React.useState(true);
-  let watchField = useWatch({
-    control,
-    name: props.dependentOn, // without supply name will watch the entire form, or ['firstName', 'lastName'] to watch both
+  const watchField = useFormWatch({
+    control: control,
+    fieldName: props.dependentOn,
   });
 
-  const shouldRender = typeof watchField === "string";
+  const shouldRender = watchField !== null;
 
-  // console.log("watchField", watchField, props.dependentOn);
-  // let formValues = props.dependentOn
-  //   ? props.getValues(props.dependentOn)
-  //   : undefined;
   React.useEffect(() => {
     if (props.dependentOn) {
       if (shouldRender) {
-        console.log("watchField", watchField, props.dependentOn);
         if (watchField) {
-          // setShow(true);
+          setShow(true);
+        } else {
+          setShow(false);
         }
-      } else {
-        setShow(false);
       }
-      // setShow(false);
-    } else {
-      setShow(true);
     }
-  }, [shouldRender]);
+  }, [shouldRender, watchField]);
 
   return (
-    <div
-      class={`form-group col-md-${size || "6"}`}
-      {...(noPadding && {
-        style: {
-          marginBottom: 0,
-        },
-      })}
-    >
-      {" "}
-      {label && <label>{label}</label>}
-      {children}
-      {error && (
-        <div className="text-danger mt-1">
-          <small>{error}</small>
-        </div>
-      )}
-    </div>
+    show && (
+      <div
+        class={`form-group col-md-${size || "6"}`}
+        {...(noPadding && {
+          style: {
+            marginBottom: 0,
+          },
+        })}
+      >
+        {" "}
+        {label && <label>{label}</label>}
+        {children}
+        {error && (
+          <div className="text-danger mt-1">
+            <small>{error}</small>
+          </div>
+        )}
+      </div>
+    )
   );
 };
 

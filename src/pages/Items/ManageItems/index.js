@@ -266,9 +266,24 @@ const ManageItems = () => {
       required: false,
     },
     {
+      type: "switch",
+      name: "isQuantityChecked",
+      size: 2,
+
+      label: "Check Quantity",
+      placeholder: "Enter Check Quantity",
+    },
+
+    {
       type: "number",
       name: "currentStock",
       size: 2,
+      dependentOn: {
+        key: "isQuantityChecked",
+        expectedValue: (val) => {
+          return val === true;
+        },
+      },
 
       label: "Item Current Quantity",
       placeholder: "Item  Current Quantity",
