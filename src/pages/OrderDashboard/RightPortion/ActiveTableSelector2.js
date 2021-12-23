@@ -234,6 +234,7 @@ const ActiveOrderSelector = ({
                               }
                               deleteItem={() => deleteItem(itemId)}
                               isOrderConfirmed={disableEverything}
+                              isKotCompleted={!isEditMode && isConfirmed}
                             />
                           </td>
 

@@ -45,12 +45,15 @@ const formData = [
       },
     },
   },
-  {
-    type: "switch",
-    name: "includeQuantity",
-    label: "Include Quantity ",
-    placeholder: "Enter Include Quantity ",
-  },
+
+  //turned off on request
+
+  // {
+  //   type: "switch",
+  //   name: "includeQuantity",
+  //   label: "Include Quantity ",
+  //   placeholder: "Enter Include Quantity ",
+  // },
 
   {
     type: "select",
@@ -275,7 +278,7 @@ const RestaurantExpenseTypes = () => {
 
   const restauranttableheaders = [
     { title: "Expense Type", key: "expenseType" },
-    { title: "Include quantity", key: "includeQuantity", type: "boolean" },
+    // { title: "Include quantity", key: "includeQuantity", type: "boolean" },
     {
       title: "Sub Expense Count",
       key: "Sub Expense Count",

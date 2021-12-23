@@ -22,7 +22,7 @@ import {
 } from "../../redux/action/bookingActions";
 import { getAllTables } from "../../redux/action/tableActions";
 import { getBranchItems } from "../../redux/action/itemActions";
-import { DATEFORMAT, DATETIMEFORMAT } from "../../contants";
+import { BOOKINGSTATUS, DATEFORMAT, DATETIMEFORMAT } from "../../contants";
 
 const PageTitle = "Bookings";
 
@@ -263,7 +263,12 @@ const ManageBranches = () => {
     if (open === "Add") {
       dispatch(
         createBooking(
-          { ...data, branchId: currentBranchId },
+          {
+            ...data,
+            branchId: currentBranchId,
+
+            bookingStatus: BOOKINGSTATUS[0].key,
+          },
           () => {
             toggleAdd();
             dispatch(

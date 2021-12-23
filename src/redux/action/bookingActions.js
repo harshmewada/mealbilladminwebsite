@@ -72,3 +72,47 @@ export const getAllBookings = (data) => {
     },
   };
 };
+
+export const getBookingOtp = ({ mobile, bookingId }, cb) => {
+  // console.log(data);
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: "Otp sent successfully",
+      errorMessage: "Failed to get otp",
+      enableMessage: true,
+      cb: cb,
+      type: bookingTypes.GET_OTP,
+      payload: {
+        request: {
+          url: bookingApi.GET_OTP,
+          method: "post",
+          data: {
+            mobile: mobile,
+            bookingId: bookingId,
+          },
+        },
+      },
+    });
+};
+
+export const verifyBooking = ({ otp, bookingId }, cb) => {
+  // console.log(data);
+  return (dispatch) =>
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: "Booking Verified",
+      errorMessage: "Failed to verify booking",
+      enableMessage: true,
+      cb: cb,
+      type: bookingTypes.VERIFY_BOOKING,
+      payload: {
+        request: {
+          url: bookingApi.VERIFY_BOOKING,
+          method: "post",
+          data: {
+            otp: otp,
+            bookingId: bookingId,
+          },
+        },
+      },
+    });
+};

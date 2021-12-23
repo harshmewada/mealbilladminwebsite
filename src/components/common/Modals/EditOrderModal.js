@@ -32,14 +32,14 @@ const EditOrderModal = ({
 
   const isLoading = useSelector((state) => state.util.spinner);
   const [activeOrders, setActiveOrders] = React.useState([]);
-  const [remarks, setRemarks] = React.useState(undefined);
+  const [editRemarks, setEditRemarks] = React.useState(undefined);
 
   const handleChangeRemarks = (e) => {
     const {
       target: { value },
     } = e;
 
-    setRemarks(value);
+    setEditRemarks(value);
   };
   const [activeOldOrders, setActiveOldOrders] = React.useState([]);
 
@@ -329,7 +329,7 @@ const EditOrderModal = ({
               placeholder={" Type Remarks"}
               rows={2}
               readOnly={activeOldOrder}
-              value={remarks || activeOrder?.remarks}
+              value={editRemarks || activeOrder?.editRemarks}
               onChange={handleChangeRemarks}
             />
           </div>
@@ -343,7 +343,7 @@ const EditOrderModal = ({
               onClick={() => {
                 onSubmit({
                   ...activeOrders[0],
-                  remarks: remarks || activeOrder?.remarks,
+                  remarks: editRemarks || activeOrder?.editRemarks,
                   ...getData(),
                 });
               }}

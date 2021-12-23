@@ -45,80 +45,6 @@ const CommonAddModal = ({
     resetForm();
   };
 
-  // const formData = [
-  //   {
-  //     type: "select",
-  //     name: "expenseTypeId",
-  //     label: "Expense Type",
-  //     options: restaurantExpenseTypes,
-  //     optionLabelProp: "expenseType",
-  //     optionValueProp: "id",
-  //     disabled: mode === "Edit",
-
-  //     defaultOption: () => <option>Select Expense Type</option>,
-  //   },
-  //   {
-  //     type: subExpenseTypes.length > 0 ? "select" : "none",
-  //     name: "subExpenseType",
-  //     label: "Sub Expense Type",
-  //     options: subExpenseTypes,
-  //     optionLabelProp: "subExpenseType",
-  //     optionValueProp: "subExpenseType",
-  //     disabled: mode === "Edit",
-
-  //     defaultOption: () => (
-  //       <option selected disabled>
-  //         Select Sub Expense Type
-  //       </option>
-  //     ),
-  //   },
-  //   {
-  //     type: "text",
-  //     name: "expenseTitle",
-  //     label: "Remarks",
-  //     placeholder: "Type Remarks",
-  //     required: false,
-  //   },
-  //   {
-  //     type: showQuantityOptions ? "number" : "none",
-
-  //     name: "quantity",
-  //     label: quantityLabel
-  //       ? `Expense Quantity (${quantityLabel})`
-  //       : "Expense Quantity",
-  //     placeholder: "Type Expense Quantity",
-  //     dependentOn: "",
-  //   },
-  //   // {
-  //   //   type: showQuantityOptions ? "select" : "none",
-
-  //   //   name: "quantityType",
-  //   //   size: 4,
-
-  //   //   label: "Quantity Type",
-  //   //   options: MEASUREUNITS,
-  //   //   optionLabelProp: "title",
-  //   //   optionValueProp: "value",
-  //   // },
-
-  //   {
-  //     type: "number",
-  //     name: "expensePrice",
-  //     label: "Expense Price",
-
-  //     required: true,
-  //     rules: {
-  //       required: {
-  //         value: true,
-  //         message: "Branch Name is required",
-  //       },
-  //     },
-  //   },
-  // ];
-  // const methods = useForm({
-  //   defaultValues: data,
-  // });
-
   const {
     values,
     touched,
@@ -128,36 +54,15 @@ const CommonAddModal = ({
     handleChange,
     handleSubmit: formikSubmit,
   } = useFormik({
-    initialValues: data || {},
+    initialValues: data || {
+      paymentType: EXPENSEPAYMENTTYPES[0].key,
+    },
     onSubmit: (values) => {
       localSubmit(values);
-
-      // alert(JSON.stringify(values, null, 2));
     },
   });
 
-  // const {
-  //   register,
-  //   handleSubmit,
-  //   watch,
-  //   errors,
-  //   control,
-  //   formState,
-  //   reset,
-  //   setValue,
-  //   getValues,
-  // } = methods;
-
-  // const watchExpenseType = watch("expenseTypeId");
-  // const watchSubExpenseType = watch("subExpenseType");
-
   const isLoading = useSelector((state) => state.util.spinner);
-  // const dispatch = useDispatch();
-
-  // console.log("error", errors);
-  // React.useEffect(() => {
-  //   setFormErrors(formState.errors);
-  // }, [formState]);
 
   let watchExpenseType = values?.expenseTypeId;
   const watchSubExpenseType = values?.subExpenseTypeId;
@@ -227,8 +132,6 @@ const CommonAddModal = ({
       }
     }
   }, [watchSubExpenseType]);
-
-  // console.log("watchSubExpenseType", watchSubExpenseType);
 
   React.useEffect(() => {
     if (open && data) {
@@ -345,7 +248,28 @@ const CommonAddModal = ({
             </InputContainer>
 
             <InputContainer label={"Payment Type"} size={3}>
-              <select
+              <br />
+
+              {EXPENSEPAYMENTTYPES.map((unit) => {
+                return (
+                  <div class="form-check form-check-inline">
+                    <input
+                      class="form-check-input"
+                      type="radio"
+                      name="paymentType"
+                      id={unit.key}
+                      value={unit.key}
+                      checked={values.paymentType === unit.key}
+                      onChange={handleChange}
+                    />
+                    <label class="form-check-label" for={unit.key}>
+                      {unit.key}
+                    </label>
+                  </div>
+                );
+              })}
+
+              {/* <select
                 className="form-control"
                 name={`paymentType`}
                 label="Payment Type"
@@ -359,7 +283,7 @@ const CommonAddModal = ({
                 {EXPENSEPAYMENTTYPES.map((unit) => (
                   <option value={unit.key}>{unit.key}</option>
                 ))}
-              </select>
+              </select> */}
             </InputContainer>
             <InputContainer label={"CGST"} size={3}>
               <input

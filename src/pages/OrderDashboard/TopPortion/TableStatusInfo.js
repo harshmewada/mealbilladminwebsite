@@ -1,21 +1,33 @@
 import React from "react";
-const styles = {};
+import TodaysReservationModal from "../../../components/common/Modals/TodaysReservationModal";
 const TableStatusInfo = () => {
+  const [open, setOpen] = React.useState();
+
   return (
-    <div class="instruction">
-      <div class="inst-card">
-        <div class="box available"></div>
-        <span>Avail.</span>
+    <>
+      <TodaysReservationModal open={open} onClose={() => setOpen(false)} />
+      <div class="instruction">
+        <div class="inst-card">
+          <div class="box available"></div>
+          <span>Available</span>
+        </div>
+        <div class="inst-card">
+          <div class="box busy"></div>
+          <span>Busy</span>
+        </div>
+        <div class="inst-card">
+          <button
+            className="btn btn-danger btn-sm shadow-none"
+            onClick={() => setOpen(true)}
+          >
+            Reservations
+          </button>
+
+          {/* <div class="box reserved"></div>
+        <span>Res.</span> */}
+        </div>
       </div>
-      <div class="inst-card">
-        <div class="box busy"></div>
-        <span>Busy</span>
-      </div>
-      <div class="inst-card">
-        <div class="box reserved"></div>
-        <span>Res.</span>
-      </div>
-    </div>
+    </>
   );
 };
 

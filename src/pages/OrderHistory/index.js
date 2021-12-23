@@ -106,13 +106,18 @@ const OrderHistory = () => {
     );
   };
 
-  const EditAction = (action) => (
-    <EditCommonAction
-      onClick={() => {
-        handleEdit(action.data, "EditOrder");
-      }}
-    />
-  );
+  const EditAction = (action) => {
+    const isEdited = action.data?.isEdited;
+    return (
+      !isEdited && (
+        <EditCommonAction
+          onClick={() => {
+            handleEdit(action.data, "EditOrder");
+          }}
+        />
+      )
+    );
+  };
   const ViewAction = (action) => (
     <ViewCommonAction onClick={() => handleEdit(action.data, "View")} />
   );

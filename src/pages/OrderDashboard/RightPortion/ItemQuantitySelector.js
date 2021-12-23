@@ -20,6 +20,7 @@ const ItemQuantitySelector = ({
   setQuantity,
   deleteItem,
   isOrderConfirmed,
+  isKotCompleted,
 }) => {
   const incrementQuantity = () => {
     setQuantity(quantity + 1);
@@ -48,7 +49,7 @@ const ItemQuantitySelector = ({
   return (
     <div class="form-group mb-0 orderquantitybtns ">
       <div class="input-group" style={styles.container}>
-        {!isOrderConfirmed && (
+        {!isOrderConfirmed && !isKotCompleted && (
           <span class="input-group-prepend ">
             <button
               style={styles.button}
@@ -68,12 +69,12 @@ const ItemQuantitySelector = ({
           name="example-input3-group2"
           class="form-control"
           value={quantity}
-          disabled={isOrderConfirmed}
+          disabled={isOrderConfirmed || isKotCompleted}
           onChange={(e) => {
             handleChange(e);
           }}
         />
-        {!isOrderConfirmed && (
+        {!isOrderConfirmed && !isKotCompleted && (
           <span class="input-group-append">
             <button
               style={styles.button}

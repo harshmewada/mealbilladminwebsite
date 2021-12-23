@@ -16,12 +16,18 @@ const initialstate = {
   bookings: [],
 };
 
+const formattedBookings = (array) => {
+  return array.map((a) => {
+    return { ...a, start: new Date(a.start), end: new Date(a.end) };
+  });
+};
+
 const commonDataReducer = (state = initialstate, action) => {
   switch (action.type) {
     case bookingTypes.GET_BOOKINGS_SUCCESS:
       return {
         ...state,
-        bookings: action.payload.data.data || [],
+        bookings: formattedBookings(action.payload.data.data) || [],
       };
 
     case commonTypes.GET_ALL_THEMES_SUCCESS:

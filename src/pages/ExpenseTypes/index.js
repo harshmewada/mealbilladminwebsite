@@ -38,12 +38,12 @@ const ManageExpenseTypes = () => {
         },
       },
     },
-    {
-      type: "switch",
-      name: "includeQuantity",
-      label: "Include Quantity ",
-      placeholder: "Enter Include Quantity ",
-    },
+    // {
+    //   type: "switch",
+    //   name: "includeQuantity",
+    //   label: "Include Quantity ",
+    //   placeholder: "Enter Include Quantity ",
+    // },
 
     {
       type: "select",
@@ -177,7 +177,7 @@ const ManageExpenseTypes = () => {
 
   const headers = [
     { title: "Expense Type", key: "expenseType" },
-    { title: "Include quantity", key: "includeQuantity", type: "boolean" },
+    // { title: "Include quantity", key: "includeQuantity", type: "boolean" },
     {
       title: "SubExpenseCount",
       key: "SubExpenseCount",

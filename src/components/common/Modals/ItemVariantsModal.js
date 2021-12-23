@@ -31,6 +31,8 @@ const headers = [
   { title: "Price", key: "itemPrice" },
 
   { title: "On.Price", key: "onlinePrice" },
+  { title: "Check Qty.", key: "isQuantityChecked" },
+
   { title: "Qty.", key: "currentStock" },
 
   { title: "Description", key: "description", type: "textarea" },
@@ -186,6 +188,39 @@ const ItemVariantsModal = ({ open, onClose, data, onSubmit }) => {
                                   <td>
                                     <Field
                                       disabled={isLoading}
+                                      name={`variants.${childindex}.isQuantityChecked`}
+                                    >
+                                      {({
+                                        field, // { name, value, onChange, onBlur }
+                                        form: { touched, errors }, // also values, setXXXX, handleXXXX, dirty, isValid, status, etc.
+                                        meta,
+                                      }) => (
+                                        <div class="custom-control custom-switch switch-primary">
+                                          <input
+                                            type="checkbox"
+                                            class="custom-control-input"
+                                            id={`customSwitchPrimary${childindex}isQuantityChecked`}
+                                            {...field}
+                                            checked={field.value}
+                                          />
+                                          <label
+                                            class="custom-control-label"
+                                            for={`customSwitchPrimary${childindex}isQuantityChecked`}
+                                          ></label>
+
+                                          {meta.touched && meta.error && (
+                                            <div className="error">
+                                              {meta.error}
+                                            </div>
+                                          )}
+                                        </div>
+                                      )}
+                                    </Field>
+                                  </td>
+
+                                  <td>
+                                    <Field
+                                      disabled={isLoading}
                                       name={`variants.${childindex}.currentStock`}
                                       placeholder="Enter Current Quantity"
                                       type="number"
@@ -295,8 +330,6 @@ const ItemVariantsModal = ({ open, onClose, data, onSubmit }) => {
                                             remove(childindex);
                                           });
                                         }
-
-                                        // !isLoading && remove(childindex);
                                       }}
                                     />
                                   </td>
