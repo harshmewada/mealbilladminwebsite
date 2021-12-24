@@ -20,7 +20,7 @@ const TableStatusInfo = () => {
             className="btn btn-danger btn-sm shadow-none"
             onClick={() => setOpen(true)}
           >
-            Reservations
+            Booking
           </button>
 
           {/* <div class="box reserved"></div>

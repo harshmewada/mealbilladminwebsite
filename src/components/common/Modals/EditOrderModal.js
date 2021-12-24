@@ -141,6 +141,7 @@ const EditOrderModal = ({
   React.useEffect(() => {
     if (open) {
       const myData = formatData(orderData);
+
       setActiveOrders([myData]);
       if (myData?.oldOrder) {
         const emyData = formatData(orderData.oldOrder);
@@ -343,7 +344,7 @@ const EditOrderModal = ({
               onClick={() => {
                 onSubmit({
                   ...activeOrders[0],
-                  remarks: editRemarks || activeOrder?.editRemarks,
+                  editRemarks: editRemarks || activeOrder?.editRemarks,
                   ...getData(),
                 });
               }}
