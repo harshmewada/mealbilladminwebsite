@@ -269,7 +269,7 @@ const ManageTables = () => {
           onClose={() => toggleAdd()}
           mode={open}
           onSubmit={(e) => onAdd(e)}
-          data={actionData}
+          data={{ tablePrice: 0, ...actionData }}
           formData={formData}
           defaultValue={defaultValues}
         />

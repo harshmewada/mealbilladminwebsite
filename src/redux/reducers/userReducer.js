@@ -26,6 +26,8 @@ const initialstate = {
   receiptMessage: null,
   currency: CURRENCY,
   measureUnits: [],
+  permissions: [],
+
   allowedFuctionalities: FUNCTIONALITYACCESS.filter(
     (d) => d !== ONLINE_ORDERING
   ),

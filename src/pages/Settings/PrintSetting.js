@@ -1,6 +1,8 @@
 import React from "react";
 import { Card, Col, Row, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import PermissionsGate from "../../components/PermissionGate";
+import { SCOPES } from "../../contants";
 import { togglePrintSetting } from "../../redux/action/userActions";
 const PrintSetting = () => {
   const dispatch = useDispatch();
@@ -64,12 +66,14 @@ const PrintSetting = () => {
             onChange: (name, value) => handleChangeCheckBox(name, value),
             label: "Enable KOT",
           })}
-          {renderCheckboxInput({
-            name: "enableKDS",
-            value: enableKDS,
-            onChange: (name, value) => handleChangeCheckBox(name, value),
-            label: "Enable Kitchen Display System",
-          })}
+          <PermissionsGate scopes={[SCOPES.KITCHEN_DISPLAY_SYSTEM]}>
+            {renderCheckboxInput({
+              name: "enableKDS",
+              value: enableKDS,
+              onChange: (name, value) => handleChangeCheckBox(name, value),
+              label: "Enable Kitchen Display System",
+            })}
+          </PermissionsGate>
 
           {renderCheckboxInput({
             name: "enableLogo",

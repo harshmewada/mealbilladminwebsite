@@ -10,6 +10,7 @@ import {
   updateRestaurant,
   assignRestaurantSubScription,
   removeRestaurantSubScription,
+  updateRestaurantPermissions,
 } from "../../../redux/action/restaurantActions";
 
 import {
@@ -31,6 +32,8 @@ import { emailRegex, mobileRegex } from "../../../helpers/regex";
 import TableRowCommonAction from "../../../components/common/Actions/TableRowCommonAction";
 import { CURRENCYOPTIONS } from "../../../contants";
 
+import ManagePermissions from "./ManagePermissionsModal";
+
 const PageTitle = "Restaurants";
 
 const AddRestaurant = () => {
@@ -42,7 +45,6 @@ const AddRestaurant = () => {
   const [assignData, setAssignData] = React.useState();
   const [subscriptionDelete, setSubscriptionDelete] = React.useState();
 
-  const [file, setFile] = React.useState();
   const disabled = open === "Edit";
 
   const formData = [
@@ -249,16 +251,16 @@ const AddRestaurant = () => {
       optionValueProp: "value",
       // disabled: disabled,
     },
-    {
-      type: "number",
-      name: "allowedBookingSpaces",
-      size: 3,
-      min: 0,
-      step: 1,
-      label: "Booking Spaces",
+    // {
+    //   type: "number",
+    //   name: "allowedBookingSpaces",
+    //   size: 3,
+    //   min: 0,
+    //   step: 1,
+    //   label: "Booking Spaces",
 
-      // disabled: disabled,
-    },
+    //   // disabled: disabled,
+    // },
     {
       type: "select",
       name: "status",
@@ -286,7 +288,6 @@ const AddRestaurant = () => {
     setOpen(mode);
     if (mode === undefined) {
       setActionData({});
-      setFile();
     }
   };
 
@@ -311,6 +312,11 @@ const AddRestaurant = () => {
 
   const handleAssign = (data) => {
     toggleAdd("Assign");
+    setAssignData(data);
+  };
+
+  const handlePermissions = (data) => {
+    toggleAdd("managepermission");
     setAssignData(data);
   };
 
@@ -393,6 +399,27 @@ const AddRestaurant = () => {
     );
   };
 
+  const onChangePermissions = (data) => {
+    dispatch(
+      updateRestaurantPermissions({
+        permissions: data,
+        restaurantId: assignData?.id || assignData?._id,
+      })
+    )
+      .then((res) => {
+        if (res.payload.status === 200) {
+          dispatch(showSnackBar("Restaurant Updated Successfully", "success"));
+          dispatch(getAllRestaurants());
+          toggleAdd();
+        } else {
+          dispatch(showSnackBar("Failed to Update Restaurant", "error"));
+        }
+      })
+      .catch((err) => {
+        dispatch(showSnackBar("Failed to Update Restaurant", "error"));
+      });
+  };
+
   const deleteCurrentSubscription = (data) => {
     dispatch(
       removeRestaurantSubScription(
@@ -429,6 +456,13 @@ const AddRestaurant = () => {
     <TableRowCommonAction
       icon="mdi mdi-package-variant-closed"
       onClick={() => handleAssign(action.data)}
+    />
+  );
+
+  const PermissionAction = (action) => (
+    <TableRowCommonAction
+      icon="mdi mdi-shield-lock-outline"
+      onClick={() => handlePermissions(action.data)}
     />
   );
 
@@ -490,6 +524,14 @@ const AddRestaurant = () => {
         onClose={() => toggleAdd()}
         onSubmit={(data) => onAddNewSubscription(data.subscriptionId)}
       />
+
+      <ManagePermissions
+        open={open === "managepermission"}
+        title="Manage Permissions"
+        onClose={() => toggleAdd()}
+        permissions={assignData?.permissions || []}
+        onSubmit={(data) => onChangePermissions(data)}
+      />
       <CommonAddModal
         title={PageTitle}
         open={open === "Add" || open === "Edit"}
@@ -517,6 +559,7 @@ const AddRestaurant = () => {
         actions={[
           RemoveSubscriptionActionAssignAction,
           AssignAction,
+          PermissionAction,
           EditAction,
           DeleteAction,
         ]}

@@ -116,6 +116,22 @@ export const updateRestaurant = (data) => {
   };
 };
 
+export const updateRestaurantPermissions = (data) => {
+  return {
+    type: restaurantTypes.CHANGE_PERMISSIONS,
+    payload: {
+      request: {
+        url: SuperAdminApi.UPDATE_RESTAURANT_PERMISSIONS,
+        method: "put",
+        data: data,
+        headers: {
+          "Content-type": "application/json",
+        },
+      },
+    },
+  };
+};
+
 export const createRestaurantItem = (data) => {
   const formData = new FormData();
   Object.keys(data).forEach((key) => formData.append(key, data[key]));

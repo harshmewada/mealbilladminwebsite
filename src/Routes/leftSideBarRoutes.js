@@ -1,3 +1,5 @@
+import { SCOPES } from "../contants";
+
 export const superadmin = [
   {
     title: "Dashboard",
@@ -86,6 +88,7 @@ export const restaurantadmin = [
         title: "Bookings",
         icon: "mdi mdi-calendar-plus",
         link: "/bookings",
+        permission: SCOPES.BOOKING_SYSTEM,
       },
       {
         title: "Manage Categories",
@@ -218,6 +221,7 @@ export const branchadmin = [
         title: "Bookings",
         icon: "mdi mdi-calendar-plus",
         link: "/bookings",
+        permission: SCOPES.BOOKING_SYSTEM,
       },
     ],
   },

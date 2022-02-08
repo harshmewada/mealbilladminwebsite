@@ -257,8 +257,6 @@ const ManageBranches = () => {
     }
   };
 
-  const confirmDelete = (data) => {};
-
   const onAdd = (data) => {
     if (open === "Add") {
       dispatch(
@@ -295,6 +293,20 @@ const ManageBranches = () => {
     }
   };
 
+  const onCancelBooking = () => {
+    let editData = {
+      ...actionData,
+      bookingStatus: BOOKINGSTATUS[2].key,
+    };
+
+    dispatch(
+      updateBooking(editData, () => {
+        toggleAdd();
+        dispatch(getAllBookings({ branchId: currentBranchId, restaurantId }));
+      })
+    );
+  };
+
   const AddAction = () => {
     return (
       <AddCommonAction
@@ -304,6 +316,17 @@ const ManageBranches = () => {
     );
   };
 
+  const CancelAction = ({ data }) => {
+    return (
+      <button
+        type="submit"
+        class="btn btn-outline-danger waves-effect waves-light ml-3"
+        onClick={() => handleDelete(data)}
+      >
+        Cancle Booking
+      </button>
+    );
+  };
   const headers = [
     { title: "Booking Space name", key: "bookingSpace" },
     { title: "Associated With", key: "branchName" },
@@ -355,9 +378,10 @@ const ManageBranches = () => {
       <DeleteModal
         size="md"
         open={open === "Delete"}
-        title={actionData?.name}
+        title={actionData?.title}
+        preTitle="Are you sure you want to cancel"
         onClose={() => toggleAdd()}
-        onConfirm={() => confirmDelete()}
+        onConfirm={() => onCancelBooking()}
       />
       <CommonAddModal
         title={PageTitle}
@@ -374,6 +398,10 @@ const ManageBranches = () => {
           branchId: branches,
           items: items,
         }}
+        hideSubmit={isRestaurantAdmin}
+        extraButtons={
+          isRestaurantAdmin ? [] : open === "Edit" ? [CancelAction] : []
+        }
       />
       <div class="row">
         <div class="col-12">
@@ -382,7 +410,7 @@ const ManageBranches = () => {
               <TableTitle
                 headerComponents={headerComponents[role]}
                 title={PageTitle}
-                endActions={[AddAction]}
+                endActions={!isRestaurantAdmin ? [AddAction] : []}
               />
               <ScheduleCalendar
                 events={

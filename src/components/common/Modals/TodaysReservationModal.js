@@ -8,26 +8,14 @@ import {
   verifyBooking,
 } from "../../../redux/action/bookingActions";
 import { Alert, Table } from "react-bootstrap";
-import { BOOKINGSTATUS } from "../../../contants";
+import { BOOKINGSTATUS, DATETIMEFORMAT } from "../../../contants";
 
 const TodaysReservationModal = ({ open, onClose }) => {
   const dispatch = useDispatch();
-  const { branchId } = useSelector((state) => state.user);
+  const { branchId, restaurantId } = useSelector((state) => state.user);
   const { bookings } = useSelector((state) => state.common);
 
   const [otps, setOtps] = React.useState({});
-
-  React.useEffect(() => {
-    if (open) {
-      dispatch(
-        getAllBookings({
-          branchId,
-          start: moment().startOf("day").toDate(),
-          end: moment().endOf("day").toDate(),
-        })
-      );
-    }
-  }, [open]);
 
   const handleChange = (e, bId) => {
     const {
@@ -123,8 +111,8 @@ const TodaysReservationModal = ({ open, onClose }) => {
                     </td>
 
                     <td>
-                      {`${moment(b.start).format("HH:mm")}`} to{" "}
-                      {`${moment(b.end).format("HH:mm")}`}
+                      {`${moment(b.start).format(DATETIMEFORMAT)}`} to{" "}
+                      {`${moment(b.end).format(DATETIMEFORMAT)}`}
                     </td>
 
                     <td>{b.hostedBy}</td>

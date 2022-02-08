@@ -158,6 +158,10 @@ const ManageItems = () => {
 
   const formData = [
     {
+      type: "info",
+      title: "Basic Information",
+    },
+    {
       type: "text",
       name: "itemName",
       label: "Item Name",
@@ -224,20 +228,13 @@ const ManageItems = () => {
         },
       },
     },
-    {
-      type: "text",
-      name: "onlinePrice",
-      size: 3,
 
-      label: "Item Online Price",
-      placeholder: "Type Item  Online Price",
-      required: false,
-    },
     {
+      hideAt: "Add",
       type: "number",
       name: "hotKey",
       size: 3,
-
+      readOnly: true,
       label: "Hotkey",
       placeholder: "Type Hotkey",
     },
@@ -257,13 +254,31 @@ const ManageItems = () => {
       ),
     },
     {
-      type: "textarea",
-      name: "description",
-      label: "Item Description",
-      size: 12,
-      rows: "2",
-      placeholder: "Type a short description about the item",
-      required: false,
+      type: "select",
+      name: "status",
+      size: 2,
+
+      label: "Status",
+      options: [
+        {
+          title: "Active",
+          value: true,
+        },
+        {
+          title: "Inactive",
+          value: false,
+        },
+      ],
+      optionLabelProp: "title",
+      optionValueProp: "value",
+
+      required: true,
+      rules: {
+        required: {
+          value: true,
+          message: "Branch Name is required",
+        },
+      },
     },
     {
       type: "switch",
@@ -288,6 +303,20 @@ const ManageItems = () => {
       label: "Item Current Quantity",
       placeholder: "Item  Current Quantity",
       required: false,
+    },
+    {
+      type: "textarea",
+      name: "description",
+      label: "Item Description",
+      size: 12,
+      rows: "2",
+      placeholder: "Type a short description about the item",
+      required: false,
+    },
+
+    {
+      type: "info",
+      title: "GST",
     },
     {
       type: "float",
@@ -319,6 +348,20 @@ const ManageItems = () => {
         },
       },
     },
+
+    {
+      type: "info",
+      title: "Online Information",
+    },
+    {
+      type: "text",
+      name: "onlinePrice",
+      size: 3,
+
+      label: "Item Online Price",
+      placeholder: "Type Item  Online Price",
+      required: false,
+    },
     {
       type: "rating",
       name: "averageRating",
@@ -330,36 +373,22 @@ const ManageItems = () => {
       extraLabel: "0 users",
     },
     {
-      type: "select",
-      name: "status",
+      type: "switch",
+      name: "isOnline",
       size: 2,
 
-      label: "Status",
-      options: [
-        {
-          title: "Active",
-          value: true,
-        },
-        {
-          title: "Inactive",
-          value: false,
-        },
-      ],
-      optionLabelProp: "title",
-      optionValueProp: "value",
-
-      required: true,
-      rules: {
-        required: {
-          value: true,
-          message: "Branch Name is required",
-        },
-      },
+      label: "Is Item Online",
+      placeholder: "Enter Is Item Online",
     },
+
     {
       type: "empty",
 
       size: 2,
+    },
+    {
+      type: "info",
+      title: "Other Features",
     },
     {
       type: "switch",
@@ -368,14 +397,7 @@ const ManageItems = () => {
       label: "Is Item Featured",
       placeholder: "Enter Is Item Featured",
     },
-    {
-      type: "switch",
-      name: "isOnline",
-      size: 2,
 
-      label: "Is Item Online",
-      placeholder: "Enter Is Item Online",
-    },
     {
       type: "switch",
       name: "hasBarCode",

@@ -271,7 +271,7 @@ export const getAllexpenseTypes = (resId, branchId, status) => {
   };
 };
 
-export const getRestaurantExpenseType = (resId, status) => {
+export const getRestaurantExpenseType = (resId, branchId, status) => {
   return {
     type: expenseTypes.GET_RESTAURANT_EXPENSE_TYPES,
     payload: {
@@ -280,7 +280,7 @@ export const getRestaurantExpenseType = (resId, status) => {
         method: "get",
         params: {
           resId: resId,
-
+          branchId: branchId,
           status: status,
         },
       },

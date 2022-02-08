@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import socketIOClient from "socket.io-client";
-import { SOCKETURL } from "../contants";
+import { usePermissions } from "../components/PermissionGate";
+import { SCOPES, SOCKETURL } from "../contants";
 import {
   activateOrder,
   activateOrderSocket,
@@ -27,6 +28,10 @@ const SOCKET_SERVER_URL = SOCKETURL;
 const useKitchenDisplay = (roomId) => {
   const [messages, setMessages] = useState();
   const [customerMessages, setCustomerMessages] = useState([]);
+  const hasPermission = usePermissions({
+    scopes: [SCOPES.KITCHEN_DISPLAY_SYSTEM],
+  });
+
   const dispatch = useDispatch();
   const { branchId, restaurantId, id, role } = useSelector(
     (state) => state.user
@@ -40,14 +45,16 @@ const useKitchenDisplay = (roomId) => {
       reconnectionAttempts: 10,
     });
 
-    socketRef.current.on("connect", async () => {
-      // console.log("socket socketRef.current.id", socketRef.current.id);
+    if (hasPermission) {
+      socketRef.current.on("connect", async () => {
+        // console.log("socket socketRef.current.id", socketRef.current.id);
 
-      await socketRef.current.emit("JOIN_ROOM", branchId);
-      await getAllOrders();
-    });
+        await socketRef.current.emit("JOIN_ROOM", branchId);
+        await getAllOrders();
+      });
+    }
 
-    if (!isKitchenUser) {
+    if (!isKitchenUser && hasPermission) {
       socketRef.current.on(orderTypes.ACTIVATE_ORDER, (message) => {
         console.log("message", message);
         dispatch(activateOrderSocket(message));

@@ -1,12 +1,12 @@
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
 
-const DeleteModal = ({ title, open, size, onConfirm, onClose }) => {
+const DeleteModal = ({ title, preTitle, open, size, onConfirm, onClose }) => {
   return (
     <Modal size={size || "xl"} show={open} centered onHide={onClose}>
       <Modal.Header closeButton>
         <Modal.Title>
-          Are you sure you want to delete
+          {preTitle || "Are you sure you want to delete"}
           <span class="text-danger">&nbsp;{title} &nbsp;</span>?
         </Modal.Title>
       </Modal.Header>

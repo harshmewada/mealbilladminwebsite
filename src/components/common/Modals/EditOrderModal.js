@@ -55,7 +55,7 @@ const EditOrderModal = ({
       ...data,
       tablePrice: data?.tablePrice || 0,
       orderItems: orderItems,
-      orderType: parseInt(data.orderType),
+      orderType: data.orderType,
       ...(mode === "EditOrder" && { isEdited: true }),
     };
   };
@@ -300,6 +300,7 @@ const EditOrderModal = ({
           {activeOrders.length > 0 && (
             <div className={activeOldOrder ? "col-md-6" : "col-md-12"}>
               {activeOldOrder && <h5>Current Order </h5>}
+
               <ActiveTableSelector
                 tables={activeOrders}
                 activeOrdersLength={1}

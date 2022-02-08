@@ -6,8 +6,8 @@ import getCurrency from "../helpers/getCurrency";
 //pre- 3.109.130.95
 //TEST -65.1.245.30
 
-export const BASEURL = "https://test.mealbill.in/api";
-export const SOCKETURL = "ws://65.1.245.30:4001";
+// export const BASEURL = "https://test.mealbill.in/api";
+// export const SOCKETURL = "wss://test.mealbill.in";
 
 // export const BASEURL = "https://test.mealbill.in/api";
 // export const SOCKETURL = "wss://test.mealbill.in";
@@ -19,8 +19,8 @@ export const SOCKETURL = "ws://65.1.245.30:4001";
 // export const BASEURL = "http://34.202.79.31/api";
 // export const BASEURL = "http://localhost:4000";
 
-// export const BASEURL = "http://192.168.0.111:4000";
-// export const SOCKETURL = "ws://192.168.0.111:4001";
+export const BASEURL = "http://192.168.0.111:4000";
+export const SOCKETURL = "ws://192.168.0.111:4000";
 
 export const DATEFORMAT = "DD/MM/YYYY";
 
@@ -124,8 +124,9 @@ export const EXPENSEPAYMENTTYPES = [
 ];
 
 export const BOOKINGSTATUS = [
-  { key: "Pending", value: 0, bgColor: "#fff" },
-  { key: "Confirmed", value: 1, bgColor: `#f9ff42` },
+  { key: "Pending", value: 0, bgColor: "#e8aa00" },
+  { key: "Confirmed", value: 1, bgColor: `#20c200` },
+  { key: "Canceled", value: 2, bgColor: `#c20000` },
 ];
 export const dateRanges = {
   Today: [moment().toDate(), moment().toDate()],
@@ -143,4 +144,27 @@ export const dateRanges = {
     moment().subtract(1, "month").startOf("month").toDate(),
     moment().subtract(1, "month").endOf("month").toDate(),
   ],
+};
+
+export const ROLES = {
+  superAdmin: "superadmin",
+  restaurantAdmin: "restaurantadmin",
+  branchAdmin: "branchadmin",
+  branchUser: "branchuser",
+};
+
+export const SCOPES = {
+  ONLINE_ORDERING: "ONLINE_ORDERING",
+  CONTACTLESS_ORDERING_SYSTEM: "CONTACTLESS_ORDERING_SYSTEM",
+  ITEM_BARCODES: "ITEM_BARCODES",
+  BOOKING_SYSTEM: "BOOKING_SYSTEM",
+  ANALYTICS: "ANALYTICS",
+  KITCHEN_DISPLAY_SYSTEM: "KITCHEN_DISPLAY_SYSTEM",
+  OFFLINE: "OFFLINE",
+};
+
+export const PERMISSIONS = {
+  [ROLES.restaurantAdmin]: Object.values(SCOPES),
+  [ROLES.branchAdmin]: Object.values(SCOPES),
+  [ROLES.branchUser]: Object.values(SCOPES),
 };

@@ -1,5 +1,7 @@
 import React from "react";
 import TodaysReservationModal from "../../../components/common/Modals/TodaysReservationModal";
+import PermissionsGate from "../../../components/PermissionGate";
+import { SCOPES } from "../../../contants";
 const TableStatusInfo = () => {
   const [open, setOpen] = React.useState();
 
@@ -15,17 +17,20 @@ const TableStatusInfo = () => {
           <div class="box busy"></div>
           <span>Busy</span>
         </div>
-        <div class="inst-card">
-          <button
-            className="btn btn-danger btn-sm shadow-none"
-            onClick={() => setOpen(true)}
-          >
-            Booking
-          </button>
 
-          {/* <div class="box reserved"></div>
+        <PermissionsGate scopes={[SCOPES.BOOKING_SYSTEM]}>
+          <div class="inst-card">
+            <button
+              className="btn btn-danger btn-sm shadow-none"
+              onClick={() => setOpen(true)}
+            >
+              Booking
+            </button>
+
+            {/* <div class="box reserved"></div>
         <span>Res.</span> */}
-        </div>
+          </div>
+        </PermissionsGate>
       </div>
     </>
   );

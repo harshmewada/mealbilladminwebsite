@@ -4,6 +4,9 @@ const SuperAdminApi = {
   GET_ALL_RESTAURANTS: "/api/superadmin/restaurants/all",
   CREATE_RESTAURANT: "/api/superadmin/restaurants/create",
   UPDATE_RESTAURANT: "/api/superadmin/restaurants/update",
+  UPDATE_RESTAURANT_PERMISSIONS:
+    "/api/superadmin/restaurants/permissions/update",
+
   DELETE_RESTAURANT: `/api/superadmin/restaurants/delete`,
 
   GET_ALL_SUPERADMIN_TABLETYPES: "/api/superadmin/tabletype/all",

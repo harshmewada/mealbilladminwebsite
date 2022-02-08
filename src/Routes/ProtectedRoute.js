@@ -1,10 +1,15 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { Route, Redirect } from "react-router-dom";
+import PermissionsGate, { usePermissions } from "../components/PermissionGate";
 
-const PrivateRoute = ({ component: Component, roles, ...rest }) => {
+const PrivateRoute = ({ component: Component, roles, scopes, ...rest }) => {
   const currentUser = useSelector((state) => state.user);
+  const hasPermission = usePermissions({ scopes: scopes });
 
+  if (scopes && !hasPermission) {
+    return <Redirect to="/" />;
+  }
   return (
     <Route
       {...rest}

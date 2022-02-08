@@ -100,7 +100,6 @@ const ManageItemCategories = () => {
         },
       }),
     },
-
     {
       type: "select",
       name: "status",
@@ -122,7 +121,46 @@ const ManageItemCategories = () => {
       rules: {
         required: {
           value: true,
-          message: "Branch Name is required",
+          message: "Status is required",
+        },
+      },
+    },
+
+    {
+      type: "info",
+      title: "Hot Keys",
+      description:
+        "Please note that this can not be changed once created, so be careful with assigning minimun and maximum hotkey numbers, so all of your items can be used with hotkeys.",
+      placeholder: "Type Category image",
+    },
+    {
+      type: "number",
+      name: "minHotKeyNumber",
+      label: "Minimun Hoy Key Number",
+      placeholder: "Type Minimun Hoy Key Number",
+      required: false,
+      readOnly: open === "Edit",
+      size: 4,
+      rules: {
+        required: {
+          value: false,
+          message: "Minimun Hoy Key Number is required",
+        },
+      },
+    },
+    {
+      type: "number",
+      name: "maxHotKeyNumber",
+      label: "Maximum Hoy Key Number",
+      placeholder: "Type Maximum Hoy Key Number",
+      required: false,
+      readOnly: open === "Edit",
+
+      size: 4,
+      rules: {
+        required: {
+          value: false,
+          message: "Maximum Hoy Key Number is required",
         },
       },
     },
@@ -211,6 +249,13 @@ const ManageItemCategories = () => {
   };
   const onAdd = (data) => {
     if (open === "Add") {
+      console.log("add cat", data);
+      if (data.minHotKeyNumber >= data.maxHotKeyNumber) {
+        alert(
+          "Minimum HoyKey Number can not be less than Maximum Hotkey Number"
+        );
+        return;
+      }
       dispatch(
         createCategory({
           ...data,
@@ -222,6 +267,7 @@ const ManageItemCategories = () => {
           ...(typeof data?.categoryImage[0] !== "string" && {
             categoryImage: data?.categoryImage[0],
           }),
+          lastHotKeyNumber: parseInt(data.minHotKeyNumber) - 1,
         })
       )
         .then((res) => {
@@ -383,36 +429,6 @@ const ManageItemCategories = () => {
     restaurantId: restaurantId,
   };
 
-  const BranchFilter = (action) => (
-    <div class="">
-      <select
-        name="status"
-        class="form-control"
-        defaultValue="true"
-        required
-        value={selectedBranch}
-        onChange={(e) => {
-          if (e.target.value === "all") {
-            return setSelectedBranch(undefined);
-          } else {
-            setSelectedBranch(e.target.value);
-          }
-        }}
-      >
-        <option value={""} selected>
-          This Restaurant
-        </option>
-        {branches.map((res, resindex) => {
-          return (
-            <option key={resindex} value={res._id || res.id}>
-              {res.branchName}
-            </option>
-          );
-        })}
-      </select>
-    </div>
-  );
-
   const headerComponents = {
     restaurantadmin: [
       // ...[BranchFilter],
@@ -450,7 +466,6 @@ const ManageItemCategories = () => {
           formData={formData}
           defaultValue={defaultValues}
         />
-
         <DeleteModal
           size="md"
           open={open === "Delete"}
@@ -458,7 +473,6 @@ const ManageItemCategories = () => {
           onClose={() => toggleAdd()}
           onConfirm={() => confirmDelete()}
         />
-
         <SmartTable
           title={PageTitle}
           headerComponents={headerComponents[role]}

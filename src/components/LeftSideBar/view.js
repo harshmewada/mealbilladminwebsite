@@ -1,7 +1,9 @@
 import React from "react";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
 import { useHistory, useLocation } from "react-router-dom";
+import { SCOPES } from "../../contants";
 import { SMALLLOGO } from "../../redux/types";
+import PermissionGate from "../PermissionGate";
 
 function LeftSidebar({ sidebarData }) {
   const [active, setActive] = React.useState(0);
@@ -110,46 +112,94 @@ function LeftSidebar({ sidebarData }) {
                   <h6 class="menu-title">{activeValue.title}</h6>
                 </div>
                 {activeValue.children.map((child, childindex) => {
-                  return (
-                    <ul class="nav" key={childindex}>
-                      <li class="nav-item">
-                        <a
-                          class={`nav-link ${
-                            child?.link === pathname ? "active" : ""
-                          }`}
-                          style={{ cursor: "pointer" }}
-                          onClick={() => handleNavigate(child.link)}
-                          // href={child.link}
-                        >
-                          <span class="w-100 "> {child.title}</span>
-                          {child.children && (
-                            <span class="menu-arrow">
-                              <i class="mdi mdi-chevron-right"></i>
-                            </span>
+                  if (child.permission) {
+                    return (
+                      <PermissionGate scopes={[SCOPES.BOOKING_SYSTEM]}>
+                        <ul class="nav" key={childindex}>
+                          <li class="nav-item">
+                            <a
+                              class={`nav-link ${
+                                child?.link === pathname ? "active" : ""
+                              }`}
+                              style={{ cursor: "pointer" }}
+                              onClick={() => handleNavigate(child.link)}
+                              // href={child.link}
+                            >
+                              <span class="w-100 "> {child.title} </span>
+                              {child.children && (
+                                <span class="menu-arrow">
+                                  <i class="mdi mdi-chevron-right"></i>
+                                </span>
+                              )}
+                            </a>
+                            {child?.children && (
+                              <ul
+                                class="nav-second-level"
+                                aria-expanded="false"
+                              >
+                                {child?.children?.map((subchild, subindex) => {
+                                  return (
+                                    <li>
+                                      <a
+                                        href={subchild.link}
+                                        key={subindex}
+                                        onClick={() =>
+                                          handleNavigate(subchild.link)
+                                        }
+                                      >
+                                        {subchild.title}
+                                      </a>
+                                    </li>
+                                  );
+                                })}
+                              </ul>
+                            )}
+                          </li>
+                        </ul>
+                      </PermissionGate>
+                    );
+                  } else {
+                    return (
+                      <ul class="nav" key={childindex}>
+                        <li class="nav-item">
+                          <a
+                            class={`nav-link ${
+                              child?.link === pathname ? "active" : ""
+                            }`}
+                            style={{ cursor: "pointer" }}
+                            onClick={() => handleNavigate(child.link)}
+                            // href={child.link}
+                          >
+                            <span class="w-100 "> {child.title} </span>
+                            {child.children && (
+                              <span class="menu-arrow">
+                                <i class="mdi mdi-chevron-right"></i>
+                              </span>
+                            )}
+                          </a>
+                          {child?.children && (
+                            <ul class="nav-second-level" aria-expanded="false">
+                              {child?.children?.map((subchild, subindex) => {
+                                return (
+                                  <li>
+                                    <a
+                                      href={subchild.link}
+                                      key={subindex}
+                                      onClick={() =>
+                                        handleNavigate(subchild.link)
+                                      }
+                                    >
+                                      {subchild.title}
+                                    </a>
+                                  </li>
+                                );
+                              })}
+                            </ul>
                           )}
-                        </a>
-                        {child?.children && (
-                          <ul class="nav-second-level" aria-expanded="false">
-                            {child?.children?.map((subchild, subindex) => {
-                              return (
-                                <li>
-                                  <a
-                                    href={subchild.link}
-                                    key={subindex}
-                                    onClick={() =>
-                                      handleNavigate(subchild.link)
-                                    }
-                                  >
-                                    {subchild.title}
-                                  </a>
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        )}
-                      </li>
-                    </ul>
-                  );
+                        </li>
+                      </ul>
+                    );
+                  }
                 })}
               </div>
             </div>

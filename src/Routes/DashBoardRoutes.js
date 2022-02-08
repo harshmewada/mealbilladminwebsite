@@ -34,6 +34,7 @@ import ExpiredSubscription from "../pages/ExpiredSubscription";
 import Settings from "../pages/Settings";
 import ManageRawMaterials from "../pages/RawMaterials";
 import KitchenDisplay from "../pages/KitchenDisplay";
+import { SCOPES } from "../contants";
 
 const DashBoardRoutes = () => {
   const role = useSelector((state) => state.user.role);
@@ -81,6 +82,7 @@ const DashBoardRoutes = () => {
             roles={[kitchenuser]}
             path="/kitchen"
             component={KitchenDisplay}
+            scopes={[SCOPES.KITCHEN_DISPLAY_SYSTEM]}
           />
           <ProtectedRoute
             exact
@@ -98,6 +100,7 @@ const DashBoardRoutes = () => {
             roles={[branchadmin, restaurantadmin]}
             path="/bookings"
             component={BookingSpaces}
+            scopes={[SCOPES.BOOKING_SYSTEM]}
           />
 
           <ProtectedRoute

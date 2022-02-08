@@ -19,6 +19,7 @@ export { default as empty } from "./EmptySpace";
 
 export { default as float } from "./Float";
 export { default as radiogroup } from "./RadioGroup";
+export { default as info } from "./SectionInfo";
 
 // export { default as switch } from "./Switch";
 // export { default as autocomplete } from "./AutoComplete";

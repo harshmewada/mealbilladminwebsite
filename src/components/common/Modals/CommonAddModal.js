@@ -18,6 +18,8 @@ const CommonAddModal = ({
   defaultValues,
   size,
   optionsData,
+  hideSubmit,
+  extraButtons,
 }) => {
   const methods = useForm({
     defaultValues: defaultValues,
@@ -108,26 +110,37 @@ const CommonAddModal = ({
               })}
             </div>
             <div class="form-group mb-0">
-              <button
-                type="submit"
-                disabled={isLoading}
-                class="btn btn-gradient-primary waves-effect waves-light"
-              >
-                {isLoading && (
-                  <span
-                    class="spinner-border spinner-border-sm"
-                    role="status"
-                    aria-hidden="true"
-                  ></span>
-                )}
-                Submit
-              </button>
+              {!hideSubmit && (
+                <>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    class="btn btn-gradient-primary waves-effect waves-light"
+                  >
+                    {isLoading && (
+                      <span
+                        class="spinner-border spinner-border-sm"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
+                    )}
+                    Submit
+                  </button>
+                </>
+              )}
+              {extraButtons &&
+                extraButtons.map((b, bi) => {
+                  const B = b;
+
+                  return <B key={bi} data={data} />;
+                })}
+
               <button
                 type="reset"
                 class="btn btn-gradient-danger waves-effect ml-3"
                 onClick={() => onClose()}
               >
-                Cancel
+                Close
               </button>
             </div>
           </form>

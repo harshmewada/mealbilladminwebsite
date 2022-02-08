@@ -8,6 +8,7 @@ import { getBranchItems } from "../redux/action/itemActions";
 import getToken from "./getToken";
 import { getAllBookings } from "../redux/action/bookingActions";
 import moment from "moment";
+import { DATETIMEFORMAT } from "../contants";
 
 function useFriendStatus(friendID) {
   const dispatch = useDispatch();
@@ -32,11 +33,18 @@ function useFriendStatus(friendID) {
 
       dispatch(getBranchItems(branchId, "true"));
 
+      console.log(
+        "booking start",
+        moment().startOf("day").format(DATETIMEFORMAT),
+        moment().endOf("day").format(DATETIMEFORMAT)
+      );
       dispatch(
         getAllBookings({
           branchId,
+          restaurantId,
           start: moment().startOf("day").toDate(),
           end: moment().endOf("day").toDate(),
+          isToday: true,
         })
       );
     } else {

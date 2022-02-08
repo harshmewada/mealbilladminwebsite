@@ -92,7 +92,7 @@ const ActiveOrderSelector = ({
       : data?.isEdited
       ? false
       : data.isOrderConfirmed;
-
+    console.log("disableEverything", data);
     return (
       <>
         <div
@@ -209,7 +209,8 @@ const ActiveOrderSelector = ({
                     {data.orderItems.map((item, index) => {
                       const { itemId } = item;
                       const isConfirmed =
-                        isEditMode || item.itemStatusId === ITEMSTATUS[1].value;
+                        isEditMode || item.itemStatusId >= ITEMSTATUS[1].value;
+
                       return (
                         <tr
                           key={index}
