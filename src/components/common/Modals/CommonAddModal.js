@@ -104,6 +104,7 @@ const CommonAddModal = ({
                         options: optionsData[item.name],
                       })}
                       watch={watch}
+                      readOnly={item.readOnly || mode === "View"}
                     />
                   )
                 );

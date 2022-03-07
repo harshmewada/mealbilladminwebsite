@@ -419,6 +419,15 @@ const ManageItemCategories = () => {
       sourceUrl: RootUrl,
     },
     {
+      title: "HotKey Range",
+      renderRow: (row) => {
+        if (row.maxHotKeyNumber) {
+          return `${row.minHotKeyNumber} - ${row.maxHotKeyNumber}`;
+        }
+        return "-";
+      },
+    },
+    {
       title: "Status",
       key: "status",
     },

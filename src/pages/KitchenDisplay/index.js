@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from "react-redux";
 import useKitchenDisplay from "../../hooks/useKitchenDisplay";
 import { setItemAsPrepared } from "../../redux/action/orderActions";
 import DisplayList from "./DisplayList";
-
+import { usePermissions } from "../../components/PermissionGate";
+import { SCOPES } from "../../contants";
 const getNotPrepared = (newData) => {
   const data = [...newData];
   // if (data.length !== 1) {
@@ -87,7 +88,11 @@ const KitchenDisplay = () => {
     dispatch(setItemAsPrepared({ refId, itemId, kotId }));
   };
   const { enableKDS } = useSelector((state) => state.util);
-  return (
+
+  const hasPermission = usePermissions({
+    scopes: [SCOPES.KITCHEN_DISPLAY_SYSTEM],
+  });
+  return hasPermission ? (
     <div>
       {enableKDS ? (
         <Row>
@@ -140,6 +145,19 @@ const KitchenDisplay = () => {
           Kitchen Display Sysytem is not enabled
         </div>
       )}
+    </div>
+  ) : (
+    <div
+      style={{
+        height: "80vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "red",
+        fontSize: 30,
+      }}
+    >
+      Kitchen Display Sysytem is not enabled
     </div>
   );
 };

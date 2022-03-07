@@ -42,6 +42,10 @@ const ManageBranches = () => {
   const isRestaurantAdmin = role === "restaurantadmin";
 
   const [selectedBranch, setSelectedBranch] = React.useState(branchId || "all");
+  const [dates, setDates] = React.useState({
+    start: moment().startOf("month").toDate(),
+    end: moment().endOf("month").add(1, "minute").toDate(),
+  });
 
   const { bookings } = useSelector((state) => state.common);
 
@@ -49,6 +53,9 @@ const ManageBranches = () => {
   function valid(current) {
     return current.isAfter(moment().subtract("1", "day"));
   }
+
+  const isCanceledBooking = actionData?.bookingStatus === BOOKINGSTATUS[2].key;
+
   const formData = [
     {
       hidden: !isRestaurantAdmin,
@@ -206,7 +213,11 @@ const ManageBranches = () => {
     toggleAdd("Add");
   };
   const handleEdit = (data) => {
-    toggleAdd("Edit");
+    if (data?.bookingStatus === BOOKINGSTATUS[2].key) {
+      toggleAdd("View");
+    } else {
+      toggleAdd("Edit");
+    }
     setActionData({
       ...data,
       start: moment(data.start).toDate(),
@@ -224,37 +235,57 @@ const ManageBranches = () => {
   };
 
   const onRangeChange = (e) => {
-    if (e?.start && e?.end) {
-      dispatch(
-        getAllBookings({
-          branchId: currentBranchId,
-          restaurantId,
-          start: e.start,
-          end: e.end,
-        })
-      );
-    }
     if (Array.isArray(e)) {
-      if (e.length > 5) {
-        dispatch(
-          getAllBookings({
-            branchId: currentBranchId,
-            restaurantId,
-            start: e[0],
-            end: e[6],
-          })
-        );
-      }
       if (e.length === 1) {
-        dispatch(
-          getAllBookings({
-            branchId: currentBranchId,
-            restaurantId,
-            start: e[0],
-          })
-        );
+        setDates({
+          start: moment(e[0]).startOf("day").toDate(),
+          end: moment(e[0]).endOf("day").add(1, "minute").toDate(),
+        });
       }
+      if (e.length > 1) {
+        setDates({
+          start: e[0],
+          end: e[6],
+        });
+      }
+    } else {
+      setDates({
+        start: e.start,
+        end: e.end,
+      });
     }
+
+    // if (e?.start && e?.end) {
+    //   dispatch(
+    //     getAllBookings({
+    //       branchId: currentBranchId,
+    //       restaurantId,
+    //       start: e.start,
+    //       end: e.end,
+    //     })
+    //   );
+    // }
+    // if (Array.isArray(e)) {
+    //   if (e.length > 5) {
+    //     dispatch(
+    //       getAllBookings({
+    //         branchId: currentBranchId,
+    //         restaurantId,
+    //         start: e[0],
+    //         end: e[6],
+    //       })
+    //     );
+    //   }
+    //   if (e.length === 1) {
+    //     dispatch(
+    //       getAllBookings({
+    //         branchId: currentBranchId,
+    //         restaurantId,
+    //         start: e[0],
+    //       })
+    //     );
+    //   }
+    // }
   };
 
   const onAdd = (data) => {
@@ -269,9 +300,7 @@ const ManageBranches = () => {
           },
           () => {
             toggleAdd();
-            dispatch(
-              getAllBookings({ branchId: currentBranchId, restaurantId })
-            );
+            getData();
           },
           []
         )
@@ -287,7 +316,7 @@ const ManageBranches = () => {
       dispatch(
         updateBooking(editData, () => {
           toggleAdd();
-          dispatch(getAllBookings({ branchId: currentBranchId, restaurantId }));
+          getData();
         })
       );
     }
@@ -302,7 +331,7 @@ const ManageBranches = () => {
     dispatch(
       updateBooking(editData, () => {
         toggleAdd();
-        dispatch(getAllBookings({ branchId: currentBranchId, restaurantId }));
+        getData();
       })
     );
   };
@@ -369,10 +398,21 @@ const ManageBranches = () => {
   };
   React.useEffect(() => {
     dispatch(getAllBranches(restaurantId));
-    dispatch(getAllBookings({ branchId: currentBranchId, restaurantId }));
+
     dispatch(getAllTables(restaurantId, currentBranchId));
     dispatch(getBranchItems(currentBranchId));
   }, [currentBranchId]);
+
+  const getData = () => {
+    dispatch(
+      getAllBookings({ branchId: currentBranchId, restaurantId, ...dates })
+    );
+  };
+
+  React.useEffect(() => {
+    getData();
+  }, [dates]);
+
   return (
     <div class="page-content-tab">
       <DeleteModal
@@ -385,7 +425,7 @@ const ManageBranches = () => {
       />
       <CommonAddModal
         title={PageTitle}
-        open={open === "Add" || open === "Edit"}
+        open={open === "Add" || open === "Edit" || open === "View"}
         onClose={() => toggleAdd()}
         mode={open}
         onSubmit={(e) => onAdd(e)}
@@ -398,9 +438,13 @@ const ManageBranches = () => {
           branchId: branches,
           items: items,
         }}
-        hideSubmit={isRestaurantAdmin}
+        hideSubmit={isRestaurantAdmin || isCanceledBooking}
         extraButtons={
-          isRestaurantAdmin ? [] : open === "Edit" ? [CancelAction] : []
+          isRestaurantAdmin
+            ? []
+            : open === "Edit" && !isCanceledBooking
+            ? [CancelAction]
+            : []
         }
       />
       <div class="row">

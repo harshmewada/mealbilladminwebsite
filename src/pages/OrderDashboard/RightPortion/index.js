@@ -58,6 +58,7 @@ const RightPortion = () => {
   };
 
   const deleteOrder = (refId) => {
+    console.log("deleteOrder", refId);
     dispatch(deleteLocalOrder(refId));
   };
 

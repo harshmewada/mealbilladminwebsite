@@ -45,16 +45,16 @@ const useKitchenDisplay = (roomId) => {
       reconnectionAttempts: 10,
     });
 
-    if (hasPermission) {
-      socketRef.current.on("connect", async () => {
-        // console.log("socket socketRef.current.id", socketRef.current.id);
+    // if (hasPermission) {
+    socketRef.current.on("connect", async () => {
+      // console.log("socket socketRef.current.id", socketRef.current.id);
 
-        await socketRef.current.emit("JOIN_ROOM", branchId);
-        await getAllOrders();
-      });
-    }
+      await socketRef.current.emit("JOIN_ROOM", branchId);
+      await getAllOrders();
+    });
+    // }
 
-    if (!isKitchenUser && hasPermission) {
+    if (!isKitchenUser) {
       socketRef.current.on(orderTypes.ACTIVATE_ORDER, (message) => {
         console.log("message", message);
         dispatch(activateOrderSocket(message));
@@ -89,10 +89,11 @@ const useKitchenDisplay = (roomId) => {
         setCustomerMessages(message);
       });
     }
-
-    socketRef.current.on(orderTypes.SET_ITEM_AS_PREPARED, (message) => {
-      dispatch(setItemAsPreparedSocket(message));
-    });
+    if (hasPermission) {
+      socketRef.current.on(orderTypes.SET_ITEM_AS_PREPARED, (message) => {
+        dispatch(setItemAsPreparedSocket(message));
+      });
+    }
     socketRef.current.on("GET_ORDERS", (message) => {
       // console.log("getsocket", message);
       setCustomerMessages(message);

@@ -44,7 +44,7 @@ function useFriendStatus(friendID) {
           restaurantId,
           start: moment().startOf("day").toDate(),
           end: moment().endOf("day").toDate(),
-          isToday: true,
+          // isToday: true,
         })
       );
     } else {

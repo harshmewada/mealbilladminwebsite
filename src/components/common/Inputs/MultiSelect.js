@@ -25,6 +25,7 @@ const MultiSelect = React.forwardRef((props, ref) => {
     control,
     defaultValue,
     value,
+    readOnly,
   } = props;
   // console.log("select option", options, value);
   const CustomOption = ({ innerRef, innerProps, ...props }) => {
@@ -63,6 +64,9 @@ const MultiSelect = React.forwardRef((props, ref) => {
               onChange={(data) => {
                 props.onChange(data);
               }}
+              menuIsOpen={readOnly ? false : undefined}
+              isClearable={!readOnly}
+              isSearchable={!readOnly}
             />
           );
         }}

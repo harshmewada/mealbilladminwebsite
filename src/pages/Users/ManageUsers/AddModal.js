@@ -7,13 +7,17 @@ import { createUser } from "../../../redux/action/userActions";
 import { showSnackBar } from "../../../redux/action/snackActions";
 import { mobileRegex, emailRegex } from "../../../helpers/regex";
 import getErrorMessage from "../../../helpers/getErrorMessage";
+import PermissionsGate from "../../../components/PermissionGate";
+import { SCOPES } from "../../../contants";
 
 const AddModal = ({ open, onClose, title }) => {
   const { register, watch, errors, handleSubmit, setValue, reset } = useForm();
   const dispatch = useDispatch();
   const restaurants = useSelector((state) => state.restaurant.allRestaurants);
 
-  const { role, restaurantId, branchId } = useSelector((state) => state.user);
+  const { role, restaurantId, branchId, permissions } = useSelector(
+    (state) => state.user
+  );
 
   const branches = useSelector((state) => state.branch.allBranches);
   const [currRoles, setCurrRoles] = React.useState("branchadmin");
@@ -102,10 +106,17 @@ const AddModal = ({ open, onClose, title }) => {
         {role === "superadmin" && (
           <option value="restaurantadmin">Restaurant Admin</option>
         )}
+
         {/* )} */}
         <option value="branchadmin">Branch Admin</option>
         <option value="branchuser">Branch User</option>
-        <option value="kitchenuser">Kitchen User</option>
+
+        <PermissionsGate scopes={[SCOPES.KITCHEN_DISPLAY_SYSTEM]}>
+          <option value="kitchenuser">Kitchen User</option>
+        </PermissionsGate>
+        {role === "superadmin" && (
+          <option value="kitchenuser">Kitchen User</option>
+        )}
       </select>
     </div>
   );
