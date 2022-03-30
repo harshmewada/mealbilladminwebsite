@@ -417,7 +417,11 @@ export default {
 
             // { title: "Expense Title", key: "expenseTitle" },
             // { title: "Expense Type", key: "expenseType" },
-            { title: "Amount", key: "expensePrice", isCurrency: true },
+            { title: "Net Amount", key: "expensePrice", isCurrency: true },
+            { title: "CGST", key: "cgst", isCurrency: true },
+            { title: "SGST", key: "sgst", isCurrency: true },
+            { title: "Total Amount", key: "expenseTotal", isCurrency: true },
+
             {
               title: "Quantity",
               key: "quantity",

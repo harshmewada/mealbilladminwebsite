@@ -42,6 +42,7 @@ const ManageItemCategories = () => {
   const [open, setOpen] = React.useState();
 
   const [importOpen, setImportOpen] = React.useState();
+  const [actionData, setActionData] = React.useState();
 
   const [selectedBranch, setSelectedBranch] = React.useState(branchId);
 
@@ -139,7 +140,7 @@ const ManageItemCategories = () => {
       label: "Minimun Hoy Key Number",
       placeholder: "Type Minimun Hoy Key Number",
       required: false,
-      readOnly: open === "Edit",
+      readOnly: actionData?.hotkeyEditCount > 0,
       size: 4,
       rules: {
         required: {
@@ -154,7 +155,7 @@ const ManageItemCategories = () => {
       label: "Maximum Hoy Key Number",
       placeholder: "Type Maximum Hoy Key Number",
       required: false,
-      readOnly: open === "Edit",
+      readOnly: actionData?.hotkeyEditCount > 0,
 
       size: 4,
       rules: {
@@ -168,8 +169,6 @@ const ManageItemCategories = () => {
 
   const dispatch = useDispatch();
   // const Cateogrys = useSelector((state) => state.common.Cateogrys);
-
-  const [actionData, setActionData] = React.useState();
 
   const toggleAdd = (mode) => {
     setOpen(mode);
