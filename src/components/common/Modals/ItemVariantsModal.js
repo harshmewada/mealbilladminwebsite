@@ -7,9 +7,10 @@ import TableHeading from "../SmartTable/TableHeading";
 import TableTitle from "../SmartTable/TableTitle";
 import { useSelector, useDispatch } from "react-redux";
 import { Formik, Field, Form, ErrorMessage, FieldArray } from "formik";
-import { MEASUREUNITS } from "../../../contants";
+import { MEASUREUNITS, SCOPES } from "../../../contants";
 import { RootUrl } from "../../../redux/types";
 import { deleteItemVariant } from "../../../redux/action/itemVariantActions";
+import { usePermissions } from "../../PermissionGate";
 
 const Nodata = () => (
   <td colSpan={"8"} className="text-center">
@@ -17,50 +18,45 @@ const Nodata = () => (
   </td>
 );
 
-const headers = [
-  { title: "Name", key: "itemName" },
-
-  // {
-  //   title: "Item Image",
-  //   key: "itemImage",
-  //   type: "image",
-  //   sourceUrl: RootUrl,
-  // },
-  // { title: "Hotkey", key: "hotKey" },
-
-  { title: "Price", key: "itemPrice" },
-
-  { title: "On.Price", key: "onlinePrice" },
-  { title: "Check Qty.", key: "isQuantityChecked" },
-
-  { title: "Qty.", key: "currentStock" },
-
-  { title: "Description", key: "description", type: "textarea" },
-
-  {
-    title: "Type",
-    key: "isNonVeg",
-    renderRow: (row) => (row.isNonVeg ? `Non veg` : "Veg"),
-    width: 100,
-  },
-
-  {
-    title: "CGST",
-    key: "cgst",
-  },
-
-  {
-    title: "SGST",
-    key: "sgst",
-  },
-
-  { title: "isFeatured", key: "isFeatured", type: "boolean" },
-
-  { title: "Status", key: "status", width: 100 },
-];
-
 const ItemVariantsModal = ({ open, onClose, data, onSubmit }) => {
   const { cgst, sgst } = useSelector((state) => state.user);
+  const isOnlineOrderActive = usePermissions({
+    scopes: [SCOPES.ONLINE_ORDERING],
+  });
+  const headers = [
+    { title: "Name", key: "itemName" },
+
+    { title: "Price", key: "itemPrice" },
+
+    isOnlineOrderActive && { title: "On.Price", key: "onlinePrice" },
+    { title: "Check Qty.", key: "isQuantityChecked" },
+
+    { title: "Qty.", key: "currentStock" },
+
+    { title: "Description", key: "description", type: "textarea" },
+
+    {
+      title: "Type",
+      key: "isNonVeg",
+      renderRow: (row) => (row.isNonVeg ? `Non veg` : "Veg"),
+      width: 100,
+    },
+
+    {
+      title: "CGST",
+      key: "cgst",
+    },
+
+    {
+      title: "SGST",
+      key: "sgst",
+    },
+
+    // { title: "isFeatured", key: "isFeatured", type: "boolean" },
+
+    { title: "Status", key: "status", width: 100 },
+  ];
+
   const dispatch = useDispatch();
   const emptyRow = {
     itemName: "",
@@ -270,7 +266,7 @@ const ItemVariantsModal = ({ open, onClose, data, onSubmit }) => {
                                       name={`variants.${childindex}.sgst`}
                                     />
                                   </td>
-                                  <td>
+                                  {/* <td>
                                     <Field
                                       disabled={isLoading}
                                       name={`variants.${childindex}.isFeatured`}
@@ -301,7 +297,7 @@ const ItemVariantsModal = ({ open, onClose, data, onSubmit }) => {
                                         </div>
                                       )}
                                     </Field>
-                                  </td>
+                                  </td> */}
 
                                   <td>
                                     <Field

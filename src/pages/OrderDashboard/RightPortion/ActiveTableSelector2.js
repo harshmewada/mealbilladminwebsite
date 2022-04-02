@@ -21,7 +21,7 @@ const getColor = (type) => {
 const getBgColor = (type, kotQuantity, quantity) => {
   const percentage = (kotQuantity / quantity) * 100;
   if (type === 1) {
-    return `linear-gradient(90deg,yellow ${percentage}%, #fff ${percentage}%)`;
+    return `linear-gradient(90deg,#ffff8f ${percentage}%, #fff ${percentage}%)`;
   }
   return ITEMSTATUS.find((d) => d.value === type).bgColor;
 };

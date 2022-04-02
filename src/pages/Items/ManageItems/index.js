@@ -41,6 +41,8 @@ import IconCommonAction from "../../../components/common/Actions/IconCommonActio
 //sample excel
 import SampleXLS from "../../../assets/bulkuploaditemssample.xlsx";
 import { getAllRawMaterials } from "../../../redux/action/rawMaterialActions";
+import { usePermissions } from "../../../components/PermissionGate";
+import { SCOPES } from "../../../contants";
 
 const PageTitle = "Items";
 
@@ -70,6 +72,10 @@ const getItemQuantityCal = (row) => {
   return cul;
 };
 const ManageItems = () => {
+  const isOnlineOrderActive = usePermissions({
+    scopes: [SCOPES.ONLINE_ORDERING],
+  });
+
   const isLoading = useSelector((state) => state.util.spinner);
   const {
     categories: arraycategories,
@@ -348,38 +354,41 @@ const ManageItems = () => {
         },
       },
     },
+    ...(isOnlineOrderActive
+      ? [
+          {
+            type: "info",
+            title: "Online Information",
+          },
+          {
+            type: "text",
+            name: "onlinePrice",
+            size: 3,
 
-    {
-      type: "info",
-      title: "Online Information",
-    },
-    {
-      type: "text",
-      name: "onlinePrice",
-      size: 3,
+            label: "Item Online Price",
+            placeholder: "Type Item  Online Price",
+            required: false,
+          },
+          {
+            type: "rating",
+            name: "averageRating",
+            disabled: true,
+            size: 2,
 
-      label: "Item Online Price",
-      placeholder: "Type Item  Online Price",
-      required: false,
-    },
-    {
-      type: "rating",
-      name: "averageRating",
-      disabled: true,
-      size: 2,
+            label: `Average Rating (0 Users)`,
+            placeholder: "Enter Average Rating",
+            extraLabel: "0 users",
+          },
+          {
+            type: "switch",
+            name: "isOnline",
+            size: 2,
 
-      label: `Average Rating (0 Users)`,
-      placeholder: "Enter Average Rating",
-      extraLabel: "0 users",
-    },
-    {
-      type: "switch",
-      name: "isOnline",
-      size: 2,
-
-      label: "Is Item Online",
-      placeholder: "Enter Is Item Online",
-    },
+            label: "Is Item Online",
+            placeholder: "Enter Is Item Online",
+          },
+        ]
+      : []),
 
     {
       type: "empty",

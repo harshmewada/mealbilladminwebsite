@@ -249,7 +249,10 @@ const ManageItemCategories = () => {
   const onAdd = (data) => {
     if (open === "Add") {
       console.log("add cat", data);
-      if (data.minHotKeyNumber >= data.maxHotKeyNumber) {
+      if (
+        data.minHotKeyNumber &&
+        data.minHotKeyNumber >= data.maxHotKeyNumber
+      ) {
         alert(
           "Minimum HoyKey Number can not be less than Maximum Hotkey Number"
         );
@@ -266,7 +269,9 @@ const ManageItemCategories = () => {
           ...(typeof data?.categoryImage[0] !== "string" && {
             categoryImage: data?.categoryImage[0],
           }),
-          lastHotKeyNumber: parseInt(data.minHotKeyNumber) - 1,
+          ...(data.minHotKeyNumber && {
+            lastHotKeyNumber: parseInt(data.minHotKeyNumber) - 1,
+          }),
         })
       )
         .then((res) => {
