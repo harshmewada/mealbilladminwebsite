@@ -6,4 +6,5 @@ export const orderApi = {
   EDIT_ORDER: `/api/restaurant/orders/edit`,
 
   GET_PREVIOS_ORDERS: `/api/restaurant/orders`,
+  CLEAR_STUCK_ORDERS: `/api/restaurant/orders/clear-stuck-orders`,
 };

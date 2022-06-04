@@ -128,17 +128,49 @@ const PaymentModal = ({
 
   const handleAddMethod = (pay) => {
     if (getFloat(amount) > 0) {
-      console.log("amount", amount);
+      let totalDue = data?.grandTotal;
+      let payment = getFloat(amount);
+      let cashReturn = getFloat(payment - totalDue);
+
       const dumbobj = {
         paymentMethodType: pay.type,
         paymentMethodId: pay.id,
 
-        amount: getFloat(amount),
-        handleAddMethod,
+        // amount: getFloat(amount),
+        amount: cashReturn >= totalDue ? totalDue : getFloat(amount),
       };
-      setPaymentMethods([...paymentMethods, dumbobj]);
 
-      setAmount(0);
+      let mainObject = {
+        ...dumbobj,
+      };
+      if (paymentMethods.length > 0) {
+        let dummybalance = getFloat(
+          calculatePayment(paymentMethods, totalDue).balance
+        );
+
+        mainObject = {
+          paymentMethodType: pay.type,
+          paymentMethodId: pay.id,
+
+          amount: cashReturn >= totalDue ? dummybalance : getFloat(amount),
+        };
+
+        // let newPayment = getFloat(
+        //   calculatePayment([...paymentMethods], totalDue).payment
+        // );
+        // cashReturn = getFloat(amount) - newPayment;
+        // console.log(
+        //   "settle data",
+        //   totalDue,
+        //   newPayment,
+        //   cashReturn,
+        //   getFloat(amount)
+        // );
+      }
+      // setCashReturn(cashReturn > 0 ? cashReturn : 0);
+      setPaymentMethods([...paymentMethods, mainObject]);
+
+      // setAmount(0);
     } else {
       alert("Please enter valid amount");
     }
@@ -172,7 +204,8 @@ const PaymentModal = ({
   let disabled = dummybalance <= 0;
   let balance = disabled ? 0 : dummybalance;
 
-  let cashReturn = disabled ? getFloat(payment - totalDue) : 0;
+  // let cashReturn = disabled ? getFloat(payment - totalDue) : 0;
+  const [cashReturn, setCashReturn] = React.useState(0);
 
   let grandTotalWithoutDiscount = data?.grandTotalWithoutDiscount;
   let grandTotal = data?.grandTotal;
@@ -180,6 +213,73 @@ const PaymentModal = ({
   React.useEffect(() => {
     setAmount(balance);
   }, [balance]);
+
+  React.useEffect(() => {
+    let totalPaid = payment;
+    const currAmount = getFloat(amount);
+    const newPaymentMethods = paymentMethods.filter(
+      (a, i) => i !== paymentMethods.length - 1
+    );
+    // let lastpayment = getFloat(
+    //   calculatePayment(newPaymentMethods, totalDue).payment
+    // );
+
+    // delete newPaymentMethods[newPaymentMethods.length - 1];
+    let lastPayments = getFloat(
+      calculatePayment(newPaymentMethods, totalDue).payment
+    );
+
+    // console.log("settle data", payment, lastPayments);
+    if (currAmount > totalPaid) {
+      setCashReturn(currAmount + lastPayments - totalPaid);
+    } else {
+      let toReturn = totalPaid - currAmount;
+      // console.log("settle data", payment, lastPayments, toReturn, lastpayment);
+
+      setCashReturn(toReturn > 0 ? toReturn : 0);
+    }
+
+    // if (paymentMethods.length === 0) {
+    //   setCashReturn(0);
+    // }
+    // if (paymentMethods.length > 0) {
+    //   let returnMoney = 0;
+    //   console.log("settle data", totalDue, payment, payment - totalDue);
+
+    //   if (getFloat(amount) > totalDue) {
+    //     console.log("settle data if");
+
+    //     setCashReturn(0);
+    //   } else {
+    //     console.log("settle data else");
+
+    //     setCashReturn(getFloat(amount) - totalDue);
+    //   }
+    // }
+  }, [paymentMethods]);
+
+  // React.useEffect(() => {
+  //   if (paymentMethods.length > 0) {
+  //     console.log("settle data", totalDue, payment, payment - totalDue);
+
+  //     if (getFloat(amount) > totalDue) {
+  //       setCashReturn(
+  //         getFloat(amount) - totalDue > 0 ? getFloat(amount) - totalDue : 0
+  //       );
+  //     } else {
+  //       let returnMoney = getFloat(amount) + payment - totalDue;
+  //       console.log(
+  //         "settle data else",
+  //         getFloat(amount) + payment - totalDue,
+  //         returnMoney
+  //       );
+
+  //       setCashReturn(returnMoney > 0 ? returnMoney : 0);
+  //     }
+  //   } else {
+  //     setCashReturn(0);
+  //   }
+  // }, [paymentMethods]);
   const renderUpTableRow = (title, value, isCurrency) => {
     return (
       <tr>

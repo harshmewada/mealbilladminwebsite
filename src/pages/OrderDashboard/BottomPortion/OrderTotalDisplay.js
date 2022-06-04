@@ -8,6 +8,7 @@ import {
   setOtherCharges,
   updateOrder,
   prePrintOrder,
+  printOrder,
 } from "../../../redux/action/orderActions";
 import OrderButton from "./OrderButton";
 import OrderConfirmModal from "../../../components/common/Modals/OrderConfirmModal";
@@ -19,7 +20,7 @@ import moment from "moment";
 import { CURRENCY, DATETIMEFORMAT, TYPESOFORDERS } from "../../../contants";
 import calculateOrderTotals from "../../../helpers/calculateOrderTotals";
 import PaymentSettleModal from "../../../components/common/Modals/PaymentSettleModal";
-import { findActiveOrderIndex } from "../../../redux/reducers/newOrderReducer";
+import { findActiveOrderIndex } from "../../../redux/reducers/orderReducer";
 import calculateBranchOrderNumber from "../../../helpers/calculateBranchOrderNumber";
 const getPaymentType = (types) => {
   console.log("getPaymentType", types);
@@ -178,6 +179,7 @@ const OrderTotalDisplay = () => {
       orderTypeId: currentOrder.orderTypeId,
 
       isPaid: false,
+      isBillPrinted: true,
 
       ...customerData,
       ...paymentData,
@@ -193,6 +195,14 @@ const OrderTotalDisplay = () => {
         cb && cb();
       })
     );
+    // dispatch(
+    //   printOrder(orderdata, (data) => {
+    //     setOtherCharges(0);
+    //     setDiscount(0);
+    //     toggleOrderConfirmModal();
+    //     cb && cb();
+    //   })
+    // );
   };
 
   const onConfirmOrder = (orderData, customerData, paymentData, others) => {
@@ -215,6 +225,8 @@ const OrderTotalDisplay = () => {
       orderNumber: lastOrderNumber + (activeOrders.length - orderIndex),
       branchCode: branchCode,
       isPaid: false,
+      isBillPrinted: true,
+
       branchOrderNumber: calculateBranchOrderNumber(
         branchCode,
         orderNumberCount
@@ -237,6 +249,9 @@ const OrderTotalDisplay = () => {
 
   const onSettlePayment = (paymentData, customerData) => {
     if (settleOpen.isOrderConfirmed) {
+      // if (!settleOpen.isPaid) {
+      //   alert("if");
+      // } else {
       dispatch(
         updateOrder(
           {
@@ -258,6 +273,7 @@ const OrderTotalDisplay = () => {
           }
         )
       );
+      // }
     } else {
       dispatch(
         confirmOrder(

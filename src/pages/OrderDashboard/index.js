@@ -6,6 +6,7 @@ import useFullscreenStatus from "../../hooks/useFullscreenStatus";
 import useKitchenDisplay from "../../hooks/useKitchenDisplay";
 import BottomPortion from "./BottomPortion";
 import CenterPortion from "./CenterPortion/index";
+import LowQuantityAlert from "./LowQuantityAlert";
 
 import TopPortion from "./TopPortion";
 
@@ -39,6 +40,7 @@ const OrderDashboard = () => {
       <CenterPortion />
 
       <BottomPortion />
+      <LowQuantityAlert />
     </div>
   ) : (
     <LoadingFullPage />

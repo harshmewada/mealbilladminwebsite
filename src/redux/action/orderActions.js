@@ -9,7 +9,7 @@ import {
   findActiveOrderIndex,
   findItemIndex,
   isThatItemInMyOrder,
-} from "../reducers/newOrderReducer";
+} from "../reducers/orderReducer";
 import calculateBranchOrderNumber from "../../helpers/calculateBranchOrderNumber";
 import moment from "moment";
 import { setKOTPrintData } from "./utilActions";
@@ -163,11 +163,20 @@ export const pushItemToActiveOrder = ({ item, isVariant }) => {
 
     const myItemId = item?.variantId || item?.id || item?.id;
     const activeOrder = allOrders[findActiveOrderIndex(allOrders, refId)];
+    console.log("activeOrder", activeOrder);
 
     if (!activeOrder) {
       alert("No Active Order");
       return;
     }
+
+    if (activeOrder.isBillPrinted) {
+      alert(
+        "Bill modification not possible after printing. If you wish to change, do it after settlement"
+      );
+      return;
+    }
+
     const currItem = isThatItemInMyOrder(activeOrder, myItemId);
     if (currItem) {
       if (checkIfQuantityExceeds(currItem, currItem.quantity + 1)) {
@@ -499,6 +508,44 @@ export const confirmOrder = (data, cb, errorCb) => {
   };
 };
 
+export const printOrder = (data, cb, errorCb) => {
+  return (dispatch, getState) => {
+    const orderData = getMyState(getState, "order");
+    const enableKOT = getMyState(getState, "util").enableKOT;
+
+    const refId = orderData.activeOrder;
+    const activeOrders = orderData.activeOrders;
+    const myOrderIndex = findActiveOrderIndex(activeOrders, refId);
+    const active = activeOrders[myOrderIndex];
+    const lastOrderNumber = orderData.lastOrderNumber;
+
+    // const { kotItems, kotData } = calculateKOT({
+    //   active,
+    //   lastOrderNumber,
+    //   activeOrders,
+    // });
+
+    // if (enableKOT) {
+    //   dispatch(
+    //     setKOTPrintData({
+    //       ...data,
+
+    //       ...kotData,
+    //     })
+    //   );
+    // }
+    dispatch({
+      type: orderTypes.PRINT_ORDER,
+      payload: data,
+    });
+    // checkIfAsyncReqSuccess(dispatch, {
+    //   cb: cb,
+    //   errorCb: errorCb,
+
+    // });
+  };
+};
+
 export const updateOrder = (
   data,
   cb,
@@ -594,6 +641,33 @@ export const getPreviosOrders = (data) => {
 export const incrementOrderNumberCount = () => {
   return {
     type: orderTypes.INCREMENT_ORDER_NUMBER_COUNT,
+  };
+};
+
+export const clearStuckOrders = () => {
+  return (dispatch, getState) => {
+    const { branchId, restaurantId } = getMyState(getState, "user");
+
+    checkIfAsyncReqSuccess(dispatch, {
+      successMessage: "Active orders removed Successfully",
+      errorMessage: "Failed To remove active orders",
+      enableMessage: true,
+
+      type: orderTypes.CLEAR_STUCK_ORDERS,
+      payload: {
+        request: {
+          url: orderApi.CLEAR_STUCK_ORDERS,
+          method: "DELETE",
+          data: {
+            branchId,
+            restaurantId,
+          },
+          headers: {
+            "Content-type": "application/json",
+          },
+        },
+      },
+    });
   };
 };
 

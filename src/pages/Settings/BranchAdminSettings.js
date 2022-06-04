@@ -5,6 +5,7 @@ import {
   deleteReceiptMessage,
   updateReceiptMessage,
 } from "../../redux/action/branchActions";
+import { clearStuckOrders } from "../../redux/action/orderActions";
 import { toggleKOT, togglePrinting } from "../../redux/action/utilActions";
 import PrintSetting from "./PrintSetting";
 
@@ -74,6 +75,9 @@ const BranchAdminSettings = () => {
     // alert("hehe");
   };
 
+  const handleClearOrders = () => {
+    dispatch(clearStuckOrders());
+  };
   return (
     <div class="page-content-tab">
       <PrintSetting />
@@ -129,7 +133,29 @@ const BranchAdminSettings = () => {
           </Row>
         </Card.Body>
       </Card>
-
+      <Card>
+        <Card.Header class="card-header bg-primary">
+          <h5 class="text-white">Order setting</h5>
+        </Card.Header>
+        <Card.Body>
+          <Row>
+            <Col md={12}>
+              <p>This button will clear all active orders</p>
+              <Button
+                style={{
+                  backgroundColor: "rgb(240, 88, 60)",
+                  border: "none",
+                  width: "auto",
+                }}
+                block
+                onClick={() => handleClearOrders()}
+              >
+                Clear stuck orders
+              </Button>
+            </Col>
+          </Row>
+        </Card.Body>
+      </Card>
       {/* <Card>
         <Card.Header class="card-header bg-primary">
           <h5 class="text-white">Offline Mode</h5>

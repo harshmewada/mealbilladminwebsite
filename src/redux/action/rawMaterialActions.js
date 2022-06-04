@@ -62,7 +62,7 @@ export const getAllRawMaterials = (data) => {
       request: {
         url: rawMaterialApi.GET_RAW_MATERIAL,
         method: "get",
-        params: data,
+        params: { branchId: data },
       },
     },
   };

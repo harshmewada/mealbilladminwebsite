@@ -332,6 +332,9 @@ export default {
 
           headers: [
             { title: "Order Number", key: "branchOrderNumber" },
+            // { title: "Order Type", key: "orderTypeId" },
+            { title: "Payment Type", key: "pay" },
+
             { title: "Items", key: "itemsLength" },
 
             { title: "SGST", key: "sgstCharges", isCurrency: true },

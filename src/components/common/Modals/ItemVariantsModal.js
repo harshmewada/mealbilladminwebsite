@@ -28,7 +28,7 @@ const ItemVariantsModal = ({ open, onClose, data, onSubmit }) => {
 
     { title: "Price", key: "itemPrice" },
 
-    isOnlineOrderActive && { title: "On.Price", key: "onlinePrice" },
+    ...(isOnlineOrderActive ? [{ title: "On.Price", key: "onlinePrice" }] : []),
     { title: "Check Qty.", key: "isQuantityChecked" },
 
     { title: "Qty.", key: "currentStock" },
@@ -171,16 +171,18 @@ const ItemVariantsModal = ({ open, onClose, data, onSubmit }) => {
                                     />
                                   </td>
 
-                                  <td>
-                                    <Field
-                                      disabled={isLoading}
-                                      name={`variants.${childindex}.onlinePrice`}
-                                      placeholder="Enter Online Price"
-                                      type="number"
-                                      steps="0.0"
-                                      className="form-control"
-                                    />
-                                  </td>
+                                  {isOnlineOrderActive && (
+                                    <td>
+                                      <Field
+                                        disabled={isLoading}
+                                        name={`variants.${childindex}.onlinePrice`}
+                                        placeholder="Enter Online Price"
+                                        type="number"
+                                        steps="0.0"
+                                        className="form-control"
+                                      />
+                                    </td>
+                                  )}
                                   <td>
                                     <Field
                                       disabled={isLoading}

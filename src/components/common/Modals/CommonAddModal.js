@@ -105,6 +105,7 @@ const CommonAddModal = ({
                       })}
                       watch={watch}
                       readOnly={item.readOnly || mode === "View"}
+                      {...item.inputProps}
                     />
                   )
                 );

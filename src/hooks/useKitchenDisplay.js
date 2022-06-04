@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import socketIOClient from "socket.io-client";
 import { usePermissions } from "../components/PermissionGate";
 import { SCOPES, SOCKETURL } from "../contants";
+import { showOrderAlert } from "../redux/action/alertActions";
 import {
   activateOrder,
   activateOrderSocket,
@@ -35,6 +36,10 @@ const useKitchenDisplay = (roomId) => {
   const dispatch = useDispatch();
   const { branchId, restaurantId, id, role } = useSelector(
     (state) => state.user
+  );
+
+  const showOrderQuantityModal = useSelector(
+    (state) => state.alert.showOrderQuantityModal
   );
   const socketRef = useRef();
   const isKitchenUser = role === "kitchenuser";
@@ -103,10 +108,18 @@ const useKitchenDisplay = (roomId) => {
     socketRef.current.on("SOCKET_ERROR", (message) => {
       alert(`Error ${message}`);
     });
+    socketRef.current.on("ORDER_NOTIFICATION", (message) => {
+      if (showOrderQuantityModal) {
+        // alert(`message ${JSON.stringify(message)}`);
+
+        dispatch(showOrderAlert(message.message));
+      }
+    });
+
     return () => {
       socketRef.current.disconnect();
     };
-  }, [roomId]);
+  }, [roomId, showOrderQuantityModal]);
 
   const sendToAdmin = (messageBody) => {
     console.log("messageBody", messageBody);

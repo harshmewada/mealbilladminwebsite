@@ -1,3 +1,19 @@
+export const hideOderAlert = (data) => {
+  return {
+    type: "DONT_SHOW_ORDER_ALERT",
+  };
+};
+
+export const showOrderAlert = (data, severnity) => {
+  return {
+    type: "SHOW_ORDER_ALERT",
+    payload: {
+      data: data,
+      severity: severnity || "success",
+    },
+  };
+};
+
 export const hideAlert = (data) => {
   return {
     type: "HIDE_ALERT",

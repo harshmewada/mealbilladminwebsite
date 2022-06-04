@@ -167,6 +167,7 @@ const ManageItems = () => {
       type: "info",
       title: "Basic Information",
     },
+
     {
       type: "text",
       name: "itemName",
@@ -309,6 +310,19 @@ const ManageItems = () => {
       label: "Item Current Quantity",
       placeholder: "Item  Current Quantity",
       required: false,
+    },
+
+    {
+      type: "text",
+      name: "preparationTime",
+      size: 2,
+
+      label: "Preparation time",
+      placeholder: "Preparation time",
+      required: false,
+      inputProps: {
+        type: "time",
+      },
     },
     {
       type: "textarea",
@@ -749,7 +763,9 @@ const ManageItems = () => {
 
     { title: "Price", key: "itemPrice" },
 
-    { title: "OnlinePrice", key: "onlinePrice" },
+    ...(isOnlineOrderActive
+      ? [{ title: "OnlinePrice", key: "onlinePrice" }]
+      : []),
     {
       title: "Category",
       key: "categoryName",

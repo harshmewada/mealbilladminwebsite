@@ -7,8 +7,8 @@ import userReducer from "./userReducer";
 import restaurantReducer from "./restaurantReducer";
 import branchReducer from "./branchReducer";
 import commonDataReducer from "./commonDataReducer";
+import orderReducer from "./orderReducer";
 // import orderReducer from "./orderReducer";
-import orderReducer from "./newOrderReducer";
 
 import reportReducer from "./reportReducer";
 import dashboardReducer from "./dashboardReducer";

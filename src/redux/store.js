@@ -8,7 +8,8 @@ import socketMiddleware from "./middlewares/socketMiddleware.js";
 import socketIOClient from "socket.io-client";
 import { SOCKETURL } from "../contants";
 
-let socket = socketIOClient(SOCKETURL, { secure: true });
+export let mainSocket = socketIOClient(SOCKETURL, { secure: true });
+
 export default function initializeStore(initialState = {}) {
   const composeEnhancers =
     (typeof window !== "undefined" &&
@@ -19,7 +20,7 @@ export default function initializeStore(initialState = {}) {
     rootReducer,
     initialState,
     composeEnhancers(
-      applyMiddleware(axiosReduxMiddleware, socketMiddleware(socket), thunk)
+      applyMiddleware(axiosReduxMiddleware, socketMiddleware(mainSocket), thunk)
     )
   );
   // const store = createStore(

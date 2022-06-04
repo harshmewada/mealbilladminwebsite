@@ -12,14 +12,16 @@ const SiteAlert = () => {
     dispatch(hideAlert());
   };
   return (
-    <SweetAlert
-      type={severity || "default"}
-      title={message}
-      onConfirm={() => hide()}
-      onCancel={() => hide()}
-      // timeout={4000}
-      show={open}
-    />
+    <>
+      <SweetAlert
+        type={severity || "default"}
+        title={message}
+        onConfirm={() => hide()}
+        onCancel={() => hide()}
+        // timeout={4000}
+        show={open}
+      />
+    </>
   );
 };
 

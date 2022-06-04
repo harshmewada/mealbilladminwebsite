@@ -1,6 +1,6 @@
 import moment from "moment";
 import getCurrency from "../helpers/getCurrency";
-
+import convert from "convert-units";
 //ips
 // web  -  3.108.102.23:443
 //pre- 3.109.130.95
@@ -67,9 +67,14 @@ export const CURRENCYNAME = CURRENCYOPTIONS.find(
 ).title;
 
 export const TYPESOFORDERS = [
-  { key: "Dine In", value: 0, bgColor: "#6d81f5" },
-  { key: "Parcel", value: 1, bgColor: `rgb(255, 234, 173)` },
-  { key: "Home Delivery", value: 2, bgColor: "rgb(198, 255, 186)" },
+  { key: "Dine In", value: 0, bgColor: "#6d81f5", orderTypeId: 0 },
+  { key: "Parcel", value: 1, bgColor: `rgb(255, 234, 173)`, orderTypeId: 1 },
+  {
+    key: "Home Delivery",
+    value: 2,
+    bgColor: "rgb(198, 255, 186)",
+    orderTypeId: 2,
+  },
 ];
 
 export const ITEMSTATUS = [
@@ -77,24 +82,73 @@ export const ITEMSTATUS = [
   { key: "Processing", value: 1, bgColor: `#fcff9c` },
   { key: "Prepared", value: 2, bgColor: "#c9ffb5" },
 ];
+const filterMeasures = [
+  "mt",
+  "oz",
+  "lb",
+  "t",
+  "mm3",
+  "cm3",
+  "m3",
+  "km3",
+  "krm",
+  "tsk",
+  "msk",
+  "kkp",
+  "glas",
+  "kanna",
+  "in3",
+  "fl-oz",
+  "pnt",
+  "qt",
+  "ft3",
+  "yd3",
+];
+
 export const MEASUREUNITS = [
-  {
-    title: "Kg",
-    value: "kg",
-  },
-  {
-    title: "Gram",
-    value: "g",
-  },
   {
     title: "Nos.",
     value: "Nos.",
   },
-  {
-    title: "Litres",
-    value: "l",
-  },
-];
+  ...convert()
+    .list("mass")
+    .map((m) => {
+      return {
+        title: m.singular,
+        value: m.abbr,
+        ...m,
+      };
+    }),
+  ...convert()
+    .list("volume")
+    .map((m) => {
+      return {
+        title: m.singular,
+        value: m.abbr,
+        ...m,
+      };
+    }),
+].filter((p) => !filterMeasures.includes(p.value));
+
+// console.log("measure units", MEASUREUNITS);
+// [
+//   {
+//     title: "Kg",
+//     value: "kg",
+//   },
+//   {
+//     title: "Gram",
+//     value: "g",
+//   },
+// {
+//   title: "Nos.",
+//   value: "Nos.",
+// },
+//   {
+//     title: "Litres",
+//     value: "l",
+//   },
+// ];
 
 export const TYPESOFPAYMENTS = [
   { type: "Cash", id: 0, icon: "mdi mdi mdi-cash-100" },

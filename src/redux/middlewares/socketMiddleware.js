@@ -19,9 +19,9 @@ const socketMiddleware = (socket) => (store) => (next) => (action) => {
             ...action.payload,
           });
         });
-
-        // console.log("socket emit", action.type);
       }
+
+      //ord
       // if (enableKDS && Boolean(branchId)) {
       //   if (socket.connected === false) {
       //     socket.on("connect", async () => {
@@ -41,6 +41,8 @@ const socketMiddleware = (socket) => (store) => (next) => (action) => {
 
       //     // console.log("socket emit", action.type);
       //   }
+
+      //ord
       else {
         // console.log("socket emit", action.type);
         socket.emit(action.type, {
