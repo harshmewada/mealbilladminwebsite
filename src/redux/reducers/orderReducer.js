@@ -25,6 +25,7 @@ export const isThatItemInMyOrder = (activeOrder, myItemId) => {
 };
 
 export const checkIfQuantityExceeds = (item, quantity) => {
+  console.log("checkIfQuantityExceeds", item);
   if (item.isQuantityChecked && item.currentStock >= 0) {
     if (quantity > item.currentStock) {
       alert("Not Enought Quantity");

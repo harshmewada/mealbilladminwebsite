@@ -67,7 +67,7 @@ const ItemVariantsModal = ({ open, onClose, data, onSubmit }) => {
 
     itemPrice: undefined,
     onlinePrice: undefined,
-
+    isQuantityChecked: false,
     description: undefined,
 
     hotKey: undefined,

@@ -19,8 +19,8 @@ export const SOCKETURL = "wss://test.mealbill.in";
 // export const BASEURL = "http://34.202.79.31/api";
 // export const BASEURL = "http://localhost:4000";
 
-// export const BASEURL = "http://192.168.0.111:4000";
-// export const SOCKETURL = "ws://192.168.0.111:4000";
+// export const BASEURL = "http://localhost:4000";
+// export const SOCKETURL = "ws://localhost:4000";
 
 export const DATEFORMAT = "DD/MM/YYYY";
 
